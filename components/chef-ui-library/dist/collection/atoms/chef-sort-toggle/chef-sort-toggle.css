@@ -1,0 +1,28 @@
+chef-sort-toggle {
+  display: inline-block;
+}
+chef-sort-toggle chef-button {
+  margin: 0;
+}
+chef-sort-toggle chef-button button {
+  padding: 0;
+  height: 32px;
+  flex-direction: column;
+}
+chef-sort-toggle chef-button .asc-icon {
+  transform: translateY(4px);
+}
+chef-sort-toggle chef-button .desc-icon {
+  transform: translateY(-4px);
+}
+chef-sort-toggle chef-button .asc-icon:first-child, chef-sort-toggle chef-button .asc-icon:last-child,
+chef-sort-toggle chef-button .desc-icon:first-child,
+chef-sort-toggle chef-button .desc-icon:last-child {
+  margin: 0;
+  font-size: 18px;
+  line-height: 1;
+  transition: opacity 0.4s;
+}
+chef-sort-toggle[order=asc] .desc-icon, chef-sort-toggle[order=desc] .asc-icon {
+  opacity: 0;
+}

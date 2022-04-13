@@ -1,0 +1,1 @@
+import{G as o,d as r,r as i}from"./p-464ede08.js";var d=r("clamp",function(r,i,d){return void 0===d&&(d=i,i=void 0),void 0!==d&&(d=(d=o(d))==d?d:0),void 0!==i&&(i=(i=o(i))==i?i:0),function(o,r,i){return o==o&&(void 0!==i&&(o=o<=i?o:i),void 0!==r&&(o=o>=r?o:r)),o}(o(r),i,d)});d.placeholder=i;var v=d;export{v as c};

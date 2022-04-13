@@ -1,0 +1,9 @@
+chef-expander {
+  display: block;
+}
+chef-expander > * {
+  display: none;
+}
+chef-expander[opened] > * {
+  display: inherit;
+}

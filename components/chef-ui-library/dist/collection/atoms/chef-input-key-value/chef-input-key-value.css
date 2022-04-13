@@ -1,0 +1,11 @@
+chef-input-key-value {
+  display: flex;
+  align-items: center;
+}
+chef-input-key-value chef-pill {
+  margin-left: 0.5em;
+  flex: 1 0 auto;
+}
+chef-input-key-value input {
+  flex: 0 1 auto;
+}

@@ -1,0 +1,106 @@
+chef-snippet {
+  display: block;
+  --token-comment: #898EA4;
+  --token-punctuation: #5E6687;
+  --token-operator: #C76B29;
+  --token-property: #C08B30;
+  --token-tag: #3D8FD1;
+  --token-string: #22A2C9;
+  --token-selector: #6679CC;
+  --token-attr-name: #C76B29;
+  --token-attr-value: #AC9739;
+  --token-entity: #22A2C9;
+  --token-statement: #22A2C9;
+  --token-placeholder: #3D8FD1;
+  --token-inserted: #202746;
+  --token-important: #C94922;
+}
+chef-snippet pre {
+  padding: 1em;
+  margin: 0;
+  overflow: auto;
+  font-family: Consolas, Menlo, Monaco, Courier, monospace;
+  font-size: 14px;
+  background: var(--chef-white);
+  color: var(--chef-dark-grey);
+  line-height: 1.5em;
+  direction: ltr;
+  text-align: left;
+  white-space: pre;
+  word-spacing: normal;
+  word-break: normal;
+}
+chef-snippet .token.comment,
+chef-snippet .token.prolog,
+chef-snippet .token.doctype,
+chef-snippet .token.cdata {
+  color: var(--token-comment);
+}
+chef-snippet .token.punctuation {
+  color: var(--token-punctuation);
+}
+chef-snippet .token.namespace {
+  opacity: 0.7;
+}
+chef-snippet .token.operator,
+chef-snippet .token.boolean,
+chef-snippet .token.number {
+  color: var(--token-operator);
+}
+chef-snippet .token.property {
+  color: var(--token-property);
+}
+chef-snippet .token.tag {
+  color: var(--token-tag);
+}
+chef-snippet .token.string {
+  color: var(--token-string);
+}
+chef-snippet .token.selector {
+  color: var(--token-selector);
+}
+chef-snippet .token.attr-name {
+  color: var(--token-attr-name);
+}
+chef-snippet .token.attr-value,
+chef-snippet .token.keyword,
+chef-snippet .token.control,
+chef-snippet .token.directive,
+chef-snippet .token.unit {
+  color: var(--token-attr-value);
+}
+chef-snippet .token.entity,
+chef-snippet .token.url,
+chef-snippet .language-css .token.string,
+chef-snippet .style .token.string {
+  color: var(--token-entity);
+}
+chef-snippet .token.statement,
+chef-snippet .token.regex,
+chef-snippet .token.atrule {
+  color: var(--token-statement);
+}
+chef-snippet .token.placeholder,
+chef-snippet .token.variable {
+  color: var(--token-placeholder);
+}
+chef-snippet .token.deleted {
+  text-decoration: line-through;
+}
+chef-snippet .token.inserted {
+  border-bottom: 1px dotted var(--token-inserted);
+  text-decoration: none;
+}
+chef-snippet .token.italic {
+  font-style: italic;
+}
+chef-snippet .token.important,
+chef-snippet .token.bold {
+  font-weight: bold;
+}
+chef-snippet .token.important {
+  color: var(--token-important);
+}
+chef-snippet .token.entity {
+  cursor: help;
+}

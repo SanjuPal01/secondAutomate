@@ -1,0 +1,70 @@
+.empty {
+  --border-color:var(--chef-grey);
+  border: 1px dashed var(--border-color);
+  border-radius: var(--chef-border-radius);
+}
+
+.new-row {
+  display: flex;
+  align-items: center;
+}
+.new-row .cta {
+  flex: 1 0;
+  padding: 1em;
+  color: var(--chef-primary-bright);
+}
+.new-row .action {
+  flex: 0 1;
+  padding: 0 1em;
+}
+.new-row .action chef-button {
+  margin: 0;
+}
+
+.form-field {
+  display: block;
+  font-size: 13px;
+  padding: 0.8em 0;
+}
+.form-field chef-input {
+  width: 100%;
+}
+
+.form-field > label, .label {
+  display: block;
+  padding-bottom: 0.75em;
+  font-weight: bold;
+  color: var(--chef-primary-dark);
+}
+
+chef-loading-spinner {
+  --fill: #3864f2;
+  --fill-alt: #597ef4;
+}
+
+chef-loading-spinner {
+  display: inline-block;
+  overflow: hidden;
+}
+chef-loading-spinner svg {
+  float: left;
+}
+chef-loading-spinner path {
+  fill: var(--fill);
+}
+chef-loading-spinner path.alt {
+  fill: var(--fill-alt);
+}
+
+chef-loading-spinner[fixed] {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: var(--chef-loading-bg-color);
+  z-index: 190;
+}

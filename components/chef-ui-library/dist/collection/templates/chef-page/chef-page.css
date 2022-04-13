@@ -1,0 +1,50 @@
+chef-page {
+  background-color: var(--chef-white);
+  display: block;
+  height: 100vh;
+  min-height: 450px;
+  overflow: hidden;
+  padding: 64px;
+  position: fixed;
+  width: 100vw;
+}
+chef-page.example-page-width {
+  width: 100%;
+}
+chef-page #page-header #header-description chef-page-header {
+  padding-left: 0px;
+}
+chef-page #page-header #close-button {
+  margin-top: -32px;
+}
+chef-page #page-container {
+  position: relative;
+}
+chef-page #page-footer {
+  position: fixed;
+  left: 0;
+  bottom: 0;
+  margin: 64px;
+  width: 93%;
+}
+chef-page #page-footer #right-buttons {
+  float: right;
+}
+chef-page #page-footer #right-buttons .add-member-button {
+  margin-left: 64px;
+  width: 175px;
+}
+chef-page #page-footer #right-buttons chef-error {
+  display: inline-block;
+}
+chef-page #page-footer #right-buttons chef-loading-spinner {
+  position: relative;
+  top: 2px;
+  margin-right: 5px;
+}
+chef-page .flex {
+  display: flex;
+}
+chef-page .flex .flex-right {
+  margin-left: auto;
+}

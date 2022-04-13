@@ -1,0 +1,7 @@
+chef-header {
+  grid-area: header;
+  -ms-grid-row: 1;
+  -ms-grid-column: 1;
+  -ms-grid-column-span: 6;
+  display: block;
+}

@@ -1,0 +1,1 @@
+import{r as s,h as t}from"./p-1b10ccda.js";class e{constructor(t){s(this,t),this.opened=!1}async open(){this.opened=!0}async close(){this.opened=!1}async toggle(){this.opened=!this.opened}render(){return t("slot",null)}static get style(){return"chef-expander{display:block}chef-expander>*{display:none}chef-expander[opened]>*{display:inherit}"}}export{e as chef_expander};

@@ -1,0 +1,8 @@
+chef-main {
+  grid-area: main;
+  min-width: 0;
+  -ms-grid-row: 2;
+  -ms-grid-column: 2;
+  -ms-grid-column-span: 5;
+  display: block;
+}
