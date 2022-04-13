@@ -1,0 +1,33 @@
+<ng-container [formGroup]="formGroup">
+
+  <label class="form-field">
+    <span class="label">Service Type</span>
+    <chef-toggle ngDefaultControl formControlName="service_type">
+      <chef-option value="azure-vm">VM</chef-option>
+      <chef-option value="azure-api">Azure API</chef-option>
+    </chef-toggle>
+  </label>
+
+  <label class="form-field credential-toggle">
+    <span class="label">Read my credentials from my Azure environment.</span>
+    <input type="checkbox" formControlName="no_creds">
+  </label>
+
+  <ng-container *ngIf="showInstanceCreds()" [formGroup]="formGroup.controls.credentials | castFormGroup">
+    <label class="form-field">
+      <span class="label">Client ID</span>
+      <input chefInput type="password" formControlName="azure_client_id" />
+    </label>
+
+    <label class="form-field">
+      <span class="label">Client Secret</span>
+      <input chefInput type="password" formControlName="azure_client_secret" />
+    </label>
+
+    <label class="form-field">
+      <span class="label">Tenant ID</span>
+      <input chefInput type="password" formControlName="azure_tenant_id" />
+    </label>
+  </ng-container>
+  
+</ng-container>

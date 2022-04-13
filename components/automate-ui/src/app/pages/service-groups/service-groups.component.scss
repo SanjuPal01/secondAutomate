@@ -1,0 +1,422 @@
+@import "~styles/variables";
+@import "~styles/mixins";
+
+.page-body {
+  padding-top: 0;
+  margin-right: 450px;
+}
+
+chef-page-header {
+  margin-right: 450px;
+
+  chef-subheading {
+    margin-bottom: 32px;
+  }
+}
+
+app-search-bar {
+  display: inline-block;
+  width: calc(100% - 63px);
+}
+
+.copy-dropdown {
+  position: relative;
+  float: right;
+
+  .dropdown-toggle {
+    @include base-box-shadow();
+    margin: 0;
+    width: 47px;
+    height: 47px;
+
+    chef-icon {
+      position: relative;
+      top: -1px;
+      right: 1px;
+    }
+  }
+
+  .dropdown {
+    right: 0;
+  }
+
+  chef-click-outside {
+    display: block;
+    padding: 1em 0 1em 1em;
+
+    p {
+      margin-bottom: 0.5em;
+    }
+  }
+
+  .copy-input {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    input {
+      padding: 1em;
+      width: 300px;
+      border-radius: $global-radius;
+      border: 1px solid $chef-grey;
+    }
+  }
+}
+
+.filter.disconnected chef-icon {
+  // This is set in chef-ui-library but automate-ui's copy is in a slightly
+  // different path:
+  background: url(/assets/img/icon-disconnected.svg);
+}
+
+chef-status-filter-group {
+  padding-top: 5px;
+}
+
+chef-alert {
+  align-items: left;
+  justify-content: left;
+}
+
+chef-tr {
+  cursor: pointer;
+}
+
+chef-th,
+chef-td {
+
+  &.sort:hover {
+    cursor: pointer;
+  }
+
+  &.health {
+    display: flex;
+    flex-flow: row nowrap;
+    max-width: 110px;
+
+    .chart-container {
+      align-self: center;
+    }
+  }
+
+  &.service-group {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  &.package-name {
+    display: flex;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    flex-wrap: wrap;
+    align-content: flex-start;
+  }
+
+  &.release {
+    display: flex;
+    min-width: 170px;
+    max-width: 210px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    flex-wrap: wrap;
+    align-content: flex-start;
+  }
+
+  &.env {
+    display: flex;
+    max-width: 160px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    flex-wrap: wrap;
+    align-content: flex-start;
+  }
+
+  &.app {
+    display: flex;
+    max-width: 160px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    flex-wrap: wrap;
+    align-content: flex-start;
+  }
+}
+
+chef-td {
+
+  &>a {
+    display: flex;
+    width: 100%;
+    height: 100%;
+    align-items: center;
+  }
+
+  &:first-child {
+    position: relative;
+  }
+
+  &.node-name chef-icon {
+    margin-right: 1em;
+  }
+
+  chef-icon {
+    font-size: 18px;
+    margin-right: 8px;
+    position: absolute;
+    left: 90px;
+    top: 25px;
+
+    &.OK {
+      color: $chef-success;
+    }
+
+    &.WARNING {
+      color: $chef-primary;
+    }
+
+    &.UNKNOWN {
+      color: $chef-dark-grey;
+    }
+
+    &.CRITICAL {
+      color: $chef-critical;
+    }
+
+    &.DEPLOYING {
+      color: $chef-dark-grey;
+    }
+  }
+
+  chef-pill {
+    padding-top: .2em;
+    padding-bottom: .2em;
+    color: $chef-white;
+
+    .skinny-pill {
+      width: 32px;
+      text-align: center;
+      font-size: 12px;
+    }
+
+    &.OK {
+      background: $chef-success;
+    }
+
+    &.WARNING {
+      background: $chef-primary;
+    }
+
+    &.UNKNOWN {
+      background: $chef-dark-grey;
+    }
+
+    &.CRITICAL {
+      background: $chef-critical;
+    }
+
+    &.DEPLOYING {
+      background: $chef-dark-grey;
+    }
+  }
+}
+
+chef-tr.sg-row {
+  > chef-td:first-child {
+    &::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      bottom: 0;
+      left: 0;
+      width: 2px;
+      transition: width 0.2s;
+      background: $chef-success;
+      border-top-left-radius: $global-radius;
+      border-bottom-left-radius: $global-radius;
+    }
+
+    &.OK::before {
+      background: $chef-success;
+    }
+
+    &.WARNING::before {
+      background: $chef-primary;
+    }
+
+    &.UNKNOWN::before {
+      background: $chef-dark-grey;
+    }
+
+    &.CRITICAL::before {
+      background: $chef-critical;
+    }
+
+    &.DEPLOYING::before {
+      background: $chef-dark-grey;
+    }
+  }
+
+  &:hover,
+  &.selected {
+    > chef-td:first-child::before {
+      width: 7px;
+    }
+  }
+
+  &.selected {
+    position: relative;
+
+    &::after {
+      display: block;
+      position: absolute;
+      right: -12px;
+      top: 50%;
+      transform: rotate(45deg);
+      border: 4px solid transparent;
+      border-right: 4px solid $chef-primary-bright;
+      border-top: 4px solid $chef-primary-bright;
+      margin-top: -4px;
+      content: '';
+    }
+
+    > chef-td {
+      background: #F2F8FD;
+    }
+  }
+}
+
+.sort-icon {
+  display: inline-block;
+  width: 8px;
+  height: 14px;
+  position: relative;
+  margin-left: 16px;
+
+  &:before,
+  &:after {
+    border: 4px solid transparent;
+    content: "";
+    height: 0;
+    right: 5px;
+    top: 50%;
+    position: absolute;
+    width: 0;
+    opacity: 0.8;
+  }
+
+  &:before {
+    border-bottom-color: $chef-dark-grey;
+    margin-top: -11px;
+  }
+
+  &:after {
+    border-top-color: $chef-dark-grey;
+    margin-top: 3px;
+  }
+
+  &.sort-asc {
+
+    &:before {
+      border-bottom-color: $chef-dark-grey;
+    }
+
+    &:after {
+      border-top-color: $chef-primary-dark;
+      opacity: 1;
+    }
+  }
+
+  &.sort-desc {
+    &:before {
+      border-bottom-color: $chef-primary-dark;
+      opacity: 1;
+    }
+
+    &:after {
+      border-top-color: $chef-dark-grey;
+    }
+  }
+}
+
+.empty-status {
+  display: flex;
+  flex-flow: column;
+  align-items: center;
+  justify-content: center;
+  height: 400px;
+
+  p {
+    color: $chef-dark-grey;
+  }
+
+  p.display3 {
+    color: $chef-primary-dark;
+  }
+}
+
+.chart-container {
+  display: flex;
+  width: 70px;
+}
+
+chef-radial-chart {
+  width: 70px;
+  height: 70px;
+
+  .percent {
+    font-size: 11px;
+    font-weight: bolder;
+
+    .value {
+      font-size: 16px;
+    }
+  }
+
+  ::ng-deep .critical {
+    color: $chef-critical;
+    fill: $chef-critical;
+    stroke: $chef-critical;
+  }
+
+  ::ng-deep .warning {
+    color: $chef-warning;
+    fill: $chef-warning;
+    stroke: $chef-warning;
+  }
+
+  ::ng-deep .ok {
+    color: $chef-ok;
+    fill: $chef-ok;
+    stroke: $chef-ok;
+  }
+
+  ::ng-deep .unknown {
+    color: $chef-unknown;
+    fill: $chef-unknown;
+    stroke: $chef-unknown;
+  }
+}
+
+.disconnect-notice {
+  display: inline-flex;
+  background: $chef-info-alert-light;
+  color: $chef-info-alert;
+  border-radius: $global-radius;
+  padding: 2px 8px 2px 4px;
+  margin-top: 4px;
+  align-items: center;
+  justify-content: center;
+  font-size: 14px;
+  font-weight: bold;
+
+  .disconnect-icon {
+    display: block;
+    margin-right: 6px;
+    height: 14px;
+    width: 14px;
+  }
+}
+
+chef-td {
+  word-break: break-all;
+}

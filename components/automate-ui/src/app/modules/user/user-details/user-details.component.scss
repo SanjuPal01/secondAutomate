@@ -1,0 +1,145 @@
+@import "~styles/variables";
+
+.detail-row {
+  display: flex;
+  justify-content: space-between;
+  padding: 0 0 15px 0;
+  min-height: 115px;
+
+  .user-column {
+    display: flex;
+    justify-content: space-evenly;
+    width: 70%;
+  }
+}
+
+.name-column {
+  line-height: 45px;
+  width: 300px;
+}
+
+.password {
+  width: 312px;
+}
+
+chef-form-field:not(:first-child).password label {
+  margin-top: 30px;
+}
+
+.update-password-button {
+  margin-left: 0px;
+  margin-top: 20px;
+}
+
+.password-description {
+  padding-top: 5px;
+  font-size: 12px;
+  line-height: 1.5;
+  color: #222435;
+}
+
+chef-page-header {
+  // This is because the Password selector is sitting
+  // right above the content below the header.
+  padding-bottom: 0;
+}
+
+.header-user-name {
+  font-family: Muli;
+  font-size: 18px;
+  font-weight: bold;
+  font-stretch: normal;
+  font-style: normal;
+  line-height: 1.33;
+  letter-spacing: 0.23px;
+  color: #222435;
+  padding-bottom: 20px;
+}
+
+.header-user-id-label {
+  font-family: Muli;
+  font-size: 14px;
+  font-weight: bold;
+  font-stretch: normal;
+  font-style: normal;
+  line-height: 1.5;
+  letter-spacing: 0.2px;
+  color: #222435;
+}
+
+.header-user-id {
+  height: 21px;
+  font-family: Muli;
+  font-size: 14px;
+  font-weight: normal;
+  font-stretch: normal;
+  font-style: normal;
+  line-height: 1.5;
+  letter-spacing: 0.2px;
+  color: #222435;
+}
+
+section {
+  span#saved-note {
+    display: inline-block;
+    margin-top: 5px;
+    font-size: 12px;
+  }
+
+  .chef-form-field {
+    width: 310px;
+  }
+
+  chef-button {
+    margin-top: 0;
+    margin-left: 0;
+  }
+
+  form {
+    margin-bottom: 38px;
+  }
+
+  .empty-state {
+    text-align: center;
+
+    p {
+      font-size: 18px;
+      font-weight: 400;
+      margin-top: 42px;
+    }
+  }
+}
+
+.timezone-field {
+  margin-top: 25px;
+
+  chef-select {
+    width: 100%;
+  }
+}
+
+.telemetry-checkbox-field {
+  margin-top: 25px;
+  width: 500px;
+}
+
+::ng-deep .cdk-overlay-container {
+  position: fixed;
+  z-index: 9999;
+
+  .mat-option.mat-selected:not(.mat-option-multiple):not(.mat-option-disabled) {
+    background: $chef-primary-bright;
+    color: $chef-white;
+  }
+}
+
+::ng-deep .cdk-overlay-container .cdk-overlay-pane .mat-select-panel-wrap .mat-select-panel::-webkit-scrollbar {
+  width: 4.5px;
+  background: $chef-form-input;
+  border-radius: 5px;
+}
+
+::ng-deep .cdk-overlay-container .cdk-overlay-pane .mat-select-panel-wrap .mat-select-panel::-webkit-scrollbar-thumb {
+  background: $chef-cyan-blue;
+  border-radius: 5px;
+}

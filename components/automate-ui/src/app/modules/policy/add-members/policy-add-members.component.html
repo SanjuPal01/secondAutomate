@@ -1,0 +1,147 @@
+<chef-page
+  subheading="Automate only displays local users and local teams. For other types of members add a member expression."
+  secondary-btn-text="Add Member Expression"
+  [attr.secondary-btn-show]="sortedMembersAvailable && sortedMembersAvailable.length > 0"
+  [attr.heading]="getHeading()"
+  [attr.confirm-btn-text]="getMemberConfirmBtnText()"
+  [attr.page-loading]="loading$ | async"
+  [attr.confirm-loading]="addingMembers"
+  [attr.disable-confirm]="membersToAddValues().length === 0"
+  [attr.error-message]="getErrorMessage()"
+  (secondaryConfirm)="openModal()"
+  (confirm)="addMembers()"
+  (close)="closePage()">
+    <div *ngIf="!(loading$ | async)">
+      <chef-modal label="member-expression-label" class="member-expression-modal" [visible]="modalVisible" (closeModal)="closeModal()">
+        <h2>Add Member Expression</h2>
+        <div id="modal-content-container">
+          <form [formGroup]="expressionForm">
+
+              <chef-form-field id="create-type">
+                <label>
+                  <span class="label">Type <span aria-hidden="true">*</span></span>
+                  <span class="custom-dropdown">
+                    <select id="expression-type-dropdown"
+                            ngDefaultControl
+                            (change)="updateFormDisplay('type')"
+                            formControlName="type">
+                      <option value='user'>User</option>
+                      <option value='team'>Team</option>
+                      <option value='token'>Token</option>
+                      <option value='*'>All members (*)</option>
+                    </select>
+                  </span>
+                </label>
+                <chef-error *ngIf="expressionForm.get('type').hasError('required') && expressionForm.get('type').touched">
+                  Type is a required field.
+                </chef-error>
+              </chef-form-field>
+
+              <chef-form-field
+                id="create-identity"
+                *ngIf="expressionForm.contains('identityProvider')"
+                [@dropInAnimation]="{ value: triggerValue, params: { height: 88.2422 }}" >
+                <label>
+                  <span class="label">Identity Provider <span aria-hidden="true">*</span></span>
+                  <span class="custom-dropdown">
+                    <select id="expression-identity-dropdown"
+                            ngDefaultControl
+                            (change)="updateFormDisplay('identityProvider')"
+                            formControlName="identityProvider">
+                      <option value="ldap">LDAP</option>
+                      <option value="local">local</option>
+                      <option value="saml">SAML</option>
+                      <option value="*">All {{ allIdentity | titlecase }}s (*)</option>
+                    </select>
+                  </span>
+                </label>
+                <chef-error *ngIf="expressionForm.get('identityProvider').hasError('required') && expressionForm.get('identityProvider').touched">
+                  Identity Provider is a required field.
+                </chef-error>
+              </chef-form-field>
+
+              <chef-form-field
+                id="create-name"
+                *ngIf="expressionForm.contains('name')"
+                [@dropInAnimation]="{ value: triggerValue, params: { height: 109.219 }}">
+                <label>
+                  <span class="label">{{ nameOrId }} <span aria-hidden="true">*</span></span>
+                  <input chefInput id="expression-name-dropdown" formControlName="name" (keyup)="updateFormDisplay('name')" />
+                </label>
+                <p class="note">A single wildcard (*) is allowed.</p>
+
+                <chef-error *ngIf="expressionForm.get('name').hasError('required') && expressionForm.get('name').touched">
+                  {{ nameOrId }} is a required field.
+                </chef-error>
+                <chef-error *ngIf="ldapOrSaml && expressionForm.get('name').hasError('pattern') && expressionForm.get('name').dirty">
+                  {{ nameOrId }} may contain a single wildcard or a {{ nameOrId }} without colons or wildcards.
+                </chef-error>
+                <chef-error *ngIf="!ldapOrSaml && expressionForm.get('name').hasError('pattern') && expressionForm.get('name').dirty">
+                  {{ nameOrId }} may contain text, hyphens and underscores, or may be a single wildcard.
+                </chef-error>
+              </chef-form-field>
+
+            <!-- ERROR MESSAGES -->
+            <chef-form-field>
+              <chef-error *ngIf="unparsableMember">Invalid member expression.</chef-error>
+              <chef-error *ngIf="duplicateMember">Member expression already in table.</chef-error>
+              <chef-error *ngIf="alreadyPolicyMember">Member already in policy.</chef-error>
+            </chef-form-field>
+          </form>
+
+          <div *ngIf="expressionOutput">
+            <p id="expression-output" class="note">Member expression: {{ expressionOutput }}</p>
+          </div>
+
+          <div id="buttons-container">
+            <chef-button primary
+                        [disabled]="!expressionForm.valid"
+                        (click)="validateAndAddExpression()">Add Expression</chef-button>
+            <chef-button tertiary (click)="closeModal()">Cancel</chef-button>
+          </div>
+        </div>
+      </chef-modal>
+
+      <div id="no-members-container" *ngIf="sortedMembersAvailable.length === 0">
+        <h3>Create more local users or local teams first, or add a member expression.</h3>
+        <chef-button primary (click)="openModal()">Add Member Expression</chef-button>
+      </div>
+      <div id="table-container" *ngIf="sortedMembersAvailable.length > 0">
+        <div class="flex">
+          <div id="members-selected" class="flex-right" >
+            {{ membersToAddValues().length | pluralize : 'member' : '+s' }} selected
+          </div>
+        </div>
+        <div id="inner-container">
+          <chef-table>
+            <chef-thead>
+              <chef-tr>
+                <chef-th class="checkbox-row"></chef-th>
+                <chef-th>ID</chef-th>
+                <chef-th>Type</chef-th>
+              </chef-tr>
+            </chef-thead>
+            <chef-tbody>
+              <chef-tr *ngFor="let member of sortedMembersAvailable">
+                <chef-td class="checkbox-row">
+                  <chef-checkbox (change)="addOrRemoveQueuedMember($event.detail, member)" [checked]="isMemberChecked(member)"></chef-checkbox>
+                </chef-td>
+                <!-- TODO get error but properly find page when you click this link for teams -->
+                <chef-td>
+                  <a *ngIf="memberHasURL(member)" [routerLink]="memberURL(member)" target="_blank">
+                    {{ member.displayName }}
+                  </a>
+                  <ng-container *ngIf="!memberHasURL(member)">
+                    {{ member.displayName }}
+                  </ng-container>
+                </chef-td>
+                <chef-td>
+                  {{ member.displayType }}
+                </chef-td>
+              </chef-tr>
+            </chef-tbody>
+          </chef-table>
+        </div>
+      </div>
+    </div>
+</chef-page>

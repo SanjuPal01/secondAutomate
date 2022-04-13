@@ -1,0 +1,52 @@
+syntax = "proto3";
+
+package chef.automate.domain.infra_proxy.response;
+option go_package = "github.com/chef/automate/api/interservice/infra_proxy/response";
+
+import "interservice/infra_proxy/response/common.proto";
+message Roles {
+    // List of the roles item.
+    repeated RoleListItem roles = 1;
+    // Starting page for the results.
+    int32 page = 2;
+    // Total number of records.
+    int32 total = 3;
+}
+
+message RoleListItem {
+    // Name of the role.
+    string name = 1;
+    // Desscription of the role.
+    string description = 2;
+    // Environment for the role.
+    repeated string environments = 3;
+}
+
+message Role {
+    // Name of the role.
+    string name = 1;
+    // Type of the chef object.
+    string chef_type = 2;
+    // Descrption of the role.
+    string description = 3;
+    // Role default attributes JSON.
+    string default_attributes = 4;
+    // Role override attributes JSON.
+    string override_attributes = 5;
+    // Json class name.
+    string json_class = 6;
+    // Run list for the role.
+    repeated string run_list  = 7;
+}
+
+message ExpandedRunList {
+    // ID of the run list collection.
+    string id = 1;
+    // List of the run list.
+    repeated RunList run_list = 2;
+}
+
+message RoleEnvironments {
+    // Role environment list.
+    repeated string environments = 1; 
+}

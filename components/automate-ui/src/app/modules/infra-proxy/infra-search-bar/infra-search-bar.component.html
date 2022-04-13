@@ -1,0 +1,26 @@
+<form role='search'
+  (ngSubmit)="onSubmit(search_box.value)"
+  [class.active]="formActive">
+  <label for="search-filter" aria-hidden="true" class="hidden">
+    <span>Search</span>
+  </label>
+  <input #search_box chefInput
+    id="search-filter"
+    type="text"
+    [value]="inputText"
+    (focus)="toggleFocus()"
+    (blur)="toggleFocus()"
+    placeholder="Search {{ placeHolder }}"
+    aria-label="Search"
+    autocomplete="off"
+    data-cy="search-filter">
+  <button
+    type="submit"
+    class="primary"
+    primary
+    data-cy="search-entity">
+    <span aria-hidden="true" class="hidden">Submit Search</span>
+    <chef-icon>search</chef-icon>
+  </button>
+</form>
+

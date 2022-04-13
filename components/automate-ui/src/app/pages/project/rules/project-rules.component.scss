@@ -1,0 +1,230 @@
+@import "~styles/variables";
+
+chef-page {
+
+  small {
+    color: $chef-dark-grey;
+    font-size: 14px;
+
+    &.help {
+      font-size: 12px;
+    }
+  }
+
+  form {
+    height: calc(100vh - 350px);
+    overflow-y: scroll;
+  }
+
+  input {
+    height: 45px;
+    width: 100%;
+    outline: 0;
+    font-size: 1em;
+  }
+
+  chef-error {
+    background-color: #DC267F;
+    color: $chef-white;
+    border-radius: 0 0 4px 4px;
+  }
+
+  #create-name,
+  #create-id,
+  #create-type,
+  #create-type-dropdown {
+    width: 340px;
+    max-width: 340px;
+  }
+
+  /* Custom dropdown */
+  .custom-dropdown {
+    position: relative;
+    vertical-align: middle;
+
+    & select {
+      margin: 0;
+      background-color: $chef-white;
+      color: $chef-primary-dark;
+      font-size: inherit;
+      padding: 12px;
+      padding-right: 16px;
+      height: 45px;
+      border-radius: 4px;
+      border: solid 1px $chef-grey;
+      text-indent: 0.01px;
+      text-overflow: '';
+      font-weight: 400;
+      font-stretch: normal;
+      font-style: normal;
+      line-height: 1.5;
+      letter-spacing: 0.2px;
+      outline: none;
+      /* Hiding the select arrow for firefox */
+      -moz-appearance: none;
+      /* Hiding the select arrow for chrome */
+      -webkit-appearance: none;
+      /* Hiding the select arrow default implementation */
+      appearance: none;
+    }
+
+    & select [disabled] {
+      color: $chef-dark-grey;
+      border: solid 1px $chef-grey;
+      background-color: $chef-grey;
+    }
+
+    & select:focus {
+      border: solid 1px $chef-primary-bright;
+    }
+
+    /* Hiding the select arrow for IE10 */
+
+    & select::-ms-expand {
+      display: none;
+    }
+  }
+
+  .custom-dropdown::before,
+  .custom-dropdown::after {
+    content: "";
+    position: absolute;
+    pointer-events: none;
+  }
+
+  .custom-dropdown::after {
+    /* Custom dropdown arrow */
+    content: "⌄";
+    height: 1em;
+    font-size: 18px;
+    line-height: 1;
+    right: 1.2em;
+    top: 50%;
+    margin-top: -.5em;
+    color: $chef-primary-dark;
+  }
+
+  #create-name {
+    padding-top: 9px;
+  }
+
+  #create-id,
+  #create-id-static {
+    padding-top: 26px;
+  }
+
+  #create-type {
+    padding-top: 20px;
+  }
+
+  #condition-section {
+    margin: 1rem 0;
+    padding-top: 7px;
+
+    small {
+      display: block;
+      font-size: 12px;
+    }
+
+    chef-button {
+      margin-left: 0;
+    }
+  }
+
+  #condition-list {
+    padding-top: 4px;
+  }
+
+  .label, .key-label {
+    font-size: 14px;
+    font-weight: 600;
+    padding-bottom: 0;
+  }
+
+  .key-label {
+    display: inline-block;
+  }
+
+  .key-value {
+    font-size: 14px;
+  }
+
+  .condition-item {
+    margin-bottom: 20px;
+  }
+
+  [disabled]:hover {
+    cursor: not-allowed;
+  }
+
+  chef-form-field {
+    label {
+      padding-bottom: 0;
+    }
+
+    &.attribute-field {
+      display: inline-block;
+      position: relative;
+      vertical-align: top;
+      width: 27%;
+      margin-right: 2%;
+
+      .label {
+        color: $chef-dark-grey;
+        text-transform: uppercase;
+        font-size: 12px;
+        font-weight: 200;
+      }
+
+      select {
+        min-width: 0;
+        width: 100%;
+      }
+    }
+
+    &.operator-attribute-field {
+      display: inline-block;
+      position: relative;
+      vertical-align: top;
+      width: 17%;
+      margin-right: 2%;
+
+      .label {
+        color: $chef-dark-grey;
+        text-transform: uppercase;
+        font-size: 12px;
+        font-weight: 200;
+      }
+
+      .operator-dropdown {
+        width: 100%;
+      }
+    }
+  }
+
+  .end-row-items {
+    display: inline-block;
+    margin-top: 21px; // match labels in other columns
+    height: 45px; // match "values" input height
+    vertical-align: middle;
+    width: 18%;
+
+    span {
+      display: inline-block;
+      margin-top: 10px;
+      font-size: 12px;
+      font-weight: 200;
+    }
+
+    chef-button {
+      margin-top: 2px;
+      float: right;
+
+      chef-icon {
+        color: $chef-primary-dark;
+        font-size: 1.2rem;
+      }
+    }
+  }
+
+}

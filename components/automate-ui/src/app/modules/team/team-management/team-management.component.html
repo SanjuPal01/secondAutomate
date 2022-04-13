@@ -1,0 +1,93 @@
+<div class="content-container">
+  <div class="container">
+    <main>
+        <chef-page-header>
+          <chef-heading>Teams</chef-heading>
+          <chef-subheading>Chef Automate only displays local teams.</chef-subheading>
+        </chef-page-header>
+
+      <app-create-object-modal
+        [visible]="createModalVisible"
+        [creating]="creatingTeam"
+        [conflictErrorEvent]="conflictErrorEvent"
+        objectNoun="team"
+        [createForm]="createTeamForm"
+        (close)="closeCreateModal()"
+        (createClicked)="createTeam()">
+      </app-create-object-modal>
+
+      <app-delete-object-modal
+        [visible]="deleteModalVisible"
+        objectNoun="team"
+        [objectName]="teamToDelete?.name"
+        (close)="closeDeleteModal()"
+        (deleteClicked)="deleteTeam()"
+        objectAction="Delete">
+      </app-delete-object-modal>
+
+      <div class="page-body">
+        <ng-container *ngIf="(sortedTeams$ | async)?.length > 0">
+          <section>
+            <chef-toolbar>
+              <app-authorized [allOf]="['/apis/iam/v2/teams', 'post']">
+                <chef-button primary (click)="openCreateModal()" data-cy="team-create-button">Create Team</chef-button>
+              </app-authorized>
+            </chef-toolbar>
+            <div id="table-container">
+              <chef-table>
+                <chef-thead>
+                  <chef-tr>
+                    <chef-th class="id-column">Name</chef-th>
+                    <chef-th class="name-column">ID</chef-th>
+                    <chef-th class="projects-column">Projects</chef-th>
+                    <chef-th class="three-dot-column"></chef-th>
+                  </chef-tr>
+                </chef-thead>
+                <chef-tbody>
+                  <chef-tr *ngFor="let team of sortedTeams$ | async">
+                    <chef-td class="id-column">
+                      <a [routerLink]="['/settings/teams', team.id]">{{ team.name }}</a>
+                    </chef-td>
+                    <chef-td class="name-column">{{ team.id }}</chef-td>
+                    <chef-td class="projects-column">
+                      <ng-container *ngIf="team.projects.length === 0">{{ unassigned }}</ng-container>
+                      <ng-container *ngIf="team.projects.length === 1">{{ team.projects[0] }}</ng-container>
+                      <ng-container *ngIf="team.projects.length > 1">{{ team.projects.length }} projects</ng-container>
+                    </chef-td>
+                    <chef-td class="three-dot-column">
+                      <!-- <app-authorized [allOf]="['/apis/iam/v2/teams/{id}', 'delete', team.id]"> -->
+                      <mat-select panelClass="chef-control-menu">
+                        <mat-option (onSelectionChange)="startTeamDelete($event, team)" data-cy="delete-team">
+                          Delete Team
+                        </mat-option>
+                      </mat-select>
+                      <!-- <app-authorized -->
+                    </chef-td>
+                  </chef-tr>
+                </chef-tbody>
+              </chef-table>
+            </div>
+          </section>
+        </ng-container>
+        <ng-container *ngIf="(sortedTeams$ | async)?.length === 0">
+            <app-authorized [allOf]="['/apis/iam/v2/teams', 'post']">
+              <div class="empty-case-container">
+                <p>Create the first team to get started!</p>
+              </div>
+              <div class="empty-case-container">
+                  <chef-button primary (click)="openCreateModal()">Create Team</chef-button>
+              </div>
+            </app-authorized>
+            <app-authorized not [allOf]="['/apis/iam/v2/teams', 'post']">
+              <div class="empty-case-container">
+                <p>It looks like no one has created any teams yet and you<br/>
+                  don't have permission to create them.<br/><br/>
+                  If this is a mistake, then reach out to your administrator.
+                </p>
+              </div>
+            </app-authorized>
+        </ng-container>
+      </div>
+    </main>
+  </div>
+</div>

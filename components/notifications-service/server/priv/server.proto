@@ -1,0 +1,34 @@
+syntax = "proto3";
+package notifications;
+
+option go_package = ".;api";
+
+///
+// !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+// NOTICE!
+// !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+// These proto files are moving to api/interservice as part of a project to
+// rewrite this service. Changes to this file must be accompanied by
+// corresponding changes to the copy of this file in
+// api/interservice/notifications/service.
+///
+
+import "notifications.proto";
+import "rules.proto";
+import "health.proto";
+
+service Notifications {
+  // Publish a notification
+  rpc Notify(Event) returns (Response);
+
+  // Manage notification alerting rules
+  rpc AddRule(Rule) returns (RuleAddResponse);
+  rpc DeleteRule(RuleIdentifier) returns (RuleDeleteResponse);
+  rpc UpdateRule(Rule) returns (RuleUpdateResponse);
+  rpc GetRule(RuleIdentifier) returns (RuleGetResponse);
+  rpc ListRules(Empty) returns (RuleListResponse);
+  rpc ValidateWebhook(URLValidationRequest) returns (URLValidationResponse);
+
+  // Health checks and metadata
+  rpc Version(VersionRequest) returns (VersionResponse);
+}

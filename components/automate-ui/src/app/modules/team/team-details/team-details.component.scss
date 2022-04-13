@@ -1,0 +1,96 @@
+@import "~styles/variables";
+
+chef-page-header {
+  // So chef-tab-selector renders right above body
+  padding-bottom: 0;
+
+  chef-tab-selector {
+    margin-top: 1em;
+  }
+
+  thead {
+    font-size: 14px;
+    letter-spacing: 0.2px;
+    color: $chef-primary-dark;
+  }
+
+  th {
+    text-align: left;
+    padding: 0px;
+  }
+
+  td {
+    min-height: 36px;
+  }
+
+  tbody > .detail-row {
+    padding-top: 0px;
+    padding-bottom: 15px;
+  }
+
+  .detail-row {
+    display: flex;
+    color: $chef-primary-dark;
+  }
+
+  .id-column {
+    display: inline-block;
+    width: 33%;
+    padding-top: 0px;
+    padding-left: 0px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .projects-column {
+    width: 33%;
+    padding-top: 0px;
+    padding-left: 0px;
+  }
+}
+
+section {
+  span#saved-note {
+    display: inline-block;
+    margin-top: 5px;
+    font-size: 12px;
+  }
+
+  chef-form-field {
+    width: 310px;
+  }
+
+  #projects-container {
+    display: flex;
+    margin-top: 30px;
+    margin-bottom: 38px;
+
+    chef-loading-spinner {
+      margin-top: 40px;
+      margin-left: 10px;
+    }
+
+    app-projects-dropdown {
+      width: 310px;
+    }
+  }
+
+  chef-button {
+    margin-top: 0;
+    margin-left: 0;
+  }
+
+  form {
+    margin-bottom: 38px;
+  }
+
+  .empty-state {
+    text-align: center;
+
+    p {
+      font-size: 18px;
+      font-weight: 400;
+      margin-top: 42px;
+    }
+  }
+}

@@ -1,0 +1,43 @@
+syntax = "proto3";
+
+package chef.automate.api.infra_proxy.request;
+option go_package = "github.com/chef/automate/api/external/infra_proxy/request";
+
+message CreateServer {
+    // Chef Infra Server ID.
+    string id = 1;
+    // Chef Infra Server name.
+    string name = 2;
+    // Chef Infra Server FQDN.
+    string fqdn = 3;
+    // Chef Infra Server IP address.
+    string ip_address = 4;
+}
+
+message UpdateServer {
+    // Chef Infra Server ID.
+    string id = 1;
+    // Chef Infra Server name.
+    string name = 2;
+    // Chef Infra Server FQDN.
+    string fqdn = 3;
+    // Chef Infra Server IP address.
+    string ip_address = 4;
+}
+
+message DeleteServer {
+    // Chef Infra Server ID.
+    string id = 1;
+}
+
+message GetServers {}
+
+message GetServer {
+    // Chef Infra Server ID.
+    string id = 1;
+}
+
+message GetServerStatus {
+    // Server FQDN
+    string fqdn = 1;
+}

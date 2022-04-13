@@ -1,0 +1,96 @@
+@import "~styles/variables";
+
+.search-create-container {
+  display: flex;
+  margin: 24px 0 18px;
+  flex-direction: row;
+
+  app-infra-search-bar {
+    flex-grow: 2;
+  }
+
+  chef-button {
+    margin: 0;
+    margin-left: 16px;
+    margin-top: 4px;
+  }
+}
+
+thead {
+  font-size: 14px;
+  letter-spacing: 0.2px;
+  color: $chef-primary-dark;
+}
+
+th {
+  text-align: left;
+  padding: 0px;
+}
+
+tbody > .detail-row {
+  padding-top: 0px;
+  padding-bottom: 15px;
+}
+
+chef-table-new {
+  .controls {
+    text-align: right;
+  }
+
+  a {
+    cursor: pointer;
+    text-decoration: underline;
+  }
+}
+
+chef-loading-spinner.spinner {
+  display: block;
+  margin: 100px auto;
+  width: 100px;
+  z-index: 199;
+}
+
+.wrapper {
+  position: relative;
+}
+
+.full-screen-spinner {
+  margin: -34px;
+  margin-top: -20px;
+}
+
+.empty-section {
+  text-align: center;
+}
+
+.environment-list-paging {
+  margin: 0 0 35px;
+}
+
+img {
+  width: 70px;
+  margin-top: 130px;
+}
+
+.three-dot-column {
+  text-align: right;
+}
+
+.environments {
+  .search-items {
+    margin-bottom: 18px;
+    height: 55px;
+  }
+
+}
+
+// sass-lint:disable no-important
+::ng-deep .cdk-overlay-container .cdk-overlay-pane {
+  margin-left: -12px !important;
+  transform: none !important;
+}
+
+::ng-deep .chef-control-menu {
+  margin-top: 29px;
+  right: -43px;
+}

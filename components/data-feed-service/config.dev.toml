@@ -1,0 +1,43 @@
+[service]
+host = "localhost"
+port = 10105
+feed_interval = "5m"
+asset_page_size = 10
+reports_page_size = 10
+node_batch_size = 100
+updated_nodes_only = true
+disable_cidr_filter = true
+cidr_filter = "0.0.0.0/0"
+external_fqdn = ""
+accepted_status_codes = [ 201, 201, 202, 203, 204 ]
+content_type = "application/json"
+
+[tls]
+cert_path = "../../dev/certs/data-feed-service.crt"
+key_path = "../../dev/certs/data-feed-service.key"
+root_ca_path = "../../dev/certs/Chef_Automate_Dev.crt"
+
+[log]
+format = "text"
+level = "debug"
+
+[secrets]
+{{~#eachAlive bind.secrets-service.members as |secrets-service|}}
+{{~#if @last}}
+target = "{{secrets-service.cfg.host}}:{{secrets-service.cfg.port}}"
+{{~/if}}
+{{~/eachAlive}}
+
+[cfgmgmt]
+{{~#eachAlive bind.config-mgmt-service.members as |config-mgmt-service|}}
+{{~#if @last}}
+target = "{{config-mgmt-service.cfg.host}}:{{config-mgmt-service.cfg.port}}"
+{{~/if}}
+{{~/eachAlive}}
+
+[compliance]
+{{~#eachAlive bind.compliance-service.members as |compliance-service|}}
+{{~#if @last}}
+target = "{{compliance-service.cfg.host}}:{{compliance-service.cfg.port}}"
+{{~/if}}
+{{~/eachAlive}}

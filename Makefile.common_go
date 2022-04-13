@@ -1,0 +1,66 @@
+# Note: this looks weird -- it's because this Makefile is to be included from
+# components/xyz-service/Makefile
+REPOROOT?=../..
+
+# Convert, e.g., "src/github.com/chef/automate/components/teams-service" to "components/teams-service"
+REPO_DIR := $(shell cd $(REPOROOT) && pwd)/
+COMPONENT_DIR := $(shell echo $${PWD\#"$(REPO_DIR)"})
+
+LIBRARY_PATH = github.com/chef/automate/lib
+
+UNAME_S:=$(shell uname -s)
+ifeq ($(UNAME_S),Linux)
+  PLATFORM:=linux-amd64
+endif
+ifeq ($(UNAME_S),Darwin)
+  PLATFORM:=darwin-amd64
+endif
+GOLANGCILINTVERSION?=1.26.0
+GOLANGCILINTTARBALL:=golangci-lint-$(GOLANGCILINTVERSION)-$(PLATFORM).tar.gz
+
+LINTERARGS?=./...
+
+# Semgrep by default respects .gitignore; these are additive:
+SEMGREP_IGNORE := --exclude third_party --exclude *_test.go --exclude *.pb.go --exclude *.pb.*.go --exclude *.bindata.go
+SEMGREP_CONFIG := https://semgrep.dev/p/r2c-ci
+
+$(REPOROOT)/cache/$(GOLANGCILINTTARBALL):
+	curl --output $(REPOROOT)/cache/$(GOLANGCILINTTARBALL) -L https://github.com/golangci/golangci-lint/releases/download/v$(GOLANGCILINTVERSION)/$(GOLANGCILINTTARBALL)
+
+$(REPOROOT)/cache/golangci-lint-$(GOLANGCILINTVERSION)-$(PLATFORM)/golangci-lint: $(REPOROOT)/cache/$(GOLANGCILINTTARBALL)
+	tar zxf $(REPOROOT)/cache/$(GOLANGCILINTTARBALL) -C $(REPOROOT)/cache/
+	touch $(REPOROOT)/cache/golangci-lint-$(GOLANGCILINTVERSION)-$(PLATFORM)/golangci-lint
+
+lint: $(REPOROOT)/cache/golangci-lint-$(GOLANGCILINTVERSION)-$(PLATFORM)/golangci-lint
+	$(REPOROOT)/cache/golangci-lint-$(GOLANGCILINTVERSION)-$(PLATFORM)/golangci-lint run -c $(REPOROOT)/.golangci.yml $(LINTERARGS)
+
+golang_version_check:
+	@$(REPOROOT)/scripts/golang_version_check.sh
+
+fmt:
+	@gofmt -w -l ./
+
+fmt-check:
+	@test -z $(shell gofmt -l ./cmd/ ./pkg/)
+
+spell:
+	@pushd $(REPOROOT) > /dev/null; \
+	./scripts/spellcheck.sh $(COMPONENT_DIR); \
+	EXIT_CODE=$$?; \
+	popd > /dev/null; \
+	exit $$EXIT_CODE
+
+#: Security validation via semgrep
+# NB: "third_party" only exists for automate-gateway, but no harm having it for other dirs here.
+semgrep:
+# uncomment if custom rules beyond automate-ui ever get added
+# semgrep --config $(REPOROOT)/.semgrep $(SEMGREP_IGNORE)
+	semgrep --config $(SEMGREP_CONFIG) $(SEMGREP_IGNORE)
+
+#: Security validation via semgrep; autofix where possible
+semgrep-and-fix:
+# uncomment if custom rules beyond automate-ui ever get added
+# semgrep --config $(REPOROOT)/.semgrep $(SEMGREP_IGNORE) --autofix
+	semgrep --config $(SEMGREP_CONFIG) $(SEMGREP_IGNORE) --autofix
+
+.PHONY: lint fmt fmt-check golang_version_check semgrep semgrep-and-fix

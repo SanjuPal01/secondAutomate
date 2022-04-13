@@ -1,0 +1,52 @@
+@import "~styles/variables";
+
+[disabled] {
+  cursor: pointer;
+}
+
+chef-modal {
+  [slot="title"] {
+    text-align: center;
+    font-weight: bold;
+    margin-top: 1em;
+    padding-bottom: 12px;
+  }
+
+  .flex-container {
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+
+    form {
+      width: 50%;
+
+      .field-margin {
+        margin-bottom: 30px;
+      }
+
+      .label-text {
+        display: inline-block;
+        margin-bottom: .75em;
+      }
+
+      input {
+        font-size: 1em;
+      }
+
+      .detail {
+        width: 100%;
+        color: $chef-primary-dark;
+        font-size: 12px;
+        white-space: nowrap;
+      }
+
+      #username-fields {
+        font-size: 0.75em;
+
+        .key-label {
+          font-weight: bold;
+        }
+      }
+    }
+  }
+}

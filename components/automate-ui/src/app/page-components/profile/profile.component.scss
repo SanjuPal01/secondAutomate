@@ -1,0 +1,116 @@
+@import "~styles/variables";
+@import "~styles/mixins";
+@import "@carbon/layout/scss/layout";
+
+$dropdown-width: 196px;
+
+:host {
+  display: block;
+  margin-left: 6px;
+  margin-right: -4px;
+}
+
+button {
+  -webkit-appearance: none;
+  background: transparent;
+  border: none;
+  font-family: inherit;
+  line-height: inherit;
+  cursor: pointer;
+  text-align: left;
+}
+
+ul, li {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+a, button:not(.dropdown-toggle) {
+  display: block;
+  margin: 0 -16px;
+  padding: 0 16px;
+  position: relative;
+  width: $dropdown-width;
+  font-size: 16px;
+  line-height: 32px;
+  text-decoration: none;
+  color: inherit;
+
+  &:hover,
+  &:focus,
+  &:active {
+    background: #DEE5FD;
+  }
+}
+
+.dropdown-toggle {
+  display: flex;
+  align-items: center;
+  padding: 10px 0;
+}
+
+.dropdown-toggle-user-icon {
+  position: relative;
+  font-size: 30px;
+  line-height: 10px;
+
+  @include carbon--breakpoint-down(lg) {
+    font-size: 20px;
+  }
+}
+
+.dropdown {
+  top: 54px;
+  right: 16px;
+  width: $dropdown-width;
+  border: 1px solid $chef-grey;
+  z-index: 191;
+
+  &::before {
+    display: block;
+    position: absolute;
+    top: -6px;
+    right: 12px;
+    width: 10px;
+    height: 10px;
+    background: $chef-white;
+    transform: rotate(45deg);
+    border-left: 1px solid $chef-grey;
+    border-top: 1px solid $chef-grey;
+    content: '';
+  }
+}
+
+.dropdown-list-item {
+  display: block;
+  margin: 6px 0 0;
+  padding: 0 16px 6px;
+  font-size: 12px;
+  line-height: 24px;
+
+  &:not(:last-child),
+  &:first-child {
+    border-bottom: 1px solid $chef-grey;
+  }
+
+  .version,
+  .build {
+    line-height: 24px;
+  }
+}
+
+.dropdown-display-name {
+  display: block;
+  font-size: 16px;
+  margin-bottom: 2px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.dropdown-link-icon {
+  position: absolute;
+  right: 16px;
+  top: 8px;
+}

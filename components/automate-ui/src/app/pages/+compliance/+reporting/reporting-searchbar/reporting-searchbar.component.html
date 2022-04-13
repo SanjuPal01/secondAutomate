@@ -1,0 +1,110 @@
+<div class="reporting-search" (focusout)="handleFocusOut()">
+  <div *ngIf="selectedType" class="reporting-search-prefix">
+    <strong *ngIf="selectedType">{{ selectedType.title }}:</strong>
+  </div>
+
+  <input
+    #keyInput
+    id="keyInput"
+    class="reporting-search-input"
+    type="text"
+    aria-label="Filter key"
+    [hidden]="!keyInputVisible"
+    placeholder="Filter reports by..."
+    (click)="handleFocus($event)"
+    (change)="onKeyChange($event)"
+    (keyup)="handleInput($event.key, keyInput.value)"
+    autocomplete="off"/>
+  <div *ngIf="suggestionsVisible && !selectedType" class="input-dropdown categories">
+    <ul>
+      <li *ngIf="filterTypes.length === 0" class="no-category-items">
+        Not a Valid Filter Type
+      </li>
+      <li *ngFor="let type of filterTypes; let i = index"
+          (click)="filterClick(type, $event)"
+          (mouseenter)="handleSuggestionItemOnMouseOver(i)"
+          class="list-item category {{ highlightedIndex == i ? 'selected' : '' }}">
+        {{ type.title }}
+        <chef-icon>add</chef-icon>
+      </li>
+    </ul>
+  </div>
+
+  <input
+    #valInput
+    id="valInput"
+    class="reporting-search-input"
+    type="text"
+    aria-label="Filter value"
+    [hidden]="!valInputVisible"
+    [placeholder]="selectedType?.placeholder"
+    (change)="onValChange($event)"
+    (input)="onValInputAndFocus($event)"
+    (focus)="onValInputAndFocus($event)"
+    [value]="inputText"
+    (keyup)="handleInput($event.key, valInput.value)"
+    autocomplete="off"/>
+  <div *ngIf="suggestionsVisible && selectedType" class="input-dropdown suggestions">
+    <ul>
+      <li *ngIf="inputText !== '' && isLoadingSuggestions" class="suggestion-status">
+          Loading...
+      </li>
+      <li *ngIf="inputText !== '' && delayForNoSuggestions && filterValues.length === 0" class="no-category-items">
+        No matching result found
+      </li>
+      <li *ngFor="let value of filterValues; let i = index"
+          (click)="valueClick(value, $event)"
+          (mouseenter)="handleSuggestionItemOnMouseOver(i)"
+          class="list-item category {{ highlightedIndex == i ? 'selected' : '' }}">
+        {{ value.title }}
+      </li>
+    </ul>
+  </div>
+
+  <div class="reporting-search-suffix">
+    <chef-button class="filter-btn" *ngIf="filters.length > 0" secondary (click)="toggleFilters()">
+      <chef-icon>filter_list</chef-icon>
+      <span>{{ filters.length }}</span>
+    </chef-button>
+    <chef-button class="calendar-menu-btn" secondary (click)="toggleCalendarMenu()">
+      <span *ngIf="last24h">Last 24 hours</span>
+      <ng-container *ngIf="!last24h">
+        <chef-icon>date_range</chef-icon>
+        <span>{{ date | datetime: CHEF_SHORT_DATE }} (UTC)</span>
+      </ng-container>
+    </chef-button>
+    <chef-dropdown class="calendar-menu-dropdown" [attr.visible]="calendarMenuVisible">
+      <chef-click-outside omit="calendar-menu-btn" (clickOutside)="hideCalendarMenu()">
+        <chef-button class="select-last-btn" secondary (click)="handleSelectLast24()">
+          Last 24 hours
+        </chef-button>
+        <chef-button class="calendar-btn" secondary (click)="showCalendar()">
+          <chef-icon>date_range</chef-icon>
+          <span>Choose Date (UTC)</span>
+        </chef-button>
+      </chef-click-outside>
+    </chef-dropdown>
+    <chef-dropdown class="calendar-dropdown" [attr.visible]="calendarVisible">
+      <chef-click-outside omit="calendar-btn" (clickOutside)="hideCalendar()">
+        <chef-calendar
+          [selected]="date.toISOString()"
+          [date]="visibleDate.toISOString()"
+          (onNextMonth)="onMonthSelect($event)"
+          (onPrevMonth)="onMonthSelect($event)"
+          (onDaySelect)="onDaySelect($event)">
+        </chef-calendar>
+      </chef-click-outside>
+    </chef-dropdown>
+  </div>
+</div>
+
+<div class="filters-list" *ngIf="filtersVisible && filters.length > 0">
+  <chef-button secondary (click)="onClearClick()">Clear All</chef-button>
+  <chef-button
+    primary
+    *ngFor="let filter of filters"
+    (click)="onRemoveFilterClick(filter)">
+    <span>{{ filter.type.name }}: {{ displayText(filter.value.text) }}</span>
+    <chef-icon>close</chef-icon>
+  </chef-button>
+</div>

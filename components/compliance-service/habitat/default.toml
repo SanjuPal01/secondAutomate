@@ -1,0 +1,31 @@
+[mlsa]
+accept = false
+
+[logger]
+format = "text"
+level = "info"
+
+[service]
+host = "localhost"
+port = 10121
+external_fqdn = "localhost"
+
+[storage]
+database = "chef_compliance_service"
+user = "compliance"
+
+[nodemanager]
+awsec2_polling_interval = 60
+azurevm_polling_interval = 180
+manual_polling_interval = 1440
+
+[agent]
+workers = 10
+buffer_size = 1000
+remote_inspec_version = "4.12.0"
+result_message_limit = 10000
+control_results_limit = 50
+run_time_limit = 1.0
+
+[profiles]
+install_market_profiles = true

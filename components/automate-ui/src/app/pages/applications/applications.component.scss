@@ -1,0 +1,13 @@
+@import "~styles/variables";
+
+main {
+  background: $chef-white;
+  height: calc(100vh - 70px);
+  overflow: auto;
+}
+
+chef-subheading {
+  display: block;
+  font-size: 14px;
+  padding: 8px 14px;
+}

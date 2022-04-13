@@ -1,0 +1,23 @@
+<div class="content-container">
+  <div class="header">
+    <div class="heading">
+      <div class="heading-title-container">
+        <h2 class="heading-title">Check-in History</h2>
+        <chef-icon id="checkin-history-info">info_outline</chef-icon>
+        <chef-tooltip for='checkin-history-info'>
+          <p class="tooltip-text">Percentage of checked-in to total desktops at 24 hour intervals.</p>
+        </chef-tooltip>
+      </div>
+      <h6 *ngIf="hasData" class="heading-time">Updated {{ lastUpdatedMessage }}</h6>
+    </div>
+    <select *ngIf="hasData" (change)="dateChanged($event.target.value)">
+      <option *ngFor="let selectableDaysAgo of selectableDaysAgoCollection" [value]="selectableDaysAgo"
+        [selected]="selectableDaysAgo == selectedDaysAgo">
+        Last {{ selectableDaysAgo }} Days
+      </option>
+    </select>
+  </div>
+
+  <app-simple-line-graph *ngIf="hasData" [data]="days"></app-simple-line-graph>
+  <app-empty-data *ngIf="!hasData"></app-empty-data>
+</div>

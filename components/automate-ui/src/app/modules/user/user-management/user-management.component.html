@@ -1,0 +1,37 @@
+<div class="content-container">
+  <div class="container">
+    <main>
+      <app-delete-object-modal
+        [visible]="deleteModalVisible"
+        objectNoun="user"
+        [objectName]="userToDelete?.name"
+        (close)="closeDeleteModal()"
+        (deleteClicked)="deleteUser()"
+        objectAction="Delete">
+      </app-delete-object-modal>
+      <app-create-user-modal [openEvent]="openUserModal"></app-create-user-modal>
+
+      <chef-page-header>
+        <chef-heading>Users</chef-heading>
+        <chef-subheading>Chef Automate only displays local users.</chef-subheading>
+      </chef-page-header>
+
+      <section class="page-body">
+        <app-user-table
+          [addButtonText]="addButtonText"
+          [removeText]="removeText"
+          [users]="users"
+          [baseUrl]="baseUrl"
+          [showTable]="showUsersTable()"
+          [showEmptyMessage]="showEmptyStateMessage()"
+          (addClicked)="openCreateModal()"
+          (removeClicked)="startUserDelete($event)">
+          <p>It looks like there are no users and you<br/>
+            don't have permission to add them.<br/><br/>
+            If this is a mistake, then reach out to your administrator.
+          </p>
+        </app-user-table>
+      </section>
+    </main>
+  </div>
+</div>

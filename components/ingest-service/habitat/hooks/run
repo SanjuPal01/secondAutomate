@@ -1,0 +1,130 @@
+#!{{pkgPathFor "core/bash"}}/bin/bash
+
+exec 2>&1
+
+# Required to allow common name feild in certificate. Feature soon to deprecated by 1.17
+export GODEBUG=x509ignoreCN=0
+
+# Call the script to block until user accepts the MLSA via the package's config
+{{pkgPathFor "chef/mlsa"}}/bin/accept {{cfg.mlsa.accept}}
+
+DBNAME=chef_ingest_service
+
+# Setting coming from our default.toml
+CONFIG="--port {{cfg.service.port}}"
+{{~#if cfg.service.purge_converge_history_after_days }}
+CONFIG="$CONFIG --converge-history-days {{cfg.service.purge_converge_history_after_days}}"
+{{~/if}}
+
+{{~#if cfg.service.purge_actions_after_days }}
+CONFIG="$CONFIG --actions-days {{cfg.service.purge_actions_after_days}}"
+{{~/if}}
+
+{{~#if cfg.service.max_number_of_bundled_run_msgs }}
+CONFIG="$CONFIG --max-number-of-bundled-run-msgs {{cfg.service.max_number_of_bundled_run_msgs}}"
+{{~/if}}
+
+{{~#if cfg.service.max_number_of_bundled_action_msgs }}
+CONFIG="$CONFIG --max-number-of-bundled-action-msgs {{cfg.service.max_number_of_bundled_action_msgs}}"
+{{~/if}}
+
+{{~#if cfg.service.number_of_run_msgs_transformers }}
+CONFIG="$CONFIG --number-of-run-msgs-transformers {{cfg.service.number_of_run_msgs_transformers}}"
+{{~/if}}
+
+{{~#if cfg.service.number_of_run_msg_publishers }}
+CONFIG="$CONFIG --number-of-run-msg-publishers {{cfg.service.number_of_run_msg_publishers}}"
+{{~/if}}
+
+{{~#if cfg.service.number_of_nodemanager_publishers }}
+CONFIG="$CONFIG --number-of-nodemanager-publishers {{cfg.service.number_of_nodemanager_publishers}}"
+{{~/if}}
+
+{{~#if cfg.service.message_buffer_size }}
+CONFIG="$CONFIG --message-buffer-size {{cfg.service.message_buffer_size}}"
+{{~/if}}
+
+missing_nodes_for_deletion_running_default="{{cfg.service.missing_nodes_for_deletion_running_default}}"
+if [ -n "$missing_nodes_for_deletion_running_default" ]; then
+  CONFIG="$CONFIG --missing-nodes-for-deletion-running-default $missing_nodes_for_deletion_running_default"
+fi
+
+nodes_missing_running_default="{{cfg.service.nodes_missing_running_default}}"
+if [ -n "$nodes_missing_running_default" ]; then
+  CONFIG="$CONFIG --nodes-missing-running-default $nodes_missing_running_default"
+fi
+
+CONFIG="$CONFIG --host 127.0.0.1"
+
+{{~#if cfg.log.level}}
+CONFIG="$CONFIG --log-level {{cfg.log.level}}"
+{{~/if}}
+
+CONFIG="$CONFIG --cert {{pkg.svc_config_path}}/service.crt"
+CONFIG="$CONFIG --key {{pkg.svc_config_path}}/service.key"
+CONFIG="$CONFIG --root-cert {{pkg.svc_config_path}}/root_ca.crt"
+
+# Create the ingest config file
+CONFIG="$CONFIG --config {{pkg.svc_data_path}}/.ingest-service.toml"
+
+CONFIG="$CONFIG --postgresql-database $DBNAME"
+
+# Listen to what our gossip protocol whispers
+#
+# We have modified our plan to have a hard dependency to
+# elasticsearch, that will ensure that we will always start
+# our service with the required bindings
+#
+# Elasticsearch
+{{~#eachAlive bind.automate-es-gateway.members as |member|}}
+ELASTICSEARCH_URL="http://127.0.0.1:{{member.cfg.http-port}}"
+BACKEND="--elasticsearch-url $ELASTICSEARCH_URL"
+{{~/eachAlive}}
+
+# Bind to ES Sidecar if it's available
+{{~#eachAlive bind.es-sidecar-service.members as |sidecar|}}
+  {{~#if @last}}
+CONFIG="$CONFIG --es-sidecar-address 127.0.0.1:{{sidecar.cfg.port}}"
+  {{~/if}}
+{{~/eachAlive}}
+
+# Bind to Authz if it's available
+{{~#eachAlive bind.authz-service.members as |authz-service|}}
+  {{~#if @last}}
+CONFIG="$CONFIG --authz-address 127.0.0.1:{{authz-service.cfg.port}}"
+  {{~/if}}
+{{~/eachAlive}}
+
+# Bind to nodemanager if it's available
+{{~#eachAlive bind.nodemanager-service.members as |manager|}}
+  {{~#if @last}}
+CONFIG="$CONFIG --nodemanager-address 127.0.0.1:{{manager.cfg.port}}"
+  {{~/if}}
+{{~/eachAlive}}
+
+# Bind to config-mgmt if it's available
+{{~#eachAlive bind.config-mgmt-service.members as |config_mgmt|}}
+  {{~#if @last}}
+CONFIG="$CONFIG --config-mgmt-address 127.0.0.1:{{config_mgmt.cfg.port}}"
+  {{~/if}}
+{{~/eachAlive}}
+
+# Bind to cereal if it's available
+{{~#eachAlive bind.cereal-service.members as |cereal-service|}}
+  {{~#if @last}}
+CONFIG="$CONFIG --cereal-address 127.0.0.1:{{cereal-service.cfg.port}}"
+  {{~/if}}
+{{~/eachAlive}}
+
+# Bind to event-feed-service if it's available
+{{~#eachAlive bind.event-feed-service.members as |service|}}
+  {{~#if @last}}
+CONFIG="$CONFIG --event-feed-address 127.0.0.1:{{service.cfg.port}}"
+  {{~/if}}
+{{~/eachAlive}}
+
+pg-helper ensure-service-database "$DBNAME"
+
+# Start Ingest Service
+# shellcheck disable=SC2086
+exec ingest-service serve $CONFIG $BACKEND

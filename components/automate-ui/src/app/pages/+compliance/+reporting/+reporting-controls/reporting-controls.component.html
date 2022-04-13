@@ -1,0 +1,94 @@
+<div class="empty-help" *ngIf="reportData.controlsListEmpty">
+  <img class="help-icon" src="/assets/img/profiles.svg" alt="">
+  <div class="help-msg">
+    <p>A list of of the compliance controls and their status for your scan report will appear here.</p>
+    <p>Learn how to start your first <a href="https://docs.chef.io/automate/data_collection" target="_blank">compliance scan</a>.</p>
+  </div>
+</div>
+
+<ng-container *ngIf="!reportData.controlsListEmpty">
+  <chef-table class="reporting-controls-table">
+    <chef-thead>
+      <chef-tr>
+        <chef-th>Control Name</chef-th>
+        <chef-th>Profile</chef-th>
+        <chef-th>Impact</chef-th>
+        <chef-th>Last Scan</chef-th>
+        <chef-th>Node Status</chef-th>
+        <chef-th class="three-dot-column"></chef-th>
+      </chef-tr>
+    </chef-thead>
+    <chef-tbody *ngIf="!reportData.controlsListLoading">
+      <chef-tr *ngFor="let control of reportData.controlsList.items">
+        <chef-td >
+          <span><strong>{{ control.id }}:</strong> {{ control.title }}</span>
+        </chef-td>
+        <chef-td >{{ control.profile.title }}, {{ control.profile.version }}</chef-td>
+        <chef-td class="impact-status " [ngClass]="impactStatus(control)">
+          {{ impactStatus(control) | uppercase }} ({{ control.impact | number: '1.1' }})
+        </chef-td>
+        <chef-td >{{ control.end_time | timeFromNow }}</chef-td>
+        <chef-td class="node-status " *ngIf="control.control_summary as summary">
+          <span class="control-result" [ngClass]="{'failed': summary.failed.total > 0}">
+            <chef-icon>report_problem</chef-icon>
+            <span>{{ summary.failed.total | number }}</span>
+          </span>
+          <span class="control-result" [ngClass]="{'passed': summary.passed.total > 0}">
+            <chef-icon>check_circle</chef-icon>
+            <span>{{ summary.passed.total | number }}</span>
+          </span>
+          <span class="control-result" [ngClass]="{'skipped': summary.skipped.total > 0}">
+            <chef-icon>help</chef-icon>
+            <span>{{ summary.skipped.total | number }}</span>
+          </span>
+          <span *ngIf="summary.waived.total > 0" class="control-result" [ngClass]="{'waived': summary.waived.total > 0}">
+            <div [attr.id]="'waived-icon' + control.id" class="waived-icon"></div>
+            <chef-tooltip
+              [attr.for]="'waived-icon' + control.id"
+              position="left">
+              <div class="control-waiver-details" *ngFor="let waiver of control.waivers">
+                <div class="waiver-details">
+                  <span class="label">Expires:</span>
+                  <span class="message">{{ waiver.expiration_date | datetime: Datetime.RFC2822 }}</span>
+                </div>
+                <div class="waiver-details">
+                  <span class="label">Reason:</span>
+                  <span class="message">{{ waiver.justification }}</span>
+                </div>
+                <div *ngIf="waiver.waived_str === 'yes_run'" class="waiver-details">
+                  <span class="label">Node Status:</span>
+                  <span class="status-details failed">
+                    <chef-icon>report_problem</chef-icon>
+                    <span>{{ waiver.waiver_summary.failed.total | number }}</span>
+                  </span>
+                  <span class="status-details passed">
+                    <chef-icon>check_circle</chef-icon>
+                    <span>{{ waiver.waiver_summary.passed.total | number }}</span>
+                  </span>
+                  <span class="status-details skipped">
+                    <chef-icon>help</chef-icon>
+                    <span>{{ waiver.waiver_summary.skipped.total | number }}</span>
+                  </span>
+                </div>
+              </div>
+            </chef-tooltip>
+            <span>{{ summary.waived.total | number }}</span>
+          </span>
+        </chef-td>
+        <chef-td class="actions-cell  three-dot-column">
+          <mat-select panelClass="chef-control-menu">
+            <mat-option *ngIf="!hasFilter(control)" (onSelectionChange)="addFilter(control)">Add Filter</mat-option>
+            <mat-option *ngIf="hasFilter(control)" (onSelectionChange)="removeFilter(control)">Remove Filter</mat-option>
+          </mat-select>
+        </chef-td>
+      </chef-tr>
+    </chef-tbody>
+    <chef-loading-spinner *ngIf="reportData.controlsListLoading" size="100"></chef-loading-spinner>
+  </chef-table>
+
+  <p class="item-count-warning" *ngIf="!reportData.controlsListLoading && reportData.controlsList.total === 100">
+    This query result set is too large to process. We have limited this list to 100 items for speed. Try filtering down your list.
+  </p>
+
+  <chef-scroll-top></chef-scroll-top>
+</ng-container>

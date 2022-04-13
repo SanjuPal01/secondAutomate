@@ -1,0 +1,171 @@
+#!{{pkgPathFor "core/bash"}}/bin/bash -e
+
+exec 2>&1
+
+# Required to allow common name feild in certificate. Feature soon to deprecated by 1.17
+export GODEBUG=x509ignoreCN=0
+
+# Call the script to block until user accepts the MLSA via the package's config
+{{pkgPathFor "chef/mlsa"}}/bin/accept {{cfg.mlsa.accept}}
+
+{{ #if cfg.proxy.connection_string ~}}
+export https_proxy="{{cfg.proxy.connection_string}}"
+export http_proxy="{{cfg.proxy.connection_string}}"
+export no_proxy="{{cfg.proxy.no_proxy_string}}"
+{{ /if ~ }}
+
+# create tmp folder for inspec
+mkdir -p {{pkg.svc_var_path}}/tmp
+chmod 0775 {{pkg.svc_var_path}}
+# nobody user needs access to this dir
+chmod 1777 {{pkg.svc_var_path}}/tmp
+
+export DBNAME="{{cfg.storage.database}}"
+export DBUSER="{{cfg.storage.user}}"
+
+# Migrate from A1's delivery database if it's present
+pg-helper migrate-tables-v2 delivery "$DBNAME" \
+  agents node_managers results profiles tags jobs jobs_nodes jobs_profiles \
+  jobs_tags nodes nodes_agents nodes_secrets nodes_tags
+
+pg-helper ensure-service-database "$DBNAME"
+
+pg-helper create-extension "$DBNAME" pgcrypto
+
+pg-helper fix-permissions "$DBNAME"
+
+mkdir -p "{{pkg.svc_data_path}}/profiles"
+
+# cleanup old migration files
+rm -rf "{{pkg.svc_static_path}}/migrations" {{pkg.svc_static_path}}/*.sql
+
+INSTALL_MARKET_PROFILES={{cfg.profiles.install_market_profiles}}
+{{!--
+# we use bash to test for the existence of the automate-compliance-profiles path
+# because the handlebars combo of `#if pkgPathFor "chef/automate-compliance-profiles"`
+# doesn't work as desired. `pkgPathFor` returns "" when a package isn't a dep of the
+# package it is executed from
+--}}
+profiles_package_path="{{pkgPathFor "chef/automate-compliance-profiles"}}"
+profiles_market_path="{{pkgPathFor "chef/automate-compliance-profiles"}}/market"
+if [ "$profiles_package_path" != "" ] && [ $INSTALL_MARKET_PROFILES == true ] &&
+   [ -d $profiles_package_path ]; then
+  CONFIG="--market-path $profiles_market_path"
+fi
+
+CONFIG="$CONFIG --profiles-path {{pkg.svc_data_path}}/profiles"
+CONFIG="$CONFIG --log-level {{cfg.logger.level}}"
+CONFIG="$CONFIG --port {{cfg.service.port}}"
+
+# Interval in minutes to poll for node status.
+CONFIG="$CONFIG --manager-awsec2-poll {{cfg.nodemanager.awsec2_polling_interval}}"
+CONFIG="$CONFIG --manager-azurevm-poll {{cfg.nodemanager.azurevm_polling_interval}}"
+CONFIG="$CONFIG --manager-manual-poll {{cfg.nodemanager.manual_polling_interval}}"
+
+# Inspec agent configuration.
+CONFIG="$CONFIG --job-workers {{cfg.agent.workers}}"
+CONFIG="$CONFIG --job-buffer-size {{cfg.agent.buffer_size}}"
+CONFIG="$CONFIG --remote-inspec-version {{cfg.agent.remote_inspec_version}}"
+CONFIG="$CONFIG --result-message-limit {{cfg.agent.result_message_limit}}"
+CONFIG="$CONFIG --control-results-limit {{cfg.agent.control_results_limit}}"
+CONFIG="$CONFIG --run-time-limit {{cfg.agent.run_time_limit}}"
+
+# Mutual TLS Configuration
+CONFIG="$CONFIG --cert {{pkg.svc_config_path}}/service.crt"
+CONFIG="$CONFIG --key {{pkg.svc_config_path}}/service.key"
+CONFIG="$CONFIG --root-cert {{pkg.svc_config_path}}/root_ca.crt"
+
+PG_BACKEND="--postgres-db {{cfg.storage.database}}"
+
+CONFIG="$CONFIG --automate-fqdn https://{{cfg.service.external_fqdn}}"
+
+CONFIG="$CONFIG --host 127.0.0.1"
+
+# A data retention policy was configured
+{{~#if cfg.retention.compliance_report_days}}
+CONFIG="$CONFIG --reports-retention-days {{cfg.retention.compliance_report_days}}"
+{{~/if}}
+
+# Configure the message buffer size if provided
+{{~#if cfg.service.message_buffer_size}}
+CONFIG="$CONFIG --message-buffer-size {{cfg.service.message_buffer_size}}"
+{{~/if}}
+
+# get auth binding, used for retrieving token for inspec reporting directly to automate
+{{~#eachAlive bind.authn-service.members as |authn|}}
+{{~#if @last}}
+CONFIG="$CONFIG --authn-target 127.0.0.1:{{authn.cfg.port}}"
+{{~/if}}
+{{~/eachAlive}}
+
+# get notifications binding, used for sending notifications on compliance report ingestion
+{{~#eachAlive bind.notifications-service.members as |notifications|}}
+{{~#if @last}}
+CONFIG="$CONFIG --notifications-target 127.0.0.1:{{notifications.cfg.port}}"
+{{~/if}}
+{{~/eachAlive}}
+
+# get secrets service binding, used for storing secrets
+{{~#eachAlive bind.secrets-service.members as |secrets|}}
+{{~#if @last}}
+CONFIG="$CONFIG --secrets-host 127.0.0.1 --secrets-port {{secrets.cfg.port}}"
+{{~/if}}
+{{~/eachAlive}}
+
+# get authz service binding, used for getting project rules
+{{~#eachAlive bind.authz-service.members as |authz|}}
+{{~#if @last}}
+CONFIG="$CONFIG --authz-host 127.0.0.1 --authz-port {{authz.cfg.port}}"
+{{~/if}}
+{{~/eachAlive}}
+
+# get event service binding, used for publishing event
+{{~#eachAlive bind.event-service.members as |event|}}
+{{~#if @last}}
+CONFIG="$CONFIG --event-endpoint 127.0.0.1:{{event.cfg.port}}"
+{{~/if}}
+{{~/eachAlive}}
+
+# get nodemanager binding, used for getting nodes and nodemanager info
+{{~#eachAlive bind.nodemanager-service.members as |manager|}}
+{{~#if @last}}
+CONFIG="$CONFIG --manager-host 127.0.0.1 --manager-port {{manager.cfg.port}}"
+{{~/if}}
+{{~/eachAlive}}
+
+# Create the compliance config file
+CONFIG="$CONFIG --config {{pkg.svc_data_path}}/.compliance-service.toml"
+
+# Listen to what our gossip protocol whispers
+#
+# We have modified our plan to have a hard dependency to
+# elasticsearch and postgres, that will ensure that we
+# will always start our service with the required bindings
+#
+#
+{{~#eachAlive bind.es-sidecar-service.members as |member|}}
+CONFIG="$CONFIG --es-sidecar-address 127.0.0.1:{{member.cfg.port}}"
+{{~/eachAlive}}
+
+# Elasticsearch
+{{~#eachAlive bind.automate-es-gateway.members as |member|}}
+ES_BACKEND="--es-url http://127.0.0.1:{{member.cfg.http-port}}"
+{{~/eachAlive}}
+
+# Bind to cereal
+{{~#eachAlive bind.cereal-service.members as |cereal-service|}}
+  {{~#if @last}}
+CONFIG="$CONFIG --cereal-endpoint 127.0.0.1:{{cereal-service.cfg.port}}"
+  {{~/if}}
+{{~/eachAlive}}
+
+# Postgres
+PG_BACKEND="--postgres-database {{cfg.storage.database}} --migrations-path {{pkg.path}}/migrations"
+
+export HOME="{{pkg.svc_data_path}}"
+
+CONFIG="$CONFIG --inspec-tmp-dir {{pkg.svc_var_path}}/tmp"
+
+# Start our service
+# shellcheck disable=SC2086
+exec compliance-service run ${CONFIG} ${ES_BACKEND} ${PG_BACKEND}

@@ -1,0 +1,369 @@
+@import "~styles/variables";
+@import "~styles/mixins";
+
+:host {
+  display: block;
+  position: absolute;
+  width: 450px;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  background: $chef-white;
+  border-left: 1px solid $chef-grey;
+  overflow: auto;
+}
+
+ul {
+  margin-top: 5px;
+}
+
+chef-tooltip {
+  #{--tooltip-color}: $chef-primary-dark;
+  display: inline-table;
+  color: $chef-white;
+  font-size: 14px;
+}
+
+chef-status-filter-group {
+  padding-top: 5px;
+
+  .spacer {
+    width: 100%;
+    height: 0;
+  }
+}
+
+app-page-picker {
+  padding-left: 35px;
+  padding-bottom: 35px;
+}
+
+chef-alert {
+  align-items: left;
+  justify-content: left;
+}
+
+.filter.disconnected chef-icon {
+  // This is set in chef-ui-library but automate-ui's copy is in a slightly
+  // different path:
+  background: url(/assets/img/icon-disconnected.svg);
+}
+
+.service-item {
+  @include modal-box();
+  display: block;
+  box-shadow: none;
+  background-color: #F2F5F7; // unique color
+  margin-bottom: 1em;
+  margin-right: 35px;
+  margin-left: -5px;
+  padding: 0em;
+  position: relative;
+  transition: all .2s;
+  border-radius: $global-radius;
+
+  .body {
+    display: block;
+    background-color: $chef-white;
+    border-top: 1px solid $gray-pale;
+    // if changed then hr.health-info-divider needs to be adjusted also
+    padding: 1em;
+    position: relative;
+    width: 100%;
+    font-size: .8em;
+    border-radius: 0 0 $global-radius $global-radius;
+  }
+
+  .header {
+    display: block;
+    padding: 1em;
+    width: 100%;
+    position: relative;
+  }
+
+  .fqdn-line {
+    display: flex;
+    margin-bottom: 8px;
+    font-size: 14px;
+  }
+
+  .supervisor-line {
+    display: flex;
+    margin-bottom: 4px;
+    font-size: 12px;
+
+    strong {
+      margin-right: 4px;
+    }
+  }
+
+  .site-line {
+    display: flex;
+    font-size: 12px;
+
+    strong {
+      margin-right: 4px;
+    }
+  }
+
+  .release-line {
+    display: flex;
+    margin-bottom: 8px;
+    font-size: 14px;
+  }
+
+  hr.health-info-divider {
+    margin: 16px -1em 16px -1em;
+    background-color: $gray-pale;
+  }
+
+  .health-info-panel {
+    border-radius: 2px;
+    align-items: center;
+    padding: 8px;
+    font-size: 12px;
+
+    &.CRITICAL {
+      background-color: var(--chef-badge-critical-background);
+      color: var(--chef-badge-critical-color);
+    }
+
+    &.WARNING {
+      background-color: var(--chef-badge-warning-background);
+      color: var(--chef-badge-warning-color);
+    }
+
+    &.UNKNOWN {
+      background-color: var(--chef-lightest-grey);
+      color: var(--chef-primary-dark);
+    }
+
+    &.OK {
+      background-color: var(--chef-badge-success-background);
+      color: var(--chef-badge-success-color);
+    }
+
+  }
+
+  .disconnect-notice {
+    display: flex;
+    align-items: flex-start;
+    background: $chef-info-alert-light;
+    color: $chef-info-alert;
+    border-radius: 2px;
+    padding: 8px;
+    margin-bottom: 8px;
+    font-size: 12px;
+
+    .disconnect-icon {
+      display: block;
+      margin-right: 6px;
+      height: 16px;
+      width: 16px;
+      transform: translateY(2px);
+      flex: none;
+    }
+
+    .disconnect-time:hover {
+      color: $chef-info-alert-dark;
+    }
+
+  }
+
+  .no-healthcheck-messages {
+    margin: 1px;
+    border: 1px solid;
+    border-radius: 2px;
+    padding: 3px 8px 3px 8px;
+
+    a {
+      color: inherit;
+    }
+
+  }
+
+  .healthcheck-message {
+    padding: 2px;
+  }
+
+  // desired space between adjacent healthcheck-message divs is 8px, we have
+  // 2 * 2px == 4px from the padding above which means we need 4px more:
+  .healthcheck-message + .healthcheck-message {
+    margin-top: 4px;
+  }
+
+  .healthcheck-header {
+    border-radius: 2px 2px 0 0;
+    padding: 3px 8px 3px 8px;
+
+    &.CRITICAL {
+      background-color: #961856; // unique color
+      color: var(--chef-white);
+    }
+
+    &.WARNING {
+      background-color: var(--chef-badge-warning-color);
+      color: var(--chef-white);
+    }
+
+    &.UNKNOWN {
+      background-color: #424848; // unique color
+      color: var(--chef-white);
+    }
+
+
+  }
+
+  .healthcheck-content {
+    position: relative;
+    border-radius: 0 0 2px 2px;
+    background-color: var(--chef-primary-dark);
+    color: var(--chef-white);
+    padding: 8px 8px 40px 8px;
+    overflow-wrap: break-word;
+    max-height: 94px;
+    overflow: hidden;
+    transition: .25s max-height;
+
+    &.active {
+      // we need enough space for 1024 characters which is the maximum length
+      // of a health message.  540px maps to enough height for a full message
+      // plus room for the button.
+      max-height: 540px;
+    }
+  }
+
+  .show-more-container {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    background: var(--chef-primary-dark);
+
+    .show-more-button {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: transparent;
+      border: none;
+      color: #9CB2F9; // from extended palette
+      padding: 8px;
+      cursor: pointer;
+    }
+
+    .unfold {
+      margin-right: 4px;
+    }
+  }
+
+  .health-line {
+    display: flex;
+    align-items: flex-start;
+    font-size: 12px;
+    margin-bottom: 6px;
+
+    a {
+      color: inherit;
+    }
+
+    a:hover {
+      color: $chef-primary-dark;
+    }
+
+    .health-icon {
+      display: block;
+      margin-right: 6px;
+      height: 16px;
+      width: 16px;
+    }
+  }
+
+  .channel-line {
+    padding-left: 18px;
+    margin-bottom: 8px;
+  }
+
+  chef-icon {
+    font-size: 16px;
+    margin-right: 8px;
+
+    &.OK {
+      color: var(--chef-badge-success-color);
+    }
+
+    &.WARNING {
+      color: var(--chef-badge-warning-color);
+    }
+
+    &.UNKNOWN {
+      color: var(--chef-primary-dark);
+    }
+
+    &.CRITICAL {
+      color: var(--chef-badge-critical-color);
+    }
+  }
+}
+
+.no-services {
+  display: block;
+  padding-top: 17em;
+  position: relative;
+  text-align: center;
+}
+
+.status-filter-bar {
+  padding-left: 35px;
+  padding-right: 35px;
+}
+
+.fqdn-data {
+  margin-left: 8px;
+  margin-bottom: 0px;
+  word-break: break-all;
+}
+
+.site-data,
+.supervisor-data {
+  margin-bottom: 0px;
+  font-size: 12px;
+  padding-top: 2px;
+  word-break: break-all;
+}
+
+.release-data {
+  margin-bottom: 0px;
+  font-size: 14px;
+  word-break: break-all;
+}
+
+.bulk-action-bar {
+  display: flex;
+  align-items: center;
+  padding: 0 35px;
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  background: $chef-white;
+
+  chef-button {
+    margin: 0 8px;
+  }
+
+  &.hidden {
+    visibility: hidden;
+  }
+}
+
+chef-modal[label="delete-services-modal"] {
+  text-align: center;
+
+  h1 {
+    margin-bottom: 24px;
+    color: $chef-critical;
+  }
+
+  .modal-line {
+    margin-bottom: 24px;
+  }
+}

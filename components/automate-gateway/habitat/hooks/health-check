@@ -1,0 +1,37 @@
+#!{{pkgPathFor "core/bash"}}/bin/bash
+
+# For now we will just use curl and ensure that we have GRPC Error code 16
+# that means that Auth is blocking the requests
+health=$(curl --cacert {{pkg.svc_config_path}}/root_ca.crt \
+  --max-time 2 \
+  --noproxy 127.0.0.1 \
+  "https://127.0.0.1:{{cfg.service.port}}/api/v0/gateway/health" 2>/dev/null)
+status=$(echo "$health" | jq -r '.code // .status')
+
+# Inspect the health of the automate-gateway service
+#
+# Example message:
+# {
+#   "status": "ok"
+# }
+case $status in
+  "16")
+    # Workaround until we find a way to hit GRPC calls or endpoints with NO auth
+    rc=0 ;;
+  "ok")
+    rc=0 ;;
+  "initialization")
+    rc=1 ;;
+  "warning")
+    rc=1 ;;
+  "critical")
+    rc=2 ;;
+  *)
+    # If we have an unknown health, lets print the entire blob
+    # @afiune: You can check this output at the service logs:
+    # => /hab/svc/automate-gateway/logs/health_check.stdout.log
+    echo "health: ${health}"
+    rc=3 ;; # Unknown
+esac
+
+exit $rc

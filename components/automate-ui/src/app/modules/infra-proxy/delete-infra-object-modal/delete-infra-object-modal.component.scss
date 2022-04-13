@@ -1,0 +1,154 @@
+@import "~styles/variables";
+
+chef-modal {
+  text-align: center;
+
+  .options {
+    position: absolute;
+    right: 32px;
+    bottom: 32px;
+
+    .cancel-button {
+      color: $chef-critical;
+    }
+  }
+
+  .left-box {
+    float: left;
+    height: auto;
+    width: 40%;
+  }
+
+  .right-box {
+    float: left;
+    height: auto;
+    width: 60%;
+  }
+
+  .title-text {
+    font-size: 36px;
+    font-weight: 900;
+    margin-top: 6px;
+    margin-bottom: 11px;
+    line-height: 40px;
+    letter-spacing: 0.15px;
+  }
+
+  .action-text {
+    font-size: 24px;
+    font-weight: 900;
+    line-height: 28px;
+    letter-spacing: 0.25px;
+  }
+
+  .left-align {
+    line-height: 30px;
+    margin-bottom: 63px;
+    margin-left: 43px;
+    margin-top: 35px;
+    text-align: left;
+  }
+
+  .del-icon {
+    z-index: 999999;
+    position: relative;
+  }
+
+  .del-vector {
+    position: absolute;
+    left: 220px;
+    top: 41px;
+  }
+
+  chef-button.cancel-button {
+    margin: 0px 10px 0px 0px;
+  }
+
+  chef-button.del-button {
+    margin: 0px;
+  }
+
+  p.object-name {
+    font-weight: 900;
+    font-size: 14px;
+    line-height: 18px;
+  }
+}
+
+::ng-deep {
+
+  chef-modal .modal {
+    box-shadow: 0px 0px 30px 0px $light-grey;
+    outline: none;
+    padding: 32px;
+  }
+
+  .del-modal .modal {
+    max-width: 708px;
+    min-width: 708px;
+
+    .cancel-button {
+
+      &:hover {
+        background-color: $chef-critical-light;
+      }
+
+      &:focus {
+        outline: none;
+      }
+    }
+
+    .options button:focus {
+      outline: none;
+      border: 0.5px solid $chef-critical-dark;
+      border-radius: 4px;
+    }
+  }
+
+  chef-modal .modal .close {
+    border: none;
+    color: black;
+    margin-right: 22px;
+    margin-top: 16px;
+  }
+
+  chef-button.close:hover {
+    background: none;
+    outline: none;
+  }
+
+  chef-button.close:focus {
+    border: 0.5px solid $chef-primary-bright;
+    border-radius: 4px;
+    outline: none;
+  }
+
+  chef-button.close button:focus {
+    border: 0.5px solid $chef-primary-bright;
+    border-radius: 4px;
+    outline: none;
+  }
+
+  chef-button.cancel-button.hydrated {
+    background: none;
+  }
+
+  chef-modal .modal-overlay {
+    background-color: #E5E5E5;
+    opacity: 0.5;
+  }
+
+}
+
+.client-message {
+  font-size: 14px;
+  line-height: 20px;
+  margin-top: 10px;
+}
+
+.node-message {
+  font-size: 18px;
+  line-height: 28px;
+  letter-spacing: 0.25px;
+  margin-top: 10px;
+}

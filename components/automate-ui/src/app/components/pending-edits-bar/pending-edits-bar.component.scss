@@ -1,0 +1,49 @@
+@import "~styles/variables";
+
+#pending-edits-bar {
+  background-color: $chef-primary-bright;
+  color: $chef-white;
+  position: relative;
+
+  .normal-container {
+    padding: 16px 10px;
+  }
+
+  .failure-container {
+    padding: 16px 10px;
+    background-color: $chef-critical;
+  }
+
+  .info {
+    font-size: 16px;
+    font-weight: 500;
+
+    a {
+      color: inherit;
+    }
+
+    pre {
+      display: inline;
+      padding: 0;
+    }
+  }
+
+  button {
+    margin: 8px;
+    border: 1px solid $chef-white;
+    position: absolute;
+    right: 0;
+    top: 0;
+  }
+
+  .failure-container button:hover,
+  .failure-container button:focus {
+    background-color: $chef-critical-hover;
+  }
+
+  .normal-container button:hover,
+  .normal-container button:focus {
+    background-color: $chef-primary-hover;
+  }
+}
+

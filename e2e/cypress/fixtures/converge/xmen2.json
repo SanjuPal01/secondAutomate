@@ -1,0 +1,42 @@
+{
+  "chef_server_fqdn": "xmen.co",
+  "entity_uuid": "6453a764-2415-4934-8cee-2a008834a74a",
+  "expanded_run_list": {
+    "id": "manhattan",
+    "run_list": [
+      {
+        "type": "recipe",
+        "name": "opscode-ci::slave",
+        "version": null,
+        "skipped": false
+      }
+    ]
+  },
+  "automatic": {
+    "roles": []
+  },
+  "id": "da60e383-67f6-4501-b726-1f28e03bf6ea",
+  "message_version": "1.1.0",
+  "message_type": "run_converge",
+  "node": {
+    "name": "chefdk-ubuntu-14.04-tester-05b95c",
+    "chef_environment": "manhattan",
+    "json_class": "Chef::Node",
+    "chef_type": "node",
+    "run_list": [
+      "recipe[opscode-ci::slave]"
+    ]
+  },
+  "node_name": "chefdk-ubuntu-14.04-tester-05b95c",
+  "organization_name": "xmen",
+  "run_id": "da60e383-67f6-4501-b726-1f28e03bf6ea",
+  "run_list": [
+    "recipe[opscode-ci::slave]"
+  ],
+  "start_time": "2017-11-01T21:08:50Z",
+  "end_time": "2017-11-01T21:09:31Z",
+  "source": "chef_client",
+  "status": "success",
+  "total_resource_count": 354,
+  "updated_resource_count": 13
+}

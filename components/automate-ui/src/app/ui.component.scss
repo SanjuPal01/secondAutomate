@@ -1,0 +1,35 @@
+#app-container {
+  height: 100vh;
+}
+
+#app-header-wrapper {
+  app-navbar {
+    display: block;
+    height: 70px;
+  }
+}
+
+#app-content-wrapper {
+  display: flex;
+  flex-flow: row nowrap;
+  height: calc(100vh - 70px);
+  position: relative;
+
+  &.adjust-content-height {
+    height: calc(100vh - 110px);
+  }
+
+  & > #app-sidebar { order: 1; }
+
+  & > #main-content-wrapper {
+    flex: 2 0px;
+    order: 2;
+    height: 100%;
+    overflow-x: scroll;
+    position: relative;
+  }
+}
+
+[hidden] {
+  display: none !important; // sass-lint:disable-line no-important
+}

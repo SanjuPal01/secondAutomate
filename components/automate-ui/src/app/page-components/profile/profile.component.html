@@ -1,0 +1,94 @@
+<button
+  aria-label="User Menu"
+  class="dropdown-toggle"
+  (click)="toggleDropdown()"
+  (keydown.shift.tab)="closeDropdown()"
+  (keydown.arrowdown)="handleArrowDown($event)"
+  data-cy="user-profile-button"
+  #focusElement>
+  <chef-icon aria-hidden="true" class="dropdown-toggle-user-icon">person</chef-icon>
+  <chef-icon aria-hidden="true">keyboard_arrow_down</chef-icon>
+</button>
+
+<chef-click-outside omit="dropdown-toggle" (clickOutside)="closeDropdown()">
+  <chef-dropdown class="dropdown" [attr.visible]="dropdownVisible" (keydown.esc)="closeDropdown()">
+    <ul class="dropdown-list">
+      <li class="dropdown-list-item">
+        Signed in as <strong class="dropdown-display-name">{{ displayName }}</strong>
+      </li>
+      <li class="dropdown-list-item" *ngIf="isProfileMenuVisible">
+        <a [routerLink]="['/user-details', userName]"
+          (click)="closeDropdown()"
+          (keydown.arrowup)="handleArrowUp($event)"
+          (keydown.arrowdown)="handleArrowDown($event)"
+          class="profile"
+          role="menuitem"
+          #focusElement>Profile</a>
+      </li>
+      <li class="dropdown-list-item">
+        <ul class="dropdown-sub-list">
+          <li>
+            <span class="version">Version: 2</span>
+          </li>
+          <li>
+            <span class="build">Build: {{ buildVersion }}</span>
+          </li>
+        </ul>
+        <ul class="dropdown-sub-list">
+          <li>
+            <button (click)="showWelcomeModal()"
+              (keydown.arrowup)="handleArrowUp($event)"
+              (keydown.arrowdown)="handleArrowDown($event)"
+              data-cy="welcome-modal-button"
+              class="welcome-modal-button"
+              role="menuitem"
+              #focusElement>About</button>
+          </li>
+          <li>
+            <a href="https://www.chef.io/online-master-agreement/" target="_blank" rel="noopener"
+              (click)="closeDropdown()"
+              (keydown.arrowup)="handleArrowUp($event)"
+              (keydown.arrowdown)="handleArrowDown($event)"
+              role="menuitem"
+              #focusElement>
+              License <chef-icon aria-hidden="true" class="dropdown-link-icon">launch</chef-icon>
+            </a>
+          </li>
+          <li>
+            <a href="https://www.chef.io/patents" target="_blank" rel="noopener"
+              (click)="closeDropdown()"
+              (keydown.arrowup)="handleArrowUp($event)"
+              (keydown.arrowdown)="handleArrowDown($event)"
+              role="menuitem"
+              #focusElement>
+              Chef Patents <chef-icon aria-hidden="true" class="dropdown-link-icon">launch</chef-icon>
+            </a>
+          </li>
+          <li>
+            <a href="https://automate.chef.io/release-notes/?v={{ buildVersion }}" target="_blank" rel="noopener" class="release-notes"
+              (click)="closeDropdown()"
+              (keydown.arrowup)="handleArrowUp($event)"
+              (keydown.arrowdown)="handleArrowDown($event)"
+              role="menuitem"
+              #focusElement>
+              Release Notes <chef-icon aria-hidden="true" class="dropdown-link-icon">launch</chef-icon>
+            </a>
+          </li>
+        </ul>
+      </li>
+      <li class="dropdown-list-item">
+        <button data-cy="sign-out-button" class="logout"
+          (click)="logout()"
+          (keydown.tab)="closeDropdown()"
+          (keydown.arrowup)="handleArrowUp($event)"
+          (keydown.arrowdown)="handleArrowDown($event)"
+          role="menuitem"
+          #focusElement>
+          Sign Out
+        </button>
+      </li>
+    </ul>
+  </chef-dropdown>
+</chef-click-outside>
+
+<app-welcome-modal></app-welcome-modal>

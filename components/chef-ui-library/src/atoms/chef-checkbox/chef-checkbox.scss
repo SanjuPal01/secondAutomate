@@ -1,0 +1,56 @@
+chef-checkbox {
+  display: inline-flex;
+  align-items: center;
+  cursor: pointer;
+  user-select: none;
+  white-space: nowrap;
+
+  .check-wrap {
+    display: inline-flex;
+    width: 20px;
+    min-width: 20px;
+    height: 20px;
+    border: 2px solid;
+    border-radius: var(--chef-border-radius);
+    color: var(--chef-white);
+    align-items: center;
+    justify-content: center;
+
+    chef-icon {
+      color: var(--chef-white);
+    }
+  }
+
+  .label-wrap {
+    display: none;
+    margin-left: 14px;
+    font-size: 14px;
+    color: var(--chef-primary-dark);
+  }
+
+  &[aria-labelledby] .label-wrap {
+    display: block;
+  }
+
+  &[aria-checked='true'] .check-wrap {
+    border-color: var(--chef-primary-bright);
+    background-color: var(--chef-primary-bright);
+  }
+
+  &[aria-checked='false'] .check-wrap {
+    border-color: var(--chef-dark-grey);
+    background-color: var(--chef-white);
+  }
+
+  &[aria-checked='mixed'] .check-wrap {
+    border-color: var(--chef-primary-bright);
+    background-color: var(--chef-primary-bright);
+  }
+
+  &[aria-disabled] {
+    border: var(--chef-grey);
+    opacity: 0.5;
+    cursor: default;
+    pointer-events: none;
+  }
+}

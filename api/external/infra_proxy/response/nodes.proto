@@ -1,0 +1,92 @@
+syntax = "proto3";
+
+package chef.automate.api.infra_proxy.response;
+option go_package = "github.com/chef/automate/api/external/infra_proxy/response";
+
+import "external/infra_proxy/response/common.proto";
+
+message Nodes {
+    // Node list.
+    repeated NodeAttribute nodes = 1;
+    // Starting page for the results.
+    int32 page = 2;
+    // Total number of records.
+    int32 total = 3;
+}
+
+message NodeAttribute {
+    // Node ID.
+    string id = 1;
+    // Node name.
+    string name = 2;
+    // Node last checkin.
+    string check_in = 3;
+    // Node uptime.
+    string uptime = 4;
+    // Node platform.
+    string platform = 5;
+    // Node environment name.
+    string environment = 6;
+    // Node policy group.
+    string policy_group = 7;
+    // Node FQDN.
+    string fqdn = 8;
+    // Node IP address.
+    string ip_address = 9;
+}
+
+message DeleteNode {
+    // Node name.
+    string name = 1;
+}
+
+message Node {
+    // Node ID.
+    string node_id = 1;
+    // Node name.
+    string name = 2;
+    // Node environment.
+    string environment = 3;
+    // Node policy name.
+    string policy_name = 4;
+    // Node policy group.
+    string policy_group = 5;
+    // Node run-list.
+    repeated string run_list = 6;
+    // Node tags.
+    repeated string tags = 7;
+    // Node automatic attributes JSON.
+    string automatic_attributes = 8;
+    // Node default attributes JSON.
+    string default_attributes = 9;
+    // Node normal attributes JSON.
+    string normal_attributes = 10;
+    // Node override attributes JSON.
+    string override_attributes = 11;
+}
+
+message UpdateNodeTags {
+    // Node tags.
+    repeated string tags = 5;
+}
+
+message UpdateNodeEnvironment {
+    // Node name.
+    string name = 1;
+    // Node environment name.
+    string environment = 2;
+}
+
+message UpdateNodeAttributes {
+    // Node name.
+    string name = 1;
+    // Node attributes JSON.
+    string attributes = 2;
+}
+
+message NodeExpandedRunList {
+    // ID of the run list collection.
+    string id = 1;
+    // List of the run list.
+    repeated RunList run_list = 2;
+}

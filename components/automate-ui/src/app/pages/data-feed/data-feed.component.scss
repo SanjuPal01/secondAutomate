@@ -1,0 +1,55 @@
+@import "~styles/variables";
+
+.destinations-container {
+  margin-left: 200px;
+  margin-top: 80px;
+}
+
+chef-button {
+  display: flex;
+  margin: 0 0 35px 0;
+  float: right;
+  align-items: center;
+}
+
+.actions {
+  padding: 8px 1em;
+
+  chef-button[icon] {
+    font-size: 18px;
+    line-height: 32px;
+
+    chef-icon {
+      vertical-align: -3px;
+    }
+  }
+}
+
+.svg-inline--fa {
+  width: 20px;
+}
+
+chef-subheading {
+  max-width: 610px;
+  font-size: 14px;
+  line-height: 21px;
+  margin-bottom: 20px;
+  font-style: Mulish;
+}
+
+.header-class {
+  margin-top: 30px;
+}
+
+.empty-state {
+  margin-top: 130px;
+  text-align: center;
+}
+
+img {
+  width: 70px;
+}
+
+app-data-feed-create {
+  z-index: 999;
+}

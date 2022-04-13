@@ -1,0 +1,33 @@
+[service]
+host = "127.0.0.1"
+port = {{cfg.service.port}}
+metrics_port = {{cfg.service.metrics_port}}
+log_level = "{{cfg.log.level}}"
+
+[events]
+{{~#eachAlive bind.event-service.members as |events|}}
+{{~#if @last}}
+host = "127.0.0.1"
+port = {{events.cfg.internal_messaging_port}}
+cluster_id = "{{events.cfg.cluster_id}}"
+{{~/if}}
+{{~/eachAlive}}
+
+[postgres]
+database = "{{cfg.storage.database}}"
+schema_path = "{{pkg.path}}/schema"
+max_open_conns = {{cfg.storage.max_open_conns}}
+max_idle_conns = {{cfg.storage.max_idle_conns}}
+
+[jobs]
+{{~#eachAlive bind.cereal-service.members as |cereal|}}
+{{~#if @last}}
+host = "127.0.0.1"
+port = {{cereal.cfg.port}}
+{{~/if}}
+{{~/eachAlive}}
+
+[tls]
+cert_path = "{{pkg.svc_config_path}}/service.crt"
+key_path = "{{pkg.svc_config_path}}/service.key"
+root_ca_path ="{{pkg.svc_config_path}}/root_ca.crt"

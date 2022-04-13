@@ -1,0 +1,28 @@
+@import '../table.component';
+
+:host {
+  display: flex;
+  flex-flow: row nowrap;
+  align-items: center;
+  justify-content: flex-start;
+  padding: 14px;
+  font-size: 14px;
+  border-bottom: 1px solid $chef-grey;
+  border-top: 1px solid $chef-grey;
+  overflow: hidden;
+  word-break: break-word;
+
+  &.text-right {
+    text-align: right;
+  }
+}
+
+:host:first-child {
+  border-left: 1px solid $chef-grey;
+  border-radius: $global-radius 0 0 $global-radius;
+}
+
+:host:last-child {
+  border-right: 1px solid $chef-grey;
+  border-radius: 0 $global-radius $global-radius 0;
+}

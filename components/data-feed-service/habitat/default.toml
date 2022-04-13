@@ -1,0 +1,28 @@
+[service]
+host = "localhost"
+port = 10501
+feed_interval = "4h"
+asset_page_size = 100
+reports_page_size = 1000
+node_batch_size = 50
+updated_nodes_only = true
+disable_cidr_filter = true
+cidr_filter = "0.0.0.0/0"
+external_fqdn = ""
+accepted_status_codes = [ 201, 201, 202, 203, 204 ]
+content_type = "application/json"
+
+[tls]
+key_contents =""
+cert_contents = ""
+root_cert_contents = ""
+
+[mlsa]
+accept = false
+
+[log]
+format = "text"
+level = "info"
+
+[storage]
+database = "data_feed_service"

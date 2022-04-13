@@ -1,0 +1,41 @@
+name: chef-automate upgrade run
+synopsis: Run an upgrade of Chef Automate
+usage: chef-automate upgrade run [flags]
+description: Run an upgrade of Chef Automate
+options:
+- name: airgap-bundle
+  usage: Path to an airgap install bundle
+- name: help
+  shorthand: h
+  default_value: "false"
+  usage: help for run
+- name: major
+  default_value: "false"
+  usage: This flag is only needed for major version upgrades
+- name: skip-deploy
+  default_value: "false"
+  usage: will only upgrade and not deploy the bundle
+- name: upgrade-airgap-bundles
+  default_value: "false"
+  usage: |
+    Update Chef Automate both frontend and backend version to install
+- name: upgrade-backends
+  default_value: "false"
+  usage: Update Chef Automate backends version to install
+- name: upgrade-frontends
+  default_value: "false"
+  usage: upgrade Chef Automate HA  frontends version to install
+- name: version
+  usage: The exact Chef Automate version to install
+inherited_options:
+- name: debug
+  shorthand: d
+  default_value: "false"
+  usage: Enable debug output
+- name: no-check-version
+  default_value: "false"
+  usage: Disable version check
+- name: result-json
+  usage: Write command result as JSON to PATH
+see_also:
+- chef-automate upgrade - upgrade automate to the latest version

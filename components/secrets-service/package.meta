@@ -1,0 +1,10 @@
+{
+  "name": "chef/secrets-service",
+  "bootstrap": [
+    {
+      "type": "file",
+      "path": "data/secrets_key"
+    }
+  ],
+  "uses_platform_scaffolding": true
+}

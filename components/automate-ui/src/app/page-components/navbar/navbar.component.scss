@@ -1,0 +1,83 @@
+@import "~styles/variables";
+@import "@carbon/layout/scss/layout";
+
+:host {
+  display: block;
+  background-color: $white;
+  height: $navigation-height;
+  border-bottom: 1px solid $chef-grey;
+}
+
+header {
+  position: relative;
+}
+
+.navigation-wrapper {
+  display: flex;
+  flex-flow: row nowrap;
+  justify-content: space-between;
+
+  @include carbon--breakpoint-down(lg) {
+    flex-flow: row wrap;
+  }
+
+  .logo-wrapper {
+    margin-left: 16px;
+
+    a.logo img {
+      display: block;
+      width: 160px;
+      height: $navigation-height;
+
+      @include carbon--breakpoint-down(lg) {
+        height: $navigation-height / 2;
+      }
+    }
+  }
+
+  .navigation-menu {
+    display: flex;
+    align-items: center;
+
+    @include carbon--breakpoint-down(lg) {
+      order: 3;
+      width: 100%;
+      height: ($navigation-height / 2) - 2px;
+      line-height: ($navigation-height / 2) - 2px;
+      border-top: 1px solid $chef-grey;
+      overflow: auto hidden;
+    }
+
+    app-authorized {
+      display: block;
+    }
+
+    .nav-link {
+      padding-left: 35px;
+
+      @include carbon--breakpoint-down(lg) {
+        padding-left: 16px;
+      }
+
+      a {
+        color: $chef-primary-dark;
+        text-decoration: none;
+
+        @include carbon--breakpoint-down(lg) {
+          font-size: 14px;
+        }
+      }
+
+      a:hover, a.active {
+        color: $chef-primary-bright;
+      }
+    }
+  }
+
+  .right-nav {
+    display: flex;
+    margin-left: auto;
+    align-items: center;
+    padding-right: 16px;
+  }
+}

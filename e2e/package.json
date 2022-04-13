@@ -1,0 +1,32 @@
+{
+  "name": "automate-e2e",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "cypress:open": "cypress open",
+    "cypress:local": "CYPRESS_BASE_URL=https://a2-dev.test CYPRESS_RUN_FLAKY=no cypress open",
+    "cypress:local:flaky": "CYPRESS_BASE_URL=https://a2-dev.test CYPRESS_RUN_FLAKY=yes cypress open",
+    "cypress:run": "cypress run",
+    "cypress:record": "cypress run --record",
+    "lint": "tslint -p tsconfig.json"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/chef/automate.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "cypress": "^4.1.0"
+  },
+  "devDependencies": {
+    "@cypress/webpack-preprocessor": "^4.1.0",
+    "@types/js-base64": "^2.3.1",
+    "js-base64": "^2.5.1",
+    "ts-loader": "^6.0.4",
+    "tslint": "^5.18.0",
+    "typescript": "^2.9.2",
+    "webpack": "^4.35.3"
+  }
+}

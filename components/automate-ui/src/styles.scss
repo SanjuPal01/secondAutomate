@@ -1,0 +1,401 @@
+/* You can add global styles to this file, and also import other style files */
+@import "@carbon/grid/scss/grid";
+@import "assets/chef-ui-library/chef/chef.css";
+@import "assets/chef-ui-library/collection/assets/fonts/material-icons/material-icons.css";
+@import "assets/chef-ui-library/collection/styles/variables.example.css";
+@import "styles/chef-theme";
+@import "~@ng-select/ng-select/themes/default.theme.css";
+
+#app-content-wrapper {
+  chef-side-panel {
+    top: 68px;
+  }
+
+  &[hasUserNotifications] {
+    chef-side-panel {
+      // Adjust height when global notifications are visible.
+      max-height: calc(100% - 120px);
+    }
+  }
+
+  &[hasNotifications] {
+    chef-side-panel {
+      top: 107px;
+    }
+  }
+
+  &[hasNotifications][hasUserNotifications] {
+    chef-side-panel {
+      // Adjust height when global notifications
+      // and user notifications are visible.
+      max-height: calc(100% - 162px);
+    }
+  }
+}
+
+
+// These are used to wrap a collection of notifications.
+// An outer container of sticky-notifications causes the notifications to stick to the
+// upper scrollable window the user scrolls.
+.sticky-notifications {
+  position: sticky;
+  top: 0;
+  z-index: 95;
+
+  // An inner container of sticky-inner ensures the notification content will overlay
+  // page content and not push it down.
+  .sticky-inner {
+    position: absolute;
+    top: 0;
+    width: 100%;
+  }
+}
+
+.content-container {
+  height: 100%;
+  position: relative;
+
+  .container {
+    height: inherit;
+    position: relative;
+  }
+}
+
+.container {
+  position: relative;
+
+  main {
+    padding-left: 0;
+    padding-right: 0;
+  }
+}
+
+html, body {
+  margin: 0;
+  padding: 0;
+  background-color: $gray-highlight;
+  color: $chef-primary-dark;
+  line-height: 1.33em;
+}
+
+.page-body {
+  padding: $content-container-padding;
+
+  .is-empty {
+    border: 1px dashed lighten($chef-dark-grey, 10%);
+    padding: 100px;
+    text-align: center;
+    font-size: 12px;
+    font-weight: bold;
+    color: darken($chef-dark-grey, 6%);
+    letter-spacing: 1px;
+  }
+}
+
+button.create {
+  color: $white;
+  font-family: Muli;
+  font-size: 13px;
+  font-weight: 100;
+  background-color: $chef-blue-medium;
+  border: 1px solid $chef-blue-medium;
+  border-radius: 4px;
+  height: 33px;
+  width: 171px;
+}
+
+// a11y helpers
+.visually-hidden { /* https://snook.ca/archives/html_and_css/hiding-content-for-accessibility */
+  position: absolute;
+  height: 1px;
+  width: 1px;
+  overflow: hidden;
+  clip: rect(1px 1px 1px 1px);/* IE6, IE7 */
+  clip: rect(1px, 1px, 1px, 1px);
+}
+
+.visually-hidden a:focus,
+.visually-hidden input:focus,
+.visually-hidden button:focus {
+  position: static;
+  width: auto;
+  height: auto;
+}
+
+// status styles from pipes and other
+.success, .passed, .compliant, .compliant-node-count {
+  span.count, i, chef-icon {
+    color: $chef-success;
+  }
+}
+
+.failure, .failed, .critical, .critical-node-count {
+  span.count, i, chef-icon {
+    color: $chef-critical;
+  }
+}
+
+.total {
+  span.count, i, chef-icon {
+    color: $chef-primary-bright;
+  }
+}
+
+.minor, .minor-node-count {
+  span.count, i, chef-icon {
+    color: $chef-minor;
+  }
+}
+
+.major, .major-node-count {
+  span.count, i, chef-icon {
+    color: $chef-major;
+  }
+}
+
+.workflow-changes {
+  span.count, i, chef-icon {
+    color: $chef-purple;
+  }
+}
+
+.missing, .skipped, .skipped_tests, .skipped-node-count, .unchanged {
+  span.count, i, chef-icon {
+    color: $chef-dark-grey;
+  }
+}
+
+// TODO new component?
+.empty-help {
+  display: flex;
+  margin: 2em;
+  padding: 2em;
+  border: 1px dashed $chef-light-grey;
+  background: $chef-white;
+  align-items: center;
+
+  .help-icon {
+    height: 60px;
+    margin-right: 2em;
+  }
+
+  .help-msg {
+    p:last-child {
+      margin-bottom: 0;
+    }
+  }
+}
+
+// Modernizr classes
+// This is for SVG SMIL animation, where you animate the SVG element within the XML
+html.smil {
+  .m--no-smil {
+    display: none;
+  }
+}
+
+html.no-smil {
+  .m--smil {
+    display: none;
+  }
+
+  .m--no-smil {
+    display: block;
+  }
+}
+
+chef-loading-spinner[fixed] {
+  position: absolute;
+  top: 0;
+  left: 0;
+}
+
+input {
+  line-height: normal;
+}
+
+// chef-input directive styles here when NOT wrapped in chef-form-field
+.chef-input {
+  width: 100%;
+  height: 45px;
+  background-color: $white;
+  padding: 1em;
+  font-size: 14px;
+  border: 1px solid $chef-light-grey;
+  border-radius: $global-radius;
+  box-sizing: border-box;
+  font-family: inherit;
+  transition: border 0.4s ease;
+
+  &:focus,
+  &:active {
+    border-color: $chef-primary-bright;
+    outline: none;
+  }
+
+  &[disabled] {
+    background-color: $chef-light-grey;
+    opacity: 0.5;
+  }
+
+  .error & {
+    border-color: $chef-critical;
+    border-radius: $global-radius $global-radius 0 0;
+  }
+}
+
+// Angular Material Overrides
+.chef-control-menu {
+  position: absolute;
+  margin-top: 35px;
+  right: -48px;
+  margin-right: 35px;
+}
+
+.three-dot-column {
+  position: relative;
+  text-align: right;
+  max-width: 54px;
+}
+
+.mat-option {
+  font-family: 'Muli', Helvetica, Arial, sans-serif;
+
+  &.mat-active,
+  &:hover:not(.mat-option-disabled),
+  &:focus:not(.mat-option-disabled) {
+    background: $chef-primary-bright;
+    color: $chef-white;
+  }
+
+  &:hover:not(.mat-option-disabled):not(.mat-active) {
+    background: lighten($chef-primary-bright, 15%);
+  }
+}
+
+[panelclass="chef-control-menu"] {
+  text-align: right;
+
+  &:focus .mat-select-trigger {
+    outline: -webkit-focus-ring-color auto 5px;
+  }
+
+  .mat-select-trigger {
+    display: inline-block;
+    position: absolute;
+    right: 10px;
+    top: calc(50% - 16px); // subtracting half the height
+    border-radius: var(--chef-border-radius);
+    background-color: var(--chef-white);
+    width: 32px;
+    height: 32px;
+    cursor: pointer;
+
+    &:after {
+      content: '...';
+      position: absolute;
+      color: var(--black);
+      bottom: 35%;
+      left: 23%;
+      font-size: 20px;
+    }
+
+    &:hover {
+      background-color: var(--chef-badge-primary-background);
+
+      &:after {
+        color: var(--chef-badge-primary-color);
+      }
+    }
+  }
+
+  &[aria-owns] {  // hacky alternative for selecting when the panel is open
+
+    .mat-select-trigger {
+      background-color: var(--chef-badge-primary-border);
+
+      &:after {
+        color: var(--chef-control-alternate-color);
+      }
+    }
+  }
+
+  &:disabled {
+
+    .mat-select-trigger {
+      background-color: var(--chef-white);
+
+      &:after {
+        color: $chef-primary-dark;
+      }
+    }
+  }
+
+  .mat-select-placeholder,
+  .mat-select-arrow-wrapper,
+  .mat-select-arrow {
+    display: none;
+  }
+}
+
+.waived-icon {
+  border-radius: 2px;
+  height: 16px;
+  width: 16px;
+  background-color: $chef-med-grey;
+  position: relative;
+}
+
+.waived-icon:before {
+  color: $chef-darkest;
+  content: 'W';
+  font-size: 9px;
+  font-weight: bolder;
+  position: absolute;
+  right: 3px;
+  text-align: center;
+  top: -2px;
+}
+
+.chef-servers-icon {
+  display: inline-block;
+  border: 1px solid $chef-darkest;
+  border-radius: 2px;
+  height: 16px;
+  width: 16px;
+  background-color: var(--chef-white);
+  position: relative;
+  top: 2px;
+  margin-right: 5px;
+}
+
+.chef-servers-icon:before {
+  color: $chef-darkest;
+  content: 'C';
+  font-size: 9px;
+  font-weight: bolder;
+  position: absolute;
+  right: 4px;
+  text-align: center;
+  top: -3px;
+}
+
+// mat-select dropdown menu
+
+[panelClass="chef-dropdown"] {
+  height: 45px;
+  background-color: $chef-white;
+  padding: 1em;
+  font-size: 14px;
+  border: 1px solid $chef-light-grey;
+  border-radius: 4px;
+  box-sizing: border-box;
+  font-family: inherit;
+  transition: border 0.4s ease;
+
+  &:focus,
+  &:active {
+    border-color: $chef-primary-bright;
+    outline: none;
+  }
+}

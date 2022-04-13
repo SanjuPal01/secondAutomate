@@ -1,0 +1,326 @@
+@import "~styles/variables";
+@import 'app/page-components/json-tree/json-tree.component.scss';
+@import '../infra_shared/shared';
+
+chef-page-header {
+  padding-bottom: 0;
+}
+
+chef-toolbar {
+  display: block;
+  position: relative;
+  margin-bottom: 5px;
+
+  small {
+    bottom: 2px;
+    color: $chef-dark-grey;
+    position: absolute;
+    right: 0;
+  }
+}
+
+thead {
+  font-size: 14px;
+  letter-spacing: 0.2px;
+  color: $chef-primary-dark;
+}
+
+th {
+  text-align: left;
+  padding: 0px;
+}
+
+tbody > .detail-row {
+  padding-top: 0px;
+  padding-bottom: 15px;
+}
+
+.detail-row {
+  display: flex;
+  color: $chef-primary-dark;
+}
+
+.id-column {
+  width: 33%;
+  padding-top: 0px;
+  padding-left: 0px;
+}
+
+.type-column {
+  width: 66%;
+  padding-top: 0px;
+  padding-left: 0px;
+}
+
+chef-table {
+  width: calc(100% - 4px);
+
+  .controls {
+    text-align: right;
+  }
+
+  .header-color {
+    background-color: $chef-white;
+  }
+
+  .no-border-th {
+    border: none;
+    font-size: 12px;
+  }
+
+}
+
+.empty-case-container {
+  margin-top: 42px;
+  justify-content: center;
+  text-align: center;
+
+  .empty-case-entry {
+    margin-top: 18px;
+    margin-bottom: 0;
+  }
+
+  p {
+    font-size: 18px;
+  }
+}
+
+chef-loading-spinner {
+  z-index: 199;
+}
+
+.page-body {
+  margin-right: 33px;
+  padding: 0px 0px 0px 0px;
+
+  chef-loading-spinner {
+    display: block;
+    margin: 100px auto;
+    width: 100px;
+  }
+}
+
+.version-dropdown {
+  color: $chef-primary-dark;
+
+  ::ng-deep label {
+    display: inline;
+    color: $chef-primary-dark;
+    font-size: 15px;
+    margin-right: 15px;
+  }
+
+  chef-select {
+    margin-bottom: 12px;
+    width: 150px;
+    font-size: 14px;
+  }
+}
+
+.center {
+  display: flex;
+  justify-content: center;
+}
+
+.empty-section {
+  margin-top: 130px;
+  text-align: center;
+}
+
+img {
+  width: 70px;
+}
+
+.json-tree-container {
+  font-size: 14px;
+}
+
+.add-circle {
+  cursor: pointer;
+  border: none;
+  background-color: white;
+
+  img {
+    width: 103px;
+    height: 20px;
+  }
+}
+
+.collapse-circle {
+  cursor: pointer;
+  border: none;
+  background-color: white;
+  margin-left: 48px;
+
+  img {
+    width: 103px;
+    height: 20px;
+  }
+
+}
+
+.label {
+  margin-left: 39px;
+  height: 20px;
+  left: 200px;
+  top: 238px;
+  font-weight: bold;
+  font-size: 12px;
+  line-height: 20px;
+  letter-spacing: 0.5px;
+  color: $chef-black;
+}
+
+.constraint {
+  margin-top: 50px;
+  width: 136px;
+}
+
+.default {
+  margin-top: 29px;
+  width: 112px;
+
+}
+
+.override {
+  margin-top: 54px;
+  width: 119px;
+}
+
+.constraint-table {
+  margin-top: 15px;
+  margin-left: 28px;
+  background: $chef-white;
+  border: 1px solid $chef-key-tab;
+  box-sizing: border-box;
+  border-radius: 2px;
+
+}
+
+.attr {
+  width: 98%;
+  height: 242px;
+  left: 189px;
+  top: 274px;
+  margin-left: 28px;
+  margin-right: 33px;
+  margin-top: 16px;
+  background: $chef-white;
+  border: 1px solid $chef-key-tab;
+  box-sizing: border-box;
+  border-radius: 2px;
+}
+
+.json-container {
+  height: 169px;
+  font-size: 12px;
+  line-height: 20px;
+  letter-spacing: 0.5px;
+  color: $chef-black;
+}
+
+.scroll {
+  max-height: 158px;
+  overflow-y: auto;
+  overflow-x: hidden;
+}
+
+
+::ng-deep .scroll::-webkit-scrollbar {
+  width: 5px;
+  background-color: $chef-modal-scrollbar;
+}
+
+::ng-deep .scroll::-webkit-scrollbar-thumb {
+  border-radius: 8px;
+  background-color: $chef-modal;
+}
+
+.constraint-container {
+  margin-top: 16px;
+  margin-left: 16px;
+  font-size: 12px;
+  line-height: 20px;
+  letter-spacing: 0.5px;
+  color: $chef-black;
+}
+
+.edit {
+  overflow: auto;
+}
+
+.divider {
+  margin-left: 16px;
+  margin-top: 11px;
+  margin-right: 18px;
+}
+
+.divider-constraint {
+  margin-left: 16px;
+  margin-top: 0;
+  margin-right: 18px;
+}
+
+.divider-constraints {
+  margin-left: 16px;
+  margin-top: 2px;
+  margin-right: 18px;
+}
+
+chef-button:focus {
+  outline: none;
+  border: none;
+}
+
+chef-button {
+  ::ng-deep button:focus {
+    outline: none;
+    border: 1px solid $chef-primary-bright;
+    border-radius: 4px;
+  }
+
+  img:focus {
+    outline: none;
+    border: none;
+  }
+}
+
+.expand-collapse {
+  font-size: 14px;
+  color: $royal-blue;
+  padding: 0 10px;
+
+  .action {
+    cursor: pointer;
+
+    &:first-child {
+      margin-right: 45px;
+    }
+
+    chef-icon {
+      position: relative;
+      top: 0;
+    }
+  }
+
+}
+
+.right-button-box {
+  cursor: pointer;
+  position: relative;
+  float: right;
+}
+
+.edit-item {
+  margin: 0 8px 0 -4px;
+  font-size: 13px;
+}
+
+.edit-text {
+  margin-top: 0px;
+}
+
+.img-section {
+  margin-top: 27px;
+  text-align: center;
+}

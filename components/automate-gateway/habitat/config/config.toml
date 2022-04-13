@@ -1,0 +1,164 @@
+host = "127.0.0.1"
+port = {{cfg.service.port}}
+grpc_port = {{cfg.service.grpc_port}}
+external_fqdn = "https://{{cfg.service.external_fqdn}}"
+{{#if cfg.service.trial_license_url ~}}
+trial_license_url = "{{cfg.service.trial_license_url}}"
+{{/if ~}}
+open_api_ui_dir = "{{pkg.path}}/static/swagger-ui/"
+
+[data_collector]
+{{#if cfg.data_collector.limiter.disable ~}}
+disable_limiter = {{ cfg.data_collector.limiter.disable }}
+{{/if ~}}
+{{#if cfg.data_collector.limiter.max_inflight_requests ~}}
+limiter_max_requests = {{ cfg.data_collector.limiter.max_inflight_requests  }}
+{{/if ~}}
+
+[log]
+{{~#if cfg.log.level}}
+  level = "{{cfg.log.level}}"
+{{~ else}}
+  level = "{{cfg.service.log.level}}"
+{{~/if}}
+
+[tls]
+  cert_path = "{{pkg.svc_config_path}}/service.crt"
+  key_path = "{{pkg.svc_config_path}}/service.key"
+  root_ca_path ="{{pkg.svc_config_path}}/root_ca.crt"
+
+[grpc_clients]
+{{~#if cfg.service.null_backend_sock}}
+  null_backend_sock = "{{cfg.service.null_backend_sock}}"
+{{~ else}}
+  null_backend_sock = "{{pkg.svc_var_path}}/null_backend.sock"
+{{~/if}}
+[grpc_clients.endpoints]
+{{~#eachAlive bind.applications-service.members as |apps|}}
+{{~#if @last}}
+  [grpc_clients.endpoints.applications-service]
+    target = "127.0.0.1:{{apps.cfg.port}}"
+    secure = true
+{{~/if}}
+{{~/eachAlive}}
+{{~#eachAlive bind.authz-service.members as |authz|}}
+{{~#if @last}}
+  [grpc_clients.endpoints.authz-service]
+    target = "127.0.0.1:{{authz.cfg.port}}"
+    secure = true
+{{~/if}}
+{{~/eachAlive}}
+{{~#eachAlive bind.authn-service.members as |authn|}}
+{{~#if @last}}
+  [grpc_clients.endpoints.authn-service]
+    target = "127.0.0.1:{{authn.cfg.port}}"
+    secure = true
+{{~/if}}
+{{~/eachAlive}}
+{{~#eachAlive bind.compliance-service.members as |compliance|}}
+{{~#if @last}}
+  [grpc_clients.endpoints.compliance-service]
+    target = "127.0.0.1:{{compliance.cfg.port}}"
+    secure = true
+{{~/if}}
+{{~/eachAlive}}
+{{~#eachAlive bind.config-mgmt-service.members as |cfgmgmt|}}
+{{~#if @last}}
+  [grpc_clients.endpoints.config-mgmt-service]
+    target = "127.0.0.1:{{cfgmgmt.cfg.port}}"
+    secure = true
+{{~/if}}
+{{~/eachAlive}}
+{{~#eachAlive bind.data-feed-service.members as |datafeed|}}
+{{~#if @last}}
+  [grpc_clients.endpoints.data-feed-service]
+    target = "127.0.0.1:{{datafeed.cfg.port}}"
+    secure = true
+{{~/if}}
+{{~/eachAlive}}
+{{~#eachAlive bind.deployment-service.members as |deployment|}}
+{{~#if @last}}
+  [grpc_clients.endpoints.deployment-service]
+    target = "127.0.0.1:{{deployment.cfg.port}}"
+    secure = true
+{{~/if}}
+{{~/eachAlive}}
+{{~#eachAlive bind.event-feed-service.members as |event|}}
+{{~#if @last}}
+  [grpc_clients.endpoints.event-feed-service]
+    target = "127.0.0.1:{{event.cfg.port}}"
+    secure = true
+{{~/if}}
+{{~/eachAlive}}
+{{~#eachAlive bind.infra-proxy-service.members as |infra|}}
+{{~#if @last}}
+  [grpc_clients.endpoints.infra-proxy-service]
+    target = "127.0.0.1:{{infra.cfg.port}}"
+    secure = true
+{{~/if}}
+{{~/eachAlive}}
+{{~#eachAlive bind.ingest-service.members as |ingest|}}
+{{~#if @last}}
+  [grpc_clients.endpoints.ingest-service]
+    target = "127.0.0.1:{{ingest.cfg.port}}"
+    secure = true
+{{~/if}}
+{{~/eachAlive}}
+{{~#eachAlive bind.license-control-service.members as |license|}}
+{{~#if @last}}
+  [grpc_clients.endpoints.license-control-service]
+    target = "127.0.0.1:{{license.cfg.port}}"
+    secure = true
+{{~/if}}
+{{~/eachAlive}}
+{{~#eachAlive bind.local-user-service.members as |local-user|}}
+{{~#if @last}}
+  [grpc_clients.endpoints.local-user-service]
+    target = "127.0.0.1:{{local-user.cfg.port}}"
+    secure = true
+{{~/if}}
+{{~/eachAlive}}
+{{~#eachAlive bind.nodemanager-service.members as |manager|}}
+{{~#if @last}}
+  [grpc_clients.endpoints.nodemanager-service]
+    target = "127.0.0.1:{{manager.cfg.port}}"
+    secure = true
+{{~/if}}
+{{~/eachAlive}}
+{{~#eachAlive bind.notifications-service.members as |notifications|}}
+{{~#if @last}}
+  [grpc_clients.endpoints.notifications-service]
+    target = "127.0.0.1:{{notifications.cfg.port}}"
+    secure = true
+{{~/if}}
+{{~/eachAlive}}
+{{~#eachAlive bind.teams-service.members as |teams|}}
+{{~#if @last}}
+  [grpc_clients.endpoints.teams-service]
+    target = "127.0.0.1:{{teams.cfg.port}}"
+    secure = true
+{{~/if}}
+{{~/eachAlive}}
+{{~#eachAlive bind.secrets-service.members as |secrets|}}
+{{~#if @last}}
+  [grpc_clients.endpoints.secrets-service]
+    target = "127.0.0.1:{{secrets.cfg.port}}"
+    secure = true
+{{~/if}}
+{{~/eachAlive}}
+{{~#eachAlive bind.automate-cds.members as |cds|}}
+{{~#if @last}}
+  [grpc_clients.endpoints.automate-cds]
+    target = "127.0.0.1:{{cds.cfg.port}}"
+    secure = true 
+{{~/if}}
+{{~/eachAlive}}
+{{~#eachAlive bind.user-settings-service.members as |uss|}}
+{{~#if @last}}
+  [grpc_clients.endpoints.user-settings-service]
+    target = "127.0.0.1:{{uss.cfg.port}}"
+    secure = true
+{{~/if}}
+{{~/eachAlive}}
+
+

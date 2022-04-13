@@ -1,0 +1,184 @@
+@import "~styles/variables";
+@import "~styles/mixins";
+@import "@carbon/layout/scss/layout";
+
+:host {
+  display: block;
+  position: relative;
+  padding-left: 35px;
+}
+
+.dropdown-label {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  position: relative;
+  z-index: 99;
+  padding: 10px 0;
+  margin-left: auto;
+  cursor: pointer;
+  border: none;
+  background: transparent;
+  font-weight: 600;
+
+  @include carbon--breakpoint-down(lg) {
+    padding: 8px 0;
+  }
+
+  &:disabled {
+    color: $chef-primary-dark;
+    cursor: default; // no pointer when there's only one element
+  }
+
+  // seems to be needed only for Safari
+  &:active {
+    color: $chef-primary-dark;
+  }
+
+  > chef-icon {
+    font-size: 16px;
+    color: $chef-primary-dark;
+    margin-left: 5px;
+  }
+
+  .selection-label {
+    display: inline-block;
+    max-width: 180px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    line-height: normal; // solves descender clipping due to overflow: hidden
+
+    @include carbon--breakpoint-down(lg) {
+      font-size: 14px;
+    }
+  }
+
+  .selection-count {
+    display: inline-block;
+    width: 20px;
+    height: 20px;
+    font-size: 14px;
+    line-height: 20px;
+    text-align: center;
+    border-radius: 50%;
+    margin-left: 10px;
+    background: $chef-grey;
+
+    @include carbon--breakpoint-down(lg) {
+      font-size: 12px;
+    }
+
+    &.active {
+      background: $chef-primary-bright;
+      color: $chef-white;
+    }
+  }
+}
+
+.dropdown {
+  width: 326px;
+  right: -10px;
+  border: 1px solid $chef-grey;
+  font-size: 14px;
+  z-index: 100;
+
+  &::before {
+    display: block;
+    position: absolute;
+    top: -6px;
+    right: 12px;
+    width: 10px;
+    height: 10px;
+    background: $chef-white;
+    transform: rotate(45deg);
+    border-left: 1px solid $chef-grey;
+    border-top: 1px solid $chef-grey;
+    content: '';
+  }
+
+  .dropdown-body {
+
+    .dropdown-content {
+      display: flex;
+      flex-direction: column;
+      padding: 14px;
+      border-bottom: 1px solid $chef-grey;
+
+      &:last-child {
+        border-bottom: transparent;
+      }
+    }
+
+    .button-container { // adjust for 8px global margin on buttons
+      display: flex;
+      justify-content: flex-start;
+      padding: calc(14px - 8px);
+      padding-bottom: 0;
+    }
+
+
+    .action-container {
+      padding: 1px; // adjust for full container buttons to still see outline
+
+      button {
+        width: 100%;
+        padding: 13px; // account for the 1px from the container
+        text-align: left;
+        border: none;
+        cursor: pointer;
+      }
+    }
+
+    > span {
+      display: block;
+      color: $chef-dark-grey;
+      text-transform: uppercase;
+      font-size: 11px;
+      padding: 9px 14px 0;
+    }
+
+    chef-checkbox {
+      display: flex;
+      align-items: flex-start;
+      font-weight: 400;
+
+      & + chef-checkbox {
+        margin-top: 14px;
+      }
+
+      ::ng-deep .label-wrap {
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+      }
+    }
+
+    .no-projects {
+      padding: 14px 0;
+
+      p {
+        margin-bottom: 0;
+        font-style: italic;
+      }
+    }
+  }
+}
+
+#drop-list {
+  max-height: 365px;
+  overflow-x: scroll;
+}
+
+// animation
+.pf-clear-selection {
+  visibility: hidden;
+  opacity: 0;
+  transition: .2s ease-in;
+
+  &.active {
+    visibility: visible;
+    opacity: 1;
+    transition: .25s ease-out;
+  }
+}

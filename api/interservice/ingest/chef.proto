@@ -1,0 +1,61 @@
+syntax = "proto3";
+
+package chef.automate.domain.ingest;
+option go_package = "github.com/chef/automate/api/interservice/ingest";
+
+import "google/api/annotations.proto";
+import "external/ingest/request/chef.proto";
+import "external/ingest/request/action.proto";
+import "external/ingest/request/liveness.proto";
+
+import "external/ingest/response/chef.proto";
+import "external/ingest/response/action.proto";
+import "external/ingest/response/liveness.proto";
+
+// Version message
+//
+// The ingest-service version constructed with:
+// * Service name
+// * Built time
+// * Semantic version
+// * Git SHA
+message Version {
+	string version = 2;
+	string built = 1;
+	string name = 3;
+	string sha = 4;
+}
+
+message VersionRequest {
+}
+
+service ChefIngesterService {
+	rpc ProcessChefRun (api.ingest.request.Run) returns (api.ingest.response.ProcessChefRunResponse) {
+		option (google.api.http) = {
+			post: "/api/v0/events/chef/run"
+			body: "*"
+		};
+	};
+	rpc ProcessChefAction (api.ingest.request.Action) returns (api.ingest.response.ProcessChefActionResponse) {
+		option (google.api.http) = {
+			post: "/api/v0/events/chef/action"
+			body: "*"
+		};
+	};
+	rpc ProcessLivenessPing(api.ingest.request.Liveness) returns (api.ingest.response.ProcessLivenessResponse) {
+	  option (google.api.http) = {
+			post: "/api/v0/events/chef/liveness"
+			body: "*"
+		};
+	};
+	rpc ProcessMultipleNodeDeletes (api.ingest.request.MultipleNodeDeleteRequest) returns (api.ingest.response.ProcessMultipleNodeDeleteResponse);
+	rpc ProcessNodeDelete (api.ingest.request.Delete) returns (api.ingest.response.ProcessNodeDeleteResponse) {
+		option (google.api.http) = {
+			post: "/api/v0/events/chef/nodedelete"
+			body: "*"
+		};
+	};
+	rpc GetVersion (VersionRequest) returns (Version) {
+		option (google.api.http).get = "/api/v0/ingest/version";
+	};
+}

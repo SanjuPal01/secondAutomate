@@ -1,0 +1,40 @@
+
+<section class="reset-admin-key details-tab">
+  <div class="spinner">
+    <chef-loading-spinner *ngIf="resetKeyLoading" size="50" fixed></chef-loading-spinner>
+  </div>
+  <ng-container  *ngIf="!resetKeyLoading">
+      <form [formGroup]="resetKeyForm">
+        <chef-form-field>
+          <label>
+            <span class="label">New Admin Key <span aria-hidden="true">*</span></span>
+            <textarea
+              chefInput
+              name="admin_key"
+              formControlName="admin_key"
+              cols="54"
+              rows="10"
+              placeholder="-----BEGIN RSA PRIVATE KEY -----"
+              data-cy="reset-admin-key"
+              autofocus></textarea>
+          </label>
+          <chef-error
+            *ngIf="(resetKeyForm.get('admin_key').hasError('required') || resetKeyForm.get('admin_key').hasError('pattern')) && resetKeyForm.get('admin_key').dirty">
+            New Admin Key is required.
+          </chef-error>
+        </chef-form-field>
+        <chef-form-field>
+          <div id="button-bar">
+            <chef-button
+              [disabled]="isLoading || !resetKeyForm.valid || saveInProgress"
+              primary
+              inline (click)="saveNewKey()">
+              <chef-loading-spinner *ngIf="saveInProgress"></chef-loading-spinner>
+              <span *ngIf="saveInProgress">Saving...</span>
+              <span *ngIf="!saveInProgress">Reset Admin Key</span>
+            </chef-button>
+          </div>
+        </chef-form-field>
+      </form>
+  </ng-container>
+</section>

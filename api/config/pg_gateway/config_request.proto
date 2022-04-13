@@ -1,0 +1,52 @@
+// -*- mode: protobuf; indent-tabs-mode: t; c-basic-offset: 8; tab-width: 8 -*-
+syntax = "proto3";
+
+package chef.automate.infra.pg_gateway;
+option go_package = "github.com/chef/automate/api/config/pg_gateway";
+import "config/shared/global.proto";
+import "config/shared/tls.proto";
+import "automate-grpc/protoc-gen-a2-config/api/a2conf/annotations.proto";
+import "google/protobuf/wrappers.proto";
+
+message ConfigRequest {
+  option (chef.automate.api.service_config) = {name: "automate-pg-gateway"};
+
+	V1 v1 = 1;
+
+	message V1 {
+		System sys = 1;
+
+		message System {
+			chef.automate.infra.config.Mlsa mlsa = 1;
+			Service service = 2;
+			chef.automate.infra.config.TLSCredentials tls = 3;
+			chef.automate.infra.config.Log log = 4;
+			Timeouts timeouts = 5;
+			Resolvers resolvers = 6;
+
+			message Resolvers {
+				repeated google.protobuf.StringValue nameservers = 1;
+				google.protobuf.BoolValue enable_system_nameservers = 2;
+			}
+
+			message Endpoint {
+				google.protobuf.BoolValue is_domain = 1;
+				google.protobuf.StringValue address = 2;
+				google.protobuf.StringValue port = 3;
+			}
+
+			message Service {
+				google.protobuf.StringValue host = 1 [deprecated=true]; // The listen host is no longer setable(localhost only)
+				google.protobuf.Int32Value port = 2 [ (chef.automate.api.port) = { name: "service", default: 10145, protocol: "tcp" } ];
+				reserved 3;
+				chef.automate.infra.config.External.Postgresql external_postgresql = 4;
+				repeated Endpoint parsed_nodes = 5;
+			}
+
+			message Timeouts {
+				google.protobuf.Int32Value connect = 1;
+				google.protobuf.Int32Value idle = 2;
+			}
+		}
+	}
+}

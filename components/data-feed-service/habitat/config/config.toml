@@ -1,0 +1,54 @@
+[service]
+host = "127.0.0.1"
+port = {{cfg.service.port}}
+feed_interval = "{{cfg.service.feed_interval}}"
+asset_page_size = {{cfg.service.asset_page_size}}
+reports_page_size = {{cfg.service.reports_page_size}}
+node_batch_size = {{cfg.service.node_batch_size}}
+updated_nodes_only = {{cfg.service.updated_nodes_only}}
+disable_cidr_filter = {{cfg.service.disable_cidr_filter}}
+cidr_filter = "{{cfg.service.cidr_filter}}"
+external_fqdn = "https://{{cfg.service.external_fqdn}}"
+accepted_status_codes = {{cfg.service.accepted_status_codes}}
+content_type = "{{cfg.service.content_type}}"
+
+[postgres]
+database = "{{cfg.storage.database}}"
+migrations_path = "{{pkg.path}}/migrations"
+
+[log]
+log_format = "{{cfg.log.format}}"
+log_level = "{{cfg.log.level}}"
+
+[tls]
+cert_path = "{{pkg.svc_config_path}}/service.crt"
+key_path = "{{pkg.svc_config_path}}/service.key"
+root_ca_path ="{{pkg.svc_config_path}}/root_ca.crt"
+
+[secrets]
+{{~#eachAlive bind.secrets-service.members as |secrets-service|}}
+{{~#if @last}}
+target = "127.0.0.1:{{secrets-service.cfg.port}}"
+{{~/if}}
+{{~/eachAlive}}
+
+[cfgmgmt]
+{{~#eachAlive bind.config-mgmt-service.members as |config-mgmt-service|}}
+{{~#if @last}}
+target = "127.0.0.1:{{config-mgmt-service.cfg.port}}"
+{{~/if}}
+{{~/eachAlive}}
+
+[compliance]
+{{~#eachAlive bind.compliance-service.members as |compliance-service|}}
+{{~#if @last}}
+target = "127.0.0.1:{{compliance-service.cfg.port}}"
+{{~/if}}
+{{~/eachAlive}}
+
+[cereal]
+{{~#eachAlive bind.cereal-service.members as |cereal-service|}}
+{{~#if @last}}
+target = "127.0.0.1:{{cereal-service.cfg.port}}"
+{{~/if}}
+{{~/eachAlive}}

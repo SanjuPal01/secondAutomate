@@ -1,0 +1,127 @@
+@import "~styles/variables";
+@import "~styles/mixins";
+
+chef-page-header {
+  position: relative;
+
+  chef-subheading {
+    padding-bottom: 32px;
+  }
+}
+
+app-search-bar {
+  display: inline-block;
+  width: calc(100% - 110px);
+}
+
+chef-dropdown {
+  z-index: 2;
+}
+
+.download-nodes {
+  position: relative;
+  float: right;
+  padding-right: 2px;
+
+  .dropdown-toggle {
+    @include base-box-shadow();
+    margin: 0;
+    width: 47px;
+    height: 47px;
+  }
+
+  .dropdown {
+    right: 0;
+  }
+}
+
+.copy-dropdown {
+  position: relative;
+  float: right;
+
+  .dropdown-toggle {
+    @include base-box-shadow();
+    margin: 0;
+    width: 47px;
+    height: 47px;
+
+    chef-icon {
+      position: relative;
+      top: -1px;
+      right: 1px;
+    }
+  }
+
+  .dropdown {
+    right: 0;
+  }
+
+  chef-click-outside {
+    display: block;
+    padding: 1em 0 1em 1em;
+
+    p {
+      margin-bottom: 0.5em;
+    }
+  }
+
+  .copy-input {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    input {
+      padding: 1em;
+      width: 300px;
+      border-radius: $global-radius;
+      border: 1px solid $chef-grey;
+    }
+  }
+}
+
+app-client-runs-search-filters {
+  display: block;
+  position: relative;
+  margin-top: 2px;
+  width: calc(100% - 63px);
+}
+
+.node-list-container {
+  .stats-box {
+    margin-left: 0;
+  }
+
+  .trend-toggle {
+    display: inline-block;
+    margin-bottom: .5em;
+    padding: .5em 1em;
+    border-radius: $global-radius;
+    color: $gray;
+    font-size: .875em;
+
+    &:hover {
+      color: $chef-primary-dark;
+      cursor: pointer;
+      background-color: $white;
+      box-shadow: 0 0 24px rgba($gray-light, .40);
+      transition: all .2s;
+    }
+
+    i {
+      margin-right: .5em;
+    }
+  }
+}
+
+.node-rollups {
+  display: flex;
+  margin-top: 1em;
+}
+
+#download-modal {
+  text-align: center;
+}
+
+.lock-scrolling {
+  min-height: calc(100vh - 49px);
+}

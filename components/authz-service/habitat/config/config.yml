@@ -1,0 +1,23 @@
+---
+grpc: 127.0.0.1:{{ cfg.service.port }}
+log-level: {{ cfg.logger.level }}
+log-format: {{ cfg.logger.format }}
+
+tls:
+  cert_path: {{pkg.svc_config_path}}/service.crt
+  key_path: {{pkg.svc_config_path}}/service.key
+  root_ca_path: {{pkg.svc_config_path}}/root_ca.crt
+
+database: {{cfg.storage.database}}
+max_connections: {{cfg.storage.max_connections}}
+max_idle_connections: {{cfg.storage.max_idle_connections}}
+migrations-path: {{pkg.path}}/migrations
+data-migrations-path: {{pkg.path}}/data-migrations
+project-limit: {{cfg.service.project_limit}}
+
+{{~#eachAlive bind.cereal-service.members as |cereal-service|}}
+  {{~#if @last}}
+cereal-address: 127.0.0.1:{{cereal-service.cfg.port}}
+  {{~/if}}
+{{~/eachAlive}}
+

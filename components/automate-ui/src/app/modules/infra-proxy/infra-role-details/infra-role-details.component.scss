@@ -1,0 +1,321 @@
+@import "~styles/variables";
+@import '../infra_shared/shared';
+@import '../../../../app/page-components/json-tree/json-tree.component.scss';
+
+chef-page-header {
+  padding-bottom: 0;
+}
+
+chef-toolbar {
+  display: block;
+  position: relative;
+  margin-bottom: 5px;
+
+  small {
+    bottom: 2px;
+    color: $chef-dark-grey;
+    position: absolute;
+    right: 0;
+  }
+}
+
+chef-tab-selector {
+  chef-option {
+    margin-right: 4px;
+    color: $chef-primary-dark;
+  }
+
+  ::ng-deep .selected {
+    background-color: $gray-highlight;
+  }
+
+  ::ng-deep .selected::before {
+    height: 4px;
+    background-color: $chef-dark-blue;
+  }
+
+  chef-option:focus {
+    outline: none;
+  }
+
+  ::ng-deep chef-option::before {
+    height: 4px;
+    background-color: $chef-tab-hover;
+  }
+
+  ::ng-deep chef-option:hover::before {
+    background: $chef-azureish-gray;
+  }
+}
+
+form {
+
+  #update-name {
+    width: 240px;
+  }
+
+  input {
+    font-size: 1em;
+    width: 240px;
+  }
+
+  input[type="text"]:disabled {
+    opacity: 0.5;
+    background-color: $chef-grey;
+    border: none;
+  }
+
+  #changes-not-allowed {
+    font-size: 12px;
+  }
+
+  #button-bar {
+    margin-top: 15px;
+
+    span#saved-note {
+      display: inline-block;
+      margin-top: 5px;
+      font-size: 12px;
+    }
+
+    chef-button {
+      margin-top: 0;
+      margin-left: 0;
+
+      chef-loading-spinner {
+        position: relative;
+        top: 2px;
+        margin-right: 5px;
+      }
+    }
+  }
+}
+
+thead {
+  font-size: 14px;
+  letter-spacing: 0.2px;
+  color: $chef-primary-dark;
+}
+
+th {
+  text-align: left;
+  padding: 0px;
+}
+
+tbody > .detail-row {
+  padding-top: 0px;
+  padding-bottom: 15px;
+}
+
+.detail-row {
+  display: flex;
+  color: $chef-primary-dark;
+}
+
+.id-column {
+  width: 33%;
+  padding-top: 0px;
+  padding-left: 0px;
+}
+
+.type-column {
+  width: 66%;
+  padding-top: 0px;
+  padding-left: 0px;
+}
+
+chef-table-new {
+  .controls {
+    text-align: right;
+  }
+
+  a {
+    cursor: pointer;
+    text-decoration: underline;
+  }
+}
+
+.empty-case-container {
+  margin-top: 42px;
+  justify-content: center;
+  text-align: center;
+
+  .empty-case-entry {
+    margin-top: 18px;
+    margin-bottom: 0;
+  }
+
+  p {
+    font-size: 18px;
+  }
+}
+
+chef-loading-spinner {
+  z-index: 199;
+}
+
+.page-body {
+  margin-right: 33px;
+  padding: 0px 0px 0px 0px;
+
+  chef-loading-spinner {
+    display: block;
+    margin: 100px auto;
+    width: 100px;
+  }
+}
+
+.version-dropdown {
+  color: $chef-primary-dark;
+
+  ::ng-deep label {
+    display: inline;
+    color: $chef-primary-dark;
+    font-size: 15px;
+    margin-right: 15px;
+  }
+
+  chef-select {
+    margin-top: 18px;
+    font-size: 14px;
+  }
+
+  ::ng-deep chef-select .selected-value {
+    height: 36px;
+    width: 279px;
+    background: $chef-white;
+    padding: 0.5em;
+    border: 1px solid $chef-form-input;
+    box-sizing: border-box;
+    border-radius: 4px;
+  }
+
+  ::ng-deep chef-select chef-dropdown {
+    width: 279px;
+    border: 1px solid $chef-key-tab;
+    box-sizing: border-box;
+    border-radius: 4px;
+  }
+
+  ::ng-deep chef-select chef-option {
+    height: 32px;
+    padding: 0.4em;
+  }
+
+  ::ng-deep chef-select .selected {
+    background: $chef-primary-bright;
+    border-radius: 4px;
+  }
+}
+
+.edit-text {
+  margin-top: 0px;
+}
+
+.expand-collapse {
+  margin: 0 10px;
+  width: 98%;
+  border-bottom: 0.5px solid $chef-key-tab;
+  font-size: 14px;
+  color: $royal-blue;
+
+  .action {
+    cursor: pointer;
+  }
+}
+
+.empty-section {
+  margin-top: 130px;
+  text-align: center;
+}
+
+img {
+  width: 70px;
+}
+
+.json-tree-container {
+  font-size: 14px;
+}
+
+.label {
+  margin-left: 39px;
+  height: 20px;
+  left: 200px;
+  top: 238px;
+  font-weight: bold;
+  font-size: 12px;
+  line-height: 20px;
+  letter-spacing: 0.5px;
+  color: $chef-black;
+}
+
+.default {
+  margin-top: 29px;
+  max-width: 25%;
+}
+
+.float-right {
+  position: relative;
+  float: right;
+
+  &:hover {
+    background: $chef-light-grey;
+    border-radius: 4px;
+  }
+
+  &:focus {
+    border: solid 1px $chef-primary-bright;
+  }
+}
+
+.override {
+  margin-top: 54px;
+  width: 119px;
+}
+
+.attr {
+  width: 98%;
+  margin-left: 28px;
+  margin-right: 33px;
+  margin-top: 16px;
+  background: $chef-white;
+  border: 1px solid $chef-key-tab;
+  box-sizing: border-box;
+  border-radius: 2px;
+}
+
+.edit-item {
+  margin: 0 8px 0 -4px;
+  font-size: 13px;
+}
+
+.json-container {
+  height: 169px;
+  font-size: 12px;
+  line-height: 20px;
+  text-transform: capitalize;
+  color: $chef-black;
+}
+
+.img-section {
+  margin-top: 27px;
+  text-align: center;
+}
+
+.page-body {
+  .label-items {
+    margin-bottom: 16px;
+    height: 55px;
+  }
+
+  .version-dropdown {
+    float: right;
+    width: 279px;
+  }
+
+  ::ng-deep {
+    .label-items .label {
+      float: left;
+    }
+  }
+}

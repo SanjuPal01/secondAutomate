@@ -1,0 +1,90 @@
+@import "~styles/variables";
+
+.container {
+  background-color: $chef-white;
+
+  main {
+    background-color: $chef-white;
+  }
+}
+
+h2 {
+  font-size: 16px;
+  font-weight: 600;
+}
+
+.group-section {
+  margin-bottom: 30px;
+
+  chef-button {
+    margin: 0;
+  }
+
+  .checkbox-row {
+    display: flex;
+
+    input {
+      width: 64px;
+      transition: .2s;
+    }
+
+    p {
+      margin: 0;
+    }
+
+    &+.checkbox-row {
+      margin-top: 12px;
+
+      &.secondary-row {
+        margin-left: 69px;
+      }
+    }
+
+
+    .checkbox-container {
+      margin-top: 12px;
+    }
+
+    chef-checkbox {
+      margin-right: 8px;
+      font-size: 17px;
+    }
+  }
+}
+
+.chef-input {
+  margin: 0 8px;
+
+  &.ng-invalid {
+    border: 1px solid $chef-critical;
+  }
+}
+
+chef-checkbox {
+  ::ng-deep .mat-checkbox-layout {
+    padding-bottom: 0;
+  }
+}
+
+mat-form-field {
+  margin: 0 8px 0 0;
+  width: 120px;
+
+  ::ng-deep .mat-form-field-wrapper {
+    padding-bottom: 0;
+  }
+
+  ::ng-deep .mat-form-field-infix {
+    padding: 0;
+    border-top: 0;
+  }
+
+  ::ng-deep .mat-select-disabled {
+    background-color: $chef-light-grey;
+    opacity: 0.5;
+
+    .mat-select-value {
+      color: rgb(84, 84, 84);
+    }
+  }
+}

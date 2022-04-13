@@ -1,0 +1,95 @@
+<div class="content-container">
+  <div class="container">
+    <main>
+      <chef-page-header>
+        <chef-heading>Projects</chef-heading>
+        <chef-subheading>
+          Projects group resources together.
+        </chef-subheading>
+      </chef-page-header>
+
+      <section class="page-body">
+        <ng-container *ngIf="(sortedProjects$ | async)?.length > 0">
+          <chef-toolbar>
+            <app-authorized [allOf]="['/apis/iam/v2/projects', 'post']">
+              <chef-button data-cy="create-project" primary (click)="openCreateModal()">Create Project</chef-button>
+            </app-authorized>
+          </chef-toolbar>
+          <app-authorized [allOf]="['/apis/iam/v2/projects', 'get']">
+            <chef-table>
+              <chef-thead>
+                <chef-tr>
+                  <chef-th>Name</chef-th>
+                  <chef-th>ID</chef-th>
+                  <chef-th>Ingest Rules</chef-th>
+                  <chef-th class="three-dot-column"></chef-th>
+                </chef-tr>
+              </chef-thead>
+              <chef-tbody>
+                <chef-tr *ngFor="let project of sortedProjects$ | async">
+                  <chef-td>
+                    <a [routerLink]="['/settings/projects', project.id]" data-cy="project-details">{{ project.name }}</a>
+                  </chef-td>
+                  <chef-td>{{ project.id }}</chef-td>
+                  <chef-td>{{ statusLabel[project.status] }}</chef-td>
+                  <chef-td class="three-dot-column">
+                    <!-- <app-authorized [allOf]="['/apis/iam/v2/projects/{id}', 'delete', project.id]"> -->
+                      <mat-select panelClass="chef-control-menu">
+                        <mat-option (onSelectionChange)="startProjectDelete($event, project)" data-cy="delete-project">Delete Project</mat-option>
+                      </mat-select>
+                    <!-- </app-authorized> -->
+                  </chef-td>
+                </chef-tr>
+              </chef-tbody>
+            </chef-table>
+          </app-authorized>
+        </ng-container>
+        <ng-container *ngIf="(sortedProjects$ | async)?.length === 0">
+          <app-authorized [allOf]="['/apis/iam/v2/projects', 'post']">
+            <div class="empty-case-container">
+              <p>Create the first project to get started!</p>
+            </div>
+            <div class="empty-case-container">
+                <chef-button primary data-cy="create-project" (click)="openCreateModal()">Create Project</chef-button>
+            </div>
+          </app-authorized>
+          <app-authorized not [allOf]="['/apis/iam/v2/projects', 'post']">
+            <div class="empty-case-container">
+              <p>It looks like no one has created any projects yet or you<br/>
+                don't have permission to view them.<br/><br/>
+                If this is a mistake, then reach out to your administrator.
+              </p>
+            </div>
+          </app-authorized>
+        </ng-container>
+      </section>
+
+      <app-create-object-modal
+        [visible]="createModalVisible"
+        [createProjectModal]="true"
+        [creating]="creatingProject"
+        [conflictErrorEvent]="conflictErrorEvent"
+        objectNoun="project"
+        [createForm]="createProjectForm"
+        (close)="closeCreateModal()"
+        (createClicked)="createProject()">
+      </app-create-object-modal>
+
+      <app-delete-object-modal
+        [visible]="deleteModalVisible"
+        objectNoun="project"
+        [objectName]="projectToDelete?.id"
+        (close)="closeDeleteModal()"
+        (deleteClicked)="deleteProject()"
+        objectAction="Delete">
+      </app-delete-object-modal>
+
+      <app-message-modal
+        [title]="'Could Not Delete Project'"
+        [visible]="messageModalVisible"
+        (close)="closeMessageModal()">
+        Before you can delete this project, delete all ingest rules, and then update projects.
+      </app-message-modal>
+    </main>
+  </div>
+</div>

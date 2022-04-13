@@ -1,0 +1,58 @@
+syntax = "proto3";
+
+package chef.automate.domain.ingest;
+option go_package = "github.com/chef/automate/api/config/ingest";
+
+import "config/shared/global.proto";
+import "config/shared/tls.proto";
+import "automate-grpc/protoc-gen-a2-config/api/a2conf/annotations.proto";
+import "google/protobuf/wrappers.proto";
+
+message ConfigRequest {
+	option (chef.automate.api.service_config) = {name: "ingest-service"};
+
+	reserved 1 to 2;
+
+	V1 v1 = 3;
+
+	message V1 {
+		System sys = 1;
+		Service svc = 2;
+
+		message System {
+			chef.automate.infra.config.Mlsa mlsa = 1;
+			Service service = 2;
+			chef.automate.infra.config.TLSCredentials tls = 3;
+			Log log = 4;
+
+			message Service {
+				google.protobuf.StringValue host = 1 [deprecated=true]; // The listen host is no longer setable(localhost only)
+				google.protobuf.Int32Value port = 2 [ (chef.automate.api.port) = { name: "service", default: 10122, protocol: "grpc" } ];
+				// NOTE: purge actions are no longer configurable via config
+				// and are now managed with gRPC endpoints. They are not
+				// reserved so we can migrate the initial values from config to
+				// to the purge cereal workflows.
+				// Setting these values is prevented in the Validate() callback.
+				google.protobuf.Int32Value purge_converge_history_after_days = 3 [deprecated = true];
+				google.protobuf.Int32Value purge_actions_after_days = 4 [deprecated = true];
+				reserved 5;
+				google.protobuf.Int32Value max_number_of_bundled_run_msgs = 6;
+				google.protobuf.Int32Value max_number_of_bundled_action_msgs = 7;
+				google.protobuf.Int32Value number_of_run_msgs_transformers = 8;
+				google.protobuf.Int32Value number_of_run_msg_publishers = 9;
+				google.protobuf.Int32Value message_buffer_size = 10;
+				google.protobuf.BoolValue nodes_missing_running_default = 11;
+				google.protobuf.BoolValue missing_nodes_for_deletion_running_default = 12;
+				google.protobuf.Int32Value number_of_nodemanager_publishers = 13;
+			}
+
+			message Log {
+				google.protobuf.StringValue format = 1;
+				google.protobuf.StringValue level = 2;
+			}
+		}
+
+		message Service {
+		}
+	}
+}

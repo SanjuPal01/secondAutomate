@@ -1,0 +1,27 @@
+syntax = "proto3";
+
+package chef.automate.api.legacy;
+option go_package = "github.com/chef/automate/components/automate-gateway/api/legacy";
+
+import "google/api/annotations.proto";
+import "google/protobuf/empty.proto";
+
+import "external/annotations/iam/annotations.proto";
+
+message StatusResponse {
+	string status = 1;
+}
+
+service LegacyDataCollector {
+	// This is used by chef-server, it requests a GET /data-collector/v0 to check
+	// Automate's status.
+	// We proxy /data-collector/v0 to /api/v0/events/data-collector, so this is
+	// where we need to respond.
+	// Since this is for legacy-support only, we don't bother much about having
+	// google.protobuf.Empty as argument.
+	rpc Status (google.protobuf.Empty) returns (StatusResponse) {
+		option (google.api.http).get = "/api/v0/events/data-collector";
+		option (chef.automate.api.iam.policy).resource = "ingest:status";
+		option (chef.automate.api.iam.policy).action = "ingest:status:get";
+	};
+}

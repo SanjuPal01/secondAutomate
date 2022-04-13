@@ -1,0 +1,142 @@
+@import "~styles/variables";
+
+chef-modal {
+
+  [slot=title] {
+    text-align: left;
+    font-size: 24px;
+    font-weight: 700;
+    margin-top: 0px;
+    padding-bottom: 27px;
+  }
+
+  .flex-container {
+    margin: 0px;
+    justify-content: center;
+
+    .input-margin, .id-margin {
+      margin-bottom: 20px;
+    }
+
+    form {
+      flex-basis: 60%;
+
+      .chef-input {
+        font-size: 13px;
+        height: 36px;
+        padding: 10px;
+      }
+
+      .object-id {
+        font-size: 13px;
+      }
+
+      .detail {
+        color: $chef-primary-dark;
+        font-size: 12px;
+      }
+
+      #admin_key {
+        height: 60px;
+      }
+    }
+
+    #button-org {
+      text-align: right;
+
+      chef-loading-spinner {
+        position: relative;
+        top: 2px;
+        margin-right: 5px;
+      }
+    }
+  }
+
+  ::ng-deep {
+
+    .modal {
+      box-shadow: 0px 0px 30px 0px $light-grey;
+      max-width: 528px;
+      min-width: 528px;
+      outline: none;
+    }
+
+    input#projects {
+      height: 36px;
+    }
+
+    label {
+      font-size: 16px;
+      font-weight: 400;
+    }
+
+    .label {
+      font-size: 16px;
+      font-weight: 400;
+      padding-bottom: 0.50em;
+    }
+
+    chef-button {
+      height: 36px;
+    }
+
+    chef-dropdown chef-checkbox:first-child {
+      padding: 10px 10px 10px 18px;
+    }
+
+    chef-button#create-org-modal-btn {
+      margin: 10px 0px 0px 0px;
+    }
+
+    chef-button#cancel-org-popup {
+      margin: 10px 15px 0px 0px;
+    }
+
+    .modal-overlay {
+      background-color: $chef-white;
+      mix-blend-mode: normal;
+      opacity: 0.7;
+    }
+
+    chef-button.close {
+      border: none;
+      color: var(--chef-primary-dark);
+      outline: none;
+      margin-top: 18px;
+      margin-right: 18px;
+    }
+
+    chef-button.close:hover {
+      background-color: $chef-white;
+    }
+
+    chef-button.close:active {
+      background: none;
+      color: var(--chef-primary-dark);
+    }
+  }
+}
+
+chef-modal ::ng-deep .dropdown-button {
+  height: 36px;
+}
+
+chef-modal ::ng-deep #resources-selected {
+  bottom: 8px;
+  position: relative;
+}
+
+chef-modal ::ng-deep .modal {
+  height: 76.5%;
+  overflow-x: hidden;
+}
+
+chef-modal ::ng-deep .modal::-webkit-scrollbar {
+  width: 12px;
+  background-color: #F5F5F5;
+}
+
+chef-modal ::ng-deep .modal::-webkit-scrollbar-thumb {
+  border-radius: 10px;
+  background-color: $light-grey;
+}

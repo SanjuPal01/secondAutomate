@@ -1,0 +1,143 @@
+
+// ------------------------------------------------------------------------------------- //
+// DO NOT DIRECTLY IMPORT COLORS FROM THIS FILE : CREATE A VARIABLE in _variables.scss //
+// ------------------------------------------------------------------------------------- //
+$white: #FFFFFF;
+$eggplant: #394261;
+$lavender: #BBCDF2;
+$eggplant-light-1: #C5C7D1;
+$eggplant-light-2: #B1B4C1;
+$eggplant-light-3: #9DA1B1;
+$eggplant-light-4: #898EA1;
+$eggplant-light-5: #757B91;
+$eggplant-light-6: #616881;
+$eggplant-light-7: #4D5571;
+$eggplant-dark-1: #333B57;
+$eggplant-dark-2: #2D344D;
+$lavender-light-1: #ECF0F9;
+$lavender-light-2: #E5EBF8;
+$lavender-light-3: #DEE6F7;
+$lavender-light-4: #D7E1F6;
+$lavender-light-5: #D0DCF5;
+$lavender-light-6: #C9D7F4;
+$lavender-light-7: #C2D2F3;
+$lavender-light-8: #E7E9E9;
+$lavender-light-9: #CFD2D2;
+$lavender-light-10: #CCCCCC;
+$lavender-light-11: #F5F5F5;
+$lavender-dark-1: #A8B8DA;
+$lavender-dark-2: #95A3C2;
+$lavender-dark-3: #7C8296;
+$grape-light-1: #D0D4EE;
+$grape-light-2: #BFC5E8;
+$grape-light-3: #AEB6E2;
+$grape-light-4: #9DA7DC;
+$grape-light-5: #8C98D6;
+$grape-light-6: #7B89D0;
+$grape-light-7: #6A7ACA;
+$grape-dark-1: #5060B0;
+$grape-dark-2: #47559C;
+$cornflower: #3023AE;
+$orchid: #C86DD7;
+$daylily: #FEA900;
+$highlight-yellow: #FFFF00;
+$crimson: #E71D36;
+$rose: #E61F36;
+$winter-green: #4FC293;
+
+
+// LOCAL COLOR VARIABLES
+// ONLY to be used to set color configs in _variables.scss
+// primary
+$chef-orange: #FE6100;
+$ebony-clay: #222435;
+$royal-blue: #3864F2;
+$blue: #174AF0;
+$malibu: #648FFF;
+$heather: #B4C3CC;
+// secondary
+$pink: #DC267F;
+$light-pink: #FFCAAA;
+$dark-pink: #A81B60;
+$light-grayish-pink: #F9DBEA;
+$violet: #A424B4;
+$indigo: #785EF0;
+$science-blue: #0075DB;
+$medium-teal-blue: #005BAB;
+$fuchsia: #A424B4;
+$fuchsia-light: #FADAFA;
+$fuchsia-dark: #440F4B;
+$maroon: #BA1E6A;
+// greyscale
+$charcoal: #26293A;
+$sirocco: #697272;
+$darksea: #819BA9;
+$steel: #CDD7DD;
+$hexgray: #CCCCCC;
+$iron: #DFE3E5;
+$mystic: #E6EBEE;
+$haze: #F3F6F8;
+$athens: #F4F6F8;
+$white: #FFFFFF;
+$black: #000000;
+$azureish-gray: #868F8F;
+// charts
+$atomic-tangerine: #FF9654;
+$mahogany: #B74500;
+$blue-de-france: #3DA5FF;
+$gray: #B7BCBC;
+
+//selected item
+$violet-shade: rgba(56, 100, 242, 0.5);
+$cloudless: #DEE5FD;
+
+// anchor tag disable
+$nevada: #6F7878;
+
+// ------------------------------------------------------------------------------------- //
+// gradients
+%primary-gradient {
+  background: $chef-orange;
+  background: -moz-linear-gradient(left, rgba(255, 125, 76, 1) 0%, rgba(241, 139, 33, 1) 100%);
+  background: -webkit-linear-gradient(left, rgba(255, 125, 76, 1) 0%, rgba(241, 139, 33, 1) 100%);
+  background: -o-linear-gradient(left, rgba(255, 125, 76, 1) 0%, rgba(241, 139, 33, 1) 100%);
+  background: linear-gradient(to right, rgba(255, 125, 76, 1) 0%, rgba(241, 139, 33, 1) 100%);
+}
+
+// ------------------------------------------------------------------------------------- //
+// DEPRECATED COLORS //
+
+// OLD Chef Automate primary brand colors
+$chef-blue-dark: #3F5364;
+// OLD Chef Automate secondary colors
+$chef-dark-blue: $royal-blue;
+$chef-blue: $malibu;
+$link-blue: $malibu;
+$chef-turquoise: #009BEF;
+$chef-yellow: #FFB000;
+// Chef colors that have been historically used
+$chef-blue-medium: #3883B3;
+$chef-blue-light: #57ABE0;
+$chef-blue-lighter: #E8F3FA;
+$chef-purple: #9013FE;
+$chef-green: #307E30;
+$chef-light-green: #3DC5AA;
+$chef-red: #E27C79;
+$blue-light: #E1E5EC;
+$bluedarkest: #163850;
+$alert-pink: $chef-red;
+$success-green: $chef-green;
+// OLD Chef Automate grayscale colors
+$gray-pale: $mystic;
+$gray-shadow: $mystic;
+$gray-less-pale: $haze;
+$gray-highlight: $haze;
+$gray-light: #B4B8BB;
+$gray-light-2: #E5E5E5;
+$gray-light-3: #F0F0F5;
+$gray: #9DA3A7;
+$gray7: #878B8E;
+$gray8: #999999;
+$gray-icon: #D8D8D8;
+// pre background
+$pre-background: #424242;

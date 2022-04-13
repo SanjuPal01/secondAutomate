@@ -1,0 +1,54 @@
+{
+  "chef_server_fqdn": "chef-server.chef.co",
+  "entity_uuid": "82760210-4686-497e-b039-efca78dee64b",
+  "expanded_run_list": {
+    "id": "manhattan",
+    "run_list": [
+      {
+        "type": "recipe",
+        "name": "opscode-ci::slave",
+        "version": null,
+        "skipped": false
+      }
+    ]
+  },
+  "id": "639844f4-2ce6-42ba-8c9d-853db69adff3",
+  "message_version": "1.1.0",
+  "message_type": "run_converge",
+  "node": {
+    "name": "chefdk-debian-7-tester-2d206b",
+    "chef_environment": "manhattan",
+    "json_class": "Chef::Node",
+    "automatic": {
+      "roles": [
+        "test",
+        "test1"
+      ]
+    },
+    "normal": {
+      "tags": [
+        "chefdk",
+        "slave",
+        "tester"
+      ]
+    },
+    "chef_type": "node",
+    "run_list": [
+      "recipe[opscode-ci::slave]"
+    ]
+  },
+  "node_name": "chefdk-debian-7-tester-2d206b",
+  "organization_name": "avengers",
+  "policy_name": "policy_name1",
+  "policy_group": "policy_group1",
+  "run_id": "639844f4-2ce6-42ba-8c9d-853db69adff3",
+  "run_list": [
+    "recipe[opscode-ci::slave]"
+  ],
+  "start_time": "2017-11-01T20:58:52Z",
+  "end_time": "2017-11-01T20:59:31Z",
+  "source": "chef_client",
+  "status": "success",
+  "total_resource_count": 352,
+  "updated_resource_count": 11
+}

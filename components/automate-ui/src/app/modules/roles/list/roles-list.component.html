@@ -1,0 +1,51 @@
+<div class="content-container">
+  <div class="container">
+    <main>
+      <chef-loading-spinner *ngIf="loading$ | async" size='50' fixed></chef-loading-spinner>
+      <app-delete-object-modal
+        [visible]="deleteModalVisible"
+        objectNoun="role"
+        [objectName]="roleToDelete?.name"
+        (close)="closeDeleteModal()"
+        (deleteClicked)="deleteRole()"
+        objectAction="Delete">
+      </app-delete-object-modal>
+      <chef-page-header>
+        <chef-heading>Roles</chef-heading>
+        <chef-subheading>
+          Roles are named groups of actions used to define policies.
+        </chef-subheading>
+      </chef-page-header>
+      <section class="page-body">
+        <app-authorized [allOf]="['/apis/iam/v2/roles', 'get']">
+          <chef-table>
+            <chef-thead>
+              <chef-tr>
+                <chef-th>Name</chef-th>
+                <chef-th>ID</chef-th>
+                <chef-th>Type</chef-th>
+                <chef-th class="three-dot-column"></chef-th>
+              </chef-tr>
+            </chef-thead>
+            <chef-tbody>
+              <chef-tr *ngFor="let role of sortedRoles$ | async">
+                  <chef-td>
+                    <a [routerLink]="['/settings/roles', role.id]">{{ role.name }}</a>
+                  </chef-td>
+                  <chef-td>{{ role.id }}</chef-td>
+                  <chef-td>{{ role.type | iamType }}</chef-td>
+                  <chef-td class="three-dot-column">
+                    <!-- <app-authorized [allOf]="[`/apis/iam/v2/roles/{id}`, 'delete', role.id]"> -->
+                    <mat-select panelClass="chef-control-menu" *ngIf="(role.type | iamType).toLowerCase() === 'custom'">
+                      <mat-option data-cy="delete" (onSelectionChange)="startRoleDelete($event, role)">Delete Role</mat-option>
+                    </mat-select>
+                    <!-- </app-authorized> -->
+                  </chef-td>
+              </chef-tr>
+            </chef-tbody>
+          </chef-table>
+        </app-authorized>
+      </section>
+    </main>
+  </div>
+</div>

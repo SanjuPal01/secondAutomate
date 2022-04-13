@@ -1,0 +1,9 @@
+<app-resource-dropdown
+  [resources]="projects"
+  [resourcesUpdated]="projectsUpdated"
+  (onDropdownClosing)="onProjectDropdownClosing($event)"
+  [objectNounPlural]="'projects'"
+  [noneSelectedLabel]="noneSelectedLabel">
+  Projects group resources together for role-based access.<br />
+  Expecting more projects? Try adjusting your filters.
+</app-resource-dropdown>

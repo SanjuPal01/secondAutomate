@@ -1,0 +1,75 @@
+#!{{pkgPathFor "core/bash"}}/bin/bash
+set -e
+exec 2>&1
+
+# Required to allow common name feild in certificate. Feature soon to deprecated by 1.17
+export GODEBUG=x509ignoreCN=0
+
+# Call the script to block until user accepts the MLSA via the package's config
+{{pkgPathFor "chef/mlsa"}}/bin/accept {{cfg.mlsa.accept}}
+
+export COMPLIANCE_DBNAME="{{cfg.storage.compliance_database}}"
+export A1_DBNAME="{{cfg.storage.a1_database}}"
+export DBNAME="{{cfg.storage.database}}"
+
+source {{pkg.svc_config_path}}/migration.sh
+
+trigger_migrations
+
+pg-helper ensure-service-database "$DBNAME" || exit 1
+
+# cleanup old migration files
+rm -rf {{pkg.svc_static_path}}/*.sql
+
+# Setting coming from our default.toml
+CONFIG="--log-level {{cfg.log.level}}"
+CONFIG="$CONFIG --port {{cfg.service.port}}"
+
+# Interval in minutes to poll for node status.
+CONFIG="$CONFIG --manager-awsec2-poll {{cfg.nodemanager.awsec2_polling_interval}}"
+CONFIG="$CONFIG --manager-azurevm-poll {{cfg.nodemanager.azurevm_polling_interval}}"
+CONFIG="$CONFIG --manager-manual-poll {{cfg.nodemanager.manual_polling_interval}}"
+
+# Mutual TLS Configuration
+CONFIG="$CONFIG --cert {{pkg.svc_config_path}}/service.crt"
+CONFIG="$CONFIG --key {{pkg.svc_config_path}}/service.key"
+CONFIG="$CONFIG --root-cert {{pkg.svc_config_path}}/root_ca.crt"
+
+CONFIG="$CONFIG --host 127.0.0.1"
+
+# get secrets service binding, used for storing secrets
+{{~#eachAlive bind.secrets-service.members as |secrets|}}
+{{~#if @last}}
+CONFIG="$CONFIG --secrets-host 127.0.0.1 --secrets-port {{secrets.cfg.port}}"
+{{~/if}}
+{{~/eachAlive}}
+
+# get event service binding, used for publishing event
+{{~#eachAlive bind.event-service.members as |event|}}
+{{~#if @last}}
+CONFIG="$CONFIG --event-endpoint 127.0.0.1:{{event.cfg.port}}"
+{{~/if}}
+{{~/eachAlive}}
+
+# Bind to cereal if it's available
+{{~#eachAlive bind.cereal-service.members as |cereal-service|}}
+  {{~#if @last}}
+CONFIG="$CONFIG --cereal-endpoint 127.0.0.1:{{cereal-service.cfg.port}}"
+  {{~/if}}
+{{~/eachAlive}}
+
+# Bind to Authz if it's available
+{{~#eachAlive bind.authz-service.members as |authz-service|}}
+  {{~#if @last}}
+CONFIG="$CONFIG --authz-endpoint 127.0.0.1:{{authz-service.cfg.port}}"
+  {{~/if}}
+{{~/eachAlive}}
+
+# Postgres
+PG_BACKEND="--postgres-database {{cfg.storage.database}} --migrations-path {{pkg.path}}/migrations"
+
+export HOME="{{pkg.svc_data_path}}"
+
+# Start our service
+# shellcheck disable=SC2086
+exec nodemanager-service run ${CONFIG} ${PG_BACKEND}

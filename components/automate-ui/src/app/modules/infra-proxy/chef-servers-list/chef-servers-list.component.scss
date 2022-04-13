@@ -1,0 +1,36 @@
+@import "~styles/variables";
+
+
+chef-th {
+  font-size: 12px;
+}
+
+chef-toolbar {
+  chef-button {
+    display: flex;
+    margin: 0px;
+    flex-direction: column;
+    align-items: center;
+    padding: 8px 16px;
+    float: right;
+    width: 170px;
+    height: 36px;
+    top: 268px;
+    background: $chef-primary-bright;
+    border-radius: 4px;
+  }
+}
+
+.empty-section {
+  margin-top: 130px;
+  text-align: center;
+}
+
+img {
+  width: 70px;
+}
+
+chef-loading-spinner {
+  background-color: $chef-white;
+  opacity: 0.7;
+}

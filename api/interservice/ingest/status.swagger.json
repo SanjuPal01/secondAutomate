@@ -1,0 +1,151 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "title": "interservice/ingest/status.proto",
+    "version": "version not set"
+  },
+  "consumes": [
+    "application/json"
+  ],
+  "produces": [
+    "application/json"
+  ],
+  "paths": {
+    "/api/v0/health": {
+      "get": {
+        "operationId": "IngestStatusService_GetHealth",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/chef.automate.domain.ingest.Health"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response",
+            "schema": {
+              "$ref": "#/definitions/grpc.gateway.runtime.Error"
+            }
+          }
+        },
+        "tags": [
+          "IngestStatusService"
+        ]
+      }
+    },
+    "/api/v0/migration": {
+      "get": {
+        "operationId": "IngestStatusService_GetMigrationStatus",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/chef.automate.domain.ingest.MigrationStatus"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response",
+            "schema": {
+              "$ref": "#/definitions/grpc.gateway.runtime.Error"
+            }
+          }
+        },
+        "tags": [
+          "IngestStatusService"
+        ]
+      }
+    }
+  },
+  "definitions": {
+    "chef.automate.domain.ingest.Health": {
+      "type": "object",
+      "properties": {
+        "status": {
+          "type": "string"
+        }
+      },
+      "description": "The ingest-service health is constructed with:\n* Status:\n           =\u003e ok:             Everything is alright\n           =\u003e initialization: The service is in its initialization process\n           =\u003e warning:        Something might be wrong?\n           =\u003e critical:       Something is wrong!\n\n@afiune: Here we can add more health information to the response",
+      "title": "Health message"
+    },
+    "chef.automate.domain.ingest.Metrics": {
+      "type": "object",
+      "properties": {
+        "uptime": {
+          "type": "number",
+          "format": "double"
+        },
+        "pipeline": {
+          "$ref": "#/definitions/chef.automate.domain.ingest.PipelineMetrics"
+        }
+      },
+      "title": "Metrics message"
+    },
+    "chef.automate.domain.ingest.MigrationStatus": {
+      "type": "object",
+      "properties": {
+        "total": {
+          "type": "string",
+          "format": "int64"
+        },
+        "completed": {
+          "type": "string",
+          "format": "int64"
+        },
+        "status": {
+          "type": "string"
+        },
+        "finished": {
+          "type": "boolean",
+          "format": "boolean"
+        }
+      },
+      "title": "Migration message"
+    },
+    "chef.automate.domain.ingest.PipelineMetrics": {
+      "type": "object",
+      "properties": {
+        "total_run_messages": {
+          "type": "string",
+          "format": "int64"
+        },
+        "total_action_messages": {
+          "type": "string",
+          "format": "int64"
+        }
+      }
+    },
+    "google.protobuf.Any": {
+      "type": "object",
+      "properties": {
+        "type_url": {
+          "type": "string"
+        },
+        "value": {
+          "type": "string",
+          "format": "byte"
+        }
+      }
+    },
+    "grpc.gateway.runtime.Error": {
+      "type": "object",
+      "properties": {
+        "error": {
+          "type": "string"
+        },
+        "code": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "message": {
+          "type": "string"
+        },
+        "details": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/google.protobuf.Any"
+          }
+        }
+      }
+    }
+  }
+}

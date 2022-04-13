@@ -1,0 +1,34 @@
+#!{{pkgPathFor "core/bash"}}/bin/bash -e
+
+exec 2>&1
+
+set -e
+
+# Required to allow common name feild in certificate. Feature soon to deprecated by 1.17
+export GODEBUG=x509ignoreCN=0
+
+export HOME="{{pkg.svc_data_path}}"
+
+export RUST_LOG="{{cfg.log.level}},{{strJoin cfg.log.scoped_levels ","}}"
+export RUST_BACKTRACE=1
+export SSL_CERT_FILE="{{pkg.svc_config_path}}/root_ca.crt"
+
+echo "builder-api starting"
+
+mkdir -p "{{pkg.svc_var_path}}/etc"
+render-template config.toml "{{pkg.svc_var_path}}/etc/config.toml" \
+  --conf "{{pkg.svc_config_path}}/config.json"
+
+export DBNAME="{{cfg.datastore.database}}"
+export USERNAME="{{cfg.datastore.user}}"
+pg-helper ensure-service-database "$DBNAME"
+pg-helper fix-permissions "$USERNAME"
+pg-helper alter-role --superuser=true "$USERNAME"
+
+if ! ls {{pkg.svc_data_path}}/keys/bldr-*; then
+  echo "generating bldr key"
+  #hab user key generate bldr --cache-key-path "{{pkg.svc_data_path}}/keys"
+  HAB_CACHE_KEY_PATH="{{pkg.svc_data_path}}/keys" hab user key generate bldr
+fi
+
+exec bldr-api start -c "{{pkg.svc_var_path}}/etc/config.toml"

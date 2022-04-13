@@ -1,0 +1,189 @@
+<div class="content-container">
+  <div class="container">
+    <div class="spinner">
+      <chef-loading-spinner *ngIf="orgsListLoading" size="50" fixed></chef-loading-spinner>
+    </div>
+    <main>
+      <chef-breadcrumbs>
+        <chef-breadcrumb [link]="['/infrastructure/chef-servers']">Chef Infra Servers</chef-breadcrumb>
+        {{ server?.name }}
+      </chef-breadcrumbs>
+      <chef-page-header>
+        <chef-heading>{{ server?.name }}</chef-heading>
+        <table>
+          <thead>
+            <tr class="detail-row">
+              <th class="id-column">FQDN</th>
+              <th class="id-column">IP Address</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr class="detail-row">
+              <td class="id-column">{{ server?.fqdn }}</td>
+              <td class="id-column">{{ server?.ip_address }}</td>
+            </tr>
+          </tbody>
+        </table>
+        <chef-tab-selector [value]="tabValue" (change)="onSelectedTab($event)">
+          <chef-option value='orgs' data-cy="orgs-tab">Orgs</chef-option>
+          <chef-option value='details' data-cy="details-tab">Details</chef-option>
+        </chef-tab-selector>
+      </chef-page-header>
+      <app-create-org-modal
+        [visible]="createModalVisible"
+        [creating]="creatingServerOrg"
+        [createForm]="orgForm"
+        (close)="closeCreateModal()"
+        [conflictErrorEvent]="conflictErrorEvent"
+        (createClicked)="createServerOrg()">
+      </app-create-org-modal>
+      <app-delete-infra-object-modal
+        [visible]="deleteModalVisible"
+        objectNoun="organization"
+        [objectName]="orgToDelete?.name"
+        (close)="closeDeleteModal()"
+        (deleteClicked)="deleteOrg()"
+        objectAction="Delete">
+      </app-delete-infra-object-modal>
+      <section class="page-body details-tab" *ngIf="tabValue === 'details'">
+        <form [formGroup]="updateServerForm">
+          <chef-form-field>
+            <label>
+              <span class="label">Name <span aria-hidden="true">*</span></span>
+              <input
+                chefInput
+                formControlName="name"
+                type="text"
+                [resetOrigin]="saveSuccessful"
+                autocomplete="off"
+                data-cy="update-server-name">
+            </label>
+            <chef-error
+              *ngIf="(updateServerForm.get('name').hasError('required') || updateServerForm.get('name').hasError('pattern')) && updateServerForm.get('name').dirty">
+              Name is required.
+            </chef-error>
+          </chef-form-field>
+        </form>
+        <div class="input-margin">
+          <chef-form-field id="create-type">
+            <label>
+              <span class="label">Type <span aria-hidden="true">*</span></span>
+              <div class="version-dropdown">
+                <chef-select #li [value]="selected" (change)="updateFormDisplay(li.value)" data-cy="type">
+                  <chef-option value="fqdn">FQDN</chef-option>
+                  <chef-option value="ip">IP Address</chef-option>
+                </chef-select>
+              </div>
+            </label>
+          </chef-form-field>
+        </div>
+        <form [formGroup]="fqdnForm">
+          <div class="input-margin" *ngIf="selected === 'fqdn'">
+            <chef-form-field>
+              <label>
+                <span class="label">FQDN <span aria-hidden="true">*</span></span>
+                <input
+                  chefInput
+                  formControlName="fqdn"
+                  type="text"
+                  [resetOrigin]="saveSuccessful"
+                  autocomplete="off"
+                  data-cy="update-server-fqdn"
+                  placeholder="FQDN">
+              </label>
+              <chef-error
+                *ngIf="selected === 'fqdn' && fqdnForm.get('fqdn').hasError('required') && fqdnForm.get('fqdn').dirty">
+                FQDN is required.
+              </chef-error>
+              <chef-error
+                *ngIf="fqdnForm.get('fqdn').hasError('pattern') ">
+                FQDN is invalid.
+              </chef-error>
+            </chef-form-field>
+          </div>
+        </form>
+        <form [formGroup]="ipForm">
+          <div class="input-margin" *ngIf="selected === 'ip'">
+            <chef-form-field>
+              <label>
+                <span class="label">IP Address <span aria-hidden="true">*</span></span>
+                <input
+                  chefInput
+                  formControlName="ip_address"
+                  type="text"
+                  [resetOrigin]="saveSuccessful"
+                  autocomplete="off"
+                  data-cy="update-server-ip-address"
+                  placeholder="IP Address">
+              </label>
+              <chef-error
+                *ngIf="ipForm.get('ip_address').hasError('required') && ipForm.get('ip_address').dirty">
+                IP Address is required.
+              </chef-error>
+              <chef-error
+                *ngIf="ipForm.get('ip_address').hasError('pattern')">
+                IP Address is invalid.
+              </chef-error>
+            </chef-form-field>
+          </div>
+          <div id="button-bar">
+            <chef-button
+              primary
+              inline
+              data-cy="save-button"
+              [disabled]="isLoading || !updateServerForm.valid || saveInProgress || (selected === 'fqdn') ? !fqdnForm?.valid : !ipForm?.valid"
+              (click)="saveServer()">
+              <chef-loading-spinner *ngIf="saveInProgress"></chef-loading-spinner>
+              <span *ngIf="saveInProgress">Saving...</span>
+              <span *ngIf="!saveInProgress">Save</span>
+            </chef-button>
+          </div>
+        </form>
+      </section>
+      <section class="page-body" *ngIf="tabValue === 'orgs'">
+        <chef-toolbar>
+          <app-authorized [allOf]="['/api/v0/infra/servers/{server_id}/orgs', 'post', server?.id]">
+            <chef-button id="create-button" primary (click)="openCreateModal()" data-cy="add-org-button">Add Chef Organization
+            </chef-button>
+          </app-authorized>
+        </chef-toolbar>
+        <div id="org-table-container" *ngIf="orgs.length != 0 && !orgsListLoading">
+          <chef-table>
+            <chef-thead>
+              <chef-tr>
+                <chef-th class="no-border">Name</chef-th>
+                <chef-th class="no-border">Admin</chef-th>
+                <chef-th class="no-border">Projects</chef-th>
+                <chef-th class="three-dot-column no-border"></chef-th>
+              </chef-tr>
+            </chef-thead>
+            <chef-tbody>
+              <chef-tr *ngFor="let org of orgs">
+                <chef-td>
+                  <a [routerLink]="['/infrastructure','chef-servers', server?.id, 'organizations', org.id]">{{ org.name }}</a>
+                </chef-td>
+                <chef-td>{{ org.admin_user }}</chef-td>
+                <chef-td class="projects-column" [ngSwitch]="org.projects.length">
+                  <ng-container *ngSwitchCase="0">{{ unassigned }}</ng-container>
+                  <ng-container *ngSwitchCase="1">{{ org.projects[0] }}</ng-container>
+                  <ng-container *ngSwitchDefault>{{ org.projects.length }} projects</ng-container>
+                </chef-td>
+                <chef-td class="three-dot-column">
+                  <!-- <app-authorized [allOf]="['/api/v0/infra/servers/{server_id}/orgs/{id}', 'delete', [server?.id, org.id]]"> -->
+                    <mat-select panelClass="chef-control-menu" id="menu-{{org.id}}">
+                    <mat-option data-cy="delete-org" (onSelectionChange)="startOrgDelete($event, org)">Delete</mat-option>
+                    </mat-select>
+                  <!-- </app-authorized> -->
+                </chef-td>
+              </chef-tr>
+            </chef-tbody>
+          </chef-table>
+        </div>
+        <div data-cy="empty-list" class="empty-section" *ngIf="orgs.length === 0 && !orgsListLoading">
+          <img alt="No preview" src="/assets/img/no_preview.gif" />
+          <p data-cy="no-records">No Organization available.</p>
+        </div>
+      </section>
+    </main>
+  </div>
+</div>

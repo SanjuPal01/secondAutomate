@@ -1,0 +1,197 @@
+<div class="sticky-notifications">
+  <div class="sticky-inner">
+    <app-notification
+      *ngIf="(serviceGroupsStatus$ | async) === 'loadingFailure'"
+      [type]="'error'"
+      [timeout]="10">
+      {{ (serviceGroupsError$ | async).status }}: {{ (serviceGroupsError$ | async).error.message }}
+    </app-notification>
+  </div>
+</div>
+<div id="services-panel" class="services-panel">
+  <chef-page-header>
+    <chef-heading>
+      <chef-icon>grain</chef-icon>
+      Services in
+      <span *ngIf="serviceGroupsId">{{ serviceGroupsName$ | async }}</span>
+      <span *ngIf="!serviceGroupsId">Group</span>
+    </chef-heading>
+    <chef-subheading>All services running in a service group.</chef-subheading>
+  </chef-page-header>
+  <div *ngIf="serviceGroupsId && (serviceGroupsStatus$ | async) === 'loadingSuccess'">
+    <div class="status-filter-bar">
+      <chef-status-filter-group [value]="selectedHealth" lean>
+        <chef-option class="filter general" value="total" (click)="updateHealthFilter(allowedStatus.TOTAL)" (keyup.enter)="updateHealthFilter(allowedStatus.TOTAL)" selected>
+          <chef-icon class="filter-icon">grain</chef-icon>
+          <div class="filter-label">Total</div>
+          <div class="filter-total">{{ serviceGroupsHealthSummary.total }}</div>
+        </chef-option>
+        <chef-option class="filter critical" value='critical' (click)="updateHealthFilter(allowedStatus.CRITICAL)" (keyup.enter)="updateHealthFilter(allowedStatus.CRITICAL)">
+          <chef-icon class="filter-icon">warning</chef-icon>
+          <div class="filter-label">Critical</div>
+          <div class="filter-total">{{ serviceGroupsHealthSummary.critical }}</div>
+        </chef-option>
+        <chef-option class="filter warning" value='warning' (click)="updateHealthFilter(allowedStatus.WARNING)" (keyup.enter)="updateHealthFilter(allowedStatus.WARNING)">
+          <chef-icon class="filter-icon">error</chef-icon>
+          <div class="filter-label">Warning</div>
+          <div class="filter-total">{{ serviceGroupsHealthSummary.warning }}</div>
+        </chef-option>
+        <chef-option class="filter success" value='ok' (click)="updateHealthFilter(allowedStatus.OK)" (keyup.enter)="updateHealthFilter(allowedStatus.OK)">
+          <chef-icon class="filter-icon">check_circle</chef-icon>
+          <div class="filter-label">OK</div>
+          <div class="filter-total">{{ serviceGroupsHealthSummary.ok }}</div>
+        </chef-option>
+        <chef-option class="filter unknown" value='unknown' (click)="updateHealthFilter(allowedStatus.UNKNOWN)" (keyup.enter)="updateHealthFilter(allowedStatus.UNKNOWN)">
+          <chef-icon class="filter-icon">help</chef-icon>
+          <div class="filter-label">Unknown</div>
+          <div class="filter-total">{{ serviceGroupsHealthSummary.unknown }}</div>
+        </chef-option>
+        <div class="spacer"></div>
+        <chef-option class="filter connected" value='connected' (click)="updateHealthFilter(allowedStatus.CONNECTED)" (keyup.enter)="updateHealthFilter(allowedStatus.CONNECTED)">
+          <chef-icon class="filter-icon">link</chef-icon>
+          <div class="filter-label">Connected</div>
+          <div class="filter-total">{{ serviceGroupsHealthSummary.total - serviceGroupsHealthSummary.disconnected }}</div>
+        </chef-option>
+        <chef-option class="filter disconnected" value='disconnected' (click)="updateHealthFilter(allowedStatus.DISCONNECTED)" (keyup.enter)="updateHealthFilter(allowedStatus.DISCONNECTED)">
+          <chef-icon class="filter-icon"></chef-icon>
+          <div class="filter-label">Disconnected</div>
+          <div class="filter-total">{{ serviceGroupsHealthSummary.disconnected }}</div>
+        </chef-option>
+      </chef-status-filter-group>
+    </div>
+    <div class="bulk-action-bar" [class.hidden]="(services$ | async)?.length === 0" [attr.aria-hidden]="(services$ | async)?.length === 0">
+      <chef-checkbox
+        [checked]="hasAllSelected"
+        [indeterminate]="isIndeterminate"
+        (change)="handleSelectAll($event.detail)">Select All</chef-checkbox>
+      <chef-button tertiary caution
+        id="delete-services-button"
+        [disabled]="checkedServices.length === 0"
+        (click)="beginServicesDelete()"
+        >Delete {{ checkedServicesDisplay }}</chef-button>
+    </div>
+    <ul>
+      <li class="service-item" *ngFor="let service of services$ | async; let i = index">
+        <div class="header">
+          <div class ="fqdn-line">
+            <chef-checkbox
+              [checked]="checkedServices.includes(service.id)"
+              (change)="handleToggleCheckbox(service.id, $event.detail)"></chef-checkbox>
+            <p class="fqdn-data">{{ service.fqdn || "--"}}</p>
+          </div>
+          <div class ="supervisor-line"><strong>Supervisor:</strong><p class="supervisor-data">{{ service.supervisor_id || "--"}}</p></div>
+          <div class ="site-line"><strong>Site:</strong> <p class="site-data">{{ service.site  || "--"}}</p></div>
+        </div>
+        <div class="body">
+          <div class ="release-line"><chef-icon>grain</chef-icon><p class="release-data">{{ service.release || "--"}}</p></div>
+          <div class ="channel-line">
+            <chef-badge *ngIf="service.update_strategy !== 'NONE'">
+              {{ service.channel }}: {{ service.update_strategy }}
+            </chef-badge>
+            <chef-badge no-data
+              [id]="'channel-tooltip-' + i"
+              [tooltip]="tooltipMessageFor('channel')"
+              *ngIf="service.update_strategy === 'NONE'">NO CHANNEL: NONE</chef-badge>
+          </div>
+          <hr class="health-info-divider" />
+          <div class="disconnect-notice" *ngIf="service.disconnected">
+            <img class="disconnect-icon" src="assets/img/icon-disconnected.svg" alt="" aria-hidden />
+            <div>
+              <span>Disconnected service: Last health check received </span>
+              <span class="disconnect-time" [attr.id]="'disconnect-time-' + i">{{ service.last_event_since }} ago.</span>
+            </div>
+            <chef-tooltip [attr.for]="'disconnect-time-' + i">{{ service.last_event_occurred_at | datetime: RFC2822 }}</chef-tooltip>
+          </div>
+          <div class="health-info-panel {{service.health_check}}">
+            <chef-tooltip [attr.for]="'health-timestamp-' + i">{{ formatTimestamp(service.health_updated_at) }}</chef-tooltip>
+            <div class ="health-line">
+                <chef-icon class="health-icon {{ service.health_check }}">{{ service.health_check | serviceStatusIcon }}</chef-icon>
+              <span>
+                {{ healthCheckStatus(service.health_check) }}:
+                {{ timewizardMessage(service.health_check, service.previous_health_check) }}
+                <a [id]="'health-timestamp-' + i"> {{ service.current_health_since }} ago</a>
+              </span>
+            </div>
+            <div class="healthcheck-message-collection" *ngIf="service.health_check !== 'OK'">
+              <div class="no-healthcheck-messages {{ service.health_check }}" *ngIf="service.health_check_result.stderr === '' && service.health_check_result.stdout === ''" >
+                Health check messages not available. When services specify a health-check hook, the hook's output will be shown here. Learn more about <a href="https://www.habitat.sh/docs/reference/#sts=health-check">writing health-check hooks.</a>
+              </div>
+              <div class="healthcheck-message" *ngIf="service.health_check_result.stderr !== ''">
+                <div class="healthcheck-header {{service.health_check}}">
+                  Health Check Error Message
+                </div>
+                <div class="healthcheck-content" [class.active]="activeErrorAccordions.includes(i)">
+                  {{service.health_check_result.stderr}}
+                  <div class="show-more-container">
+                    <button
+                    *ngIf="service.health_check_result.stderr.length > LINES_OUTPUT_3"
+                    (click)="toggleMoreErrorMsg(i)"
+                    class="show-more-button">
+                    <chef-icon class="unfold">{{ activeErrorAccordions.includes(i) ? "unfold_less" : "unfold_more"}}</chef-icon>
+                    Show {{ activeErrorAccordions.includes(i) ? "Less" : "More"}}</button>
+                  </div>
+                </div>
+              </div>
+              <div class="healthcheck-message" *ngIf="service.health_check_result.stdout !== ''">
+                <div class="healthcheck-header {{service.health_check}}">
+                  Health Check Output Message
+                </div>
+                <div class="healthcheck-content" [class.active]="activeHealthAccordions.includes(i)">
+                  {{service.health_check_result.stdout}}
+                  <div class="show-more-container">
+                    <button
+                    *ngIf="service.health_check_result.stdout.length > LINES_OUTPUT_3"
+                    class="show-more-button"
+                    (click)="toggleMoreHealthMsg(i)">
+                    <chef-icon class="unfold">{{ activeHealthAccordions.includes(i) ? "unfold_less" : "unfold_more"}}</chef-icon>
+                    Show {{ activeHealthAccordions.includes(i) ? "Less" : "More"}}</button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </li>
+    </ul>
+    <!-- Loading Success + Empty Services: Displayed when there are NO services from the selected filter -->
+    <div class="no-services" *ngIf="(services$ | async)?.length === 0">
+      None of the services returned {{ selectedHealth }}
+    </div>
+    <app-page-picker
+      [total]="totalServices"
+      [perPage]="pageSize"
+      [page]="currentPage"
+      [maxSelectablePages]="5"
+      (pageChanged)="updatePageNumber($event)">
+    </app-page-picker>
+  </div>
+
+  <!-- Loading State: Displayed only when the services are loading -->
+  <div class="no-services" *ngIf="(serviceGroupsStatus$ | async) === 'loading'">
+    <chef-loading-spinner size='50'></chef-loading-spinner>
+    <h3>Loading services...</h3>
+  </div>
+
+  <!-- LoadingFailure State: Displayed only when the services status has a failure -->
+  <div class="no-services" *ngIf="(serviceGroupsStatus$ | async) === 'loadingFailure'">
+    <chef-loading-spinner size='50'></chef-loading-spinner>
+    <h3>Loading services...</h3>
+  </div>
+
+  <!-- NotLoaded State: Displayed only when there are no service-groups and therefore, NO ID -->
+  <div class="no-services" *ngIf="(serviceGroupsStatus$ | async) === 'notLoaded'">
+    Add service groups to see more service details
+  </div>
+</div>
+
+<chef-modal 
+  label="delete-services-modal" 
+  [visible]="deleteModalVisible"
+  (closeModal)="closeDeleteModal()"
+  >
+  <h1>Warning</h1>
+  <p class="modal-line">You are about to delete <strong>{{ checkedServicesDisplay }}.</strong></p>
+  <p class="modal-line">This will delete all data about them from the Applications view, but they will show up again if a new health check report from the service is received.</p>
+  <chef-button primary caution (click)="deleteServices()">Delete {{ checkedServicesDisplay }}</chef-button>
+  <chef-button tertiary (click)="closeDeleteModal()">Cancel</chef-button>
+</chef-modal>

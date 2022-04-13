@@ -1,0 +1,45 @@
+syntax = "proto3";
+
+package chef.automate.infra.data_lifecycle.api;
+option go_package = "github.com/chef/automate/api/interservice/data_lifecycle";
+
+import "google/protobuf/timestamp.proto";
+
+import "external/data_lifecycle/data_lifecycle.proto";
+
+service Purge {
+	rpc Run (RunRequest) returns (RunResponse);
+	rpc Configure (ConfigureRequest) returns (ConfigureResponse);
+	rpc Show (ShowRequest) returns (ShowResponse);
+}
+
+message RunRequest { }
+message RunResponse { }
+
+message ConfigureRequest {
+	bool enabled = 1;
+	string recurrence = 2;
+	PolicyUpdate policy_update = 3;
+}
+message ConfigureResponse {
+}
+
+message ShowRequest { }
+message ShowResponse {
+	string instance_name = 1;
+	string workflow_name = 2;
+	repeated chef.automate.api.data_lifecycle.EsPolicy es_policies = 3;
+	repeated chef.automate.api.data_lifecycle.PgPolicy pg_policies = 4;
+	string recurrence = 5;
+	google.protobuf.Timestamp next_due_at = 6;
+	google.protobuf.Timestamp last_enqueued_at = 7;
+	bool enabled = 8;
+	google.protobuf.Timestamp last_start = 9;
+	google.protobuf.Timestamp last_end = 10;
+}
+
+message PolicyUpdate {
+	repeated chef.automate.api.data_lifecycle.EsPolicyUpdate es = 1;
+	repeated chef.automate.api.data_lifecycle.PgPolicyUpdate pg = 2;
+}
+

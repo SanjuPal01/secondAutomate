@@ -1,0 +1,62 @@
+{
+  "name": "chef-ui-library",
+  "version": "0.0.1",
+  "description": "UI library for Chef",
+  "main": "dist/index.js",
+  "types": "dist/types/components.d.ts",
+  "collection": "dist/collection/collection-manifest.json",
+  "module": "dist/index.mjs",
+  "files": [
+    "dist/"
+  ],
+  "scripts": {
+    "build:prod": "npm run build",
+    "build": "stencil build",
+    "dev": "stencil build --dev --watch --serve --no-open",
+    "start": "npm run docs && npm run dev",
+    "test": "stencil test --spec --e2e",
+    "test.spec": "stencil test --spec",
+    "test.watch": "stencil test --spec --watch",
+    "test.e2e": "stencil test --e2e",
+    "docs": "typedoc src",
+    "lint": "npm run lint.ts && npm run lint.sass",
+    "lint.ts": "tslint -p tsconfig.json",
+    "lint.sass": "node node_modules/sass-lint/bin/sass-lint.js -v -q"
+  },
+  "author": "Chef Software, Inc. <info@chef.io>",
+  "license": "UNLICENSED",
+  "private": true,
+  "dependencies": {
+    "d3": "^5.9.7",
+    "lodash": "^4.17.21",
+    "marked": "^0.7.0",
+    "material-design-icons": "^3.0.1",
+    "prismjs": "^1.24.0",
+    "redux": "^4.0.4",
+    "redux-devtools-extension": "^2.13.8",
+    "redux-thunk": "^2.3.0",
+    "set-value": "^4.1.0",
+    "tar": "^4.4.19"
+  },
+  "devDependencies": {
+    "@stencil/core": "^1.2.3",
+    "@stencil/redux": "^0.1.1",
+    "@stencil/router": "^1.0.1",
+    "@stencil/sass": "^1.0.1",
+    "@types/jest": "^24.0.16",
+    "@types/node": "^12.6.8",
+    "@types/puppeteer": "^1.12.4",
+    "jest": "^24.8.0",
+    "jest-cli": "^24.8.0",
+    "kind-of": "^6.0.3",
+    "node-notifier": "^10.0.0",
+    "node-sass": "^6.0.1",
+    "puppeteer": "1.17.0",
+    "sass-lint": "^1.13.1",
+    "tslint": "^5.18.0",
+    "tslint-ionic-rules": "0.0.21",
+    "typedoc": "^0.15.0",
+    "typescript": "^3.3.3",
+    "merge": "^2.1.1"
+  }
+}

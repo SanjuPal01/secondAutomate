@@ -1,0 +1,51 @@
+syntax = "proto3";
+
+package chef.automate.api;
+option go_package = "github.com/chef/automate/components/automate-gateway/api/gateway";
+
+import "google/api/annotations.proto";
+import "google/protobuf/empty.proto";
+
+import "external/annotations/iam/annotations.proto";
+
+service Gateway {
+  rpc GetVersion (google.protobuf.Empty) returns (Version) {
+    option (google.api.http).get = "/api/v0/gateway/version";
+    option (chef.automate.api.iam.policy).resource = "system:service:version";
+    option (chef.automate.api.iam.policy).action = "system:serviceVersion:get";
+  };
+  rpc GetHealth (google.protobuf.Empty) returns (Health) {
+    option (google.api.http).get = "/api/v0/gateway/health";
+    option (chef.automate.api.iam.policy).resource = "system:health";
+    option (chef.automate.api.iam.policy).action = "system:health:get";
+  };
+};
+
+// Version message
+//
+// The service version constructed with:
+// * Service name
+// * Built time
+// * Semantic version
+// * Git SHA
+message Version {
+  string version = 2;
+  string built = 1;
+  string name = 3;
+  string sha = 4;
+}
+
+// Health message
+//
+// The automate-gateway service health is constructed with:
+// * Status:
+//            => ok:             Everything is alright
+//            => initialization: The service is in its initialization process
+//            => warning:        Something might be wrong?
+//            => critical:       Something is wrong!
+//
+// @afiune: Here we can add more health information to the response
+message Health {
+  string status = 1;
+}
+

@@ -1,0 +1,27 @@
+host = "127.0.0.1"
+port = "{{cfg.service.port}}"
+log_level = "{{cfg.log.level}}"
+
+# Listen to what our gossip protocol whispers
+#
+# We have modified our plan to have a hard dependency to
+# elasticsearch, that will ensure that we will always start
+# our service with the required bindings
+#
+# Elasticsearch
+{{~#eachAlive bind.automate-es-gateway.members as |member|}}
+backend = "elasticsearch"
+elasticsearch-url = "http://127.0.0.1:{{member.cfg.http-port}}"
+{{~/eachAlive}}
+
+[postgres]
+database = "{{cfg.storage.database}}"
+schema_path = "{{pkg.path}}/schema"
+max_open_conns = {{cfg.storage.max_open_conns}}
+max_idle_conns = {{cfg.storage.max_idle_conns}}
+
+
+[tls]
+cert_path = "{{pkg.svc_config_path}}/service.crt"
+key_path = "{{pkg.svc_config_path}}/service.key"
+root_ca_path ="{{pkg.svc_config_path}}/root_ca.crt"

@@ -1,0 +1,68 @@
+<div class="content-container">
+  <div class="container">
+    <main>
+      <chef-breadcrumbs>
+        <chef-breadcrumb [link]="['/infrastructure/chef-servers']">Chef Infra Server</chef-breadcrumb>
+        <chef-breadcrumb [routerLink]="['/infrastructure/chef-servers', serverId]">Orgs</chef-breadcrumb>
+        <chef-breadcrumb [routerLink]="['/infrastructure/chef-servers', serverId, 'organizations', orgId]">Clients</chef-breadcrumb>
+         {{client?.name}}
+      </chef-breadcrumbs>
+      <chef-page-header>
+        <chef-heading>{{client?.name}} <chef-badge no-data warning *ngIf="client?.validator">Validation Client</chef-badge></chef-heading>
+        <table>
+          <thead>
+            <tr class="detail-row">
+              <th class="id-column">Name</th>
+              <th class="id-column">Client Name</th>
+              <th class="id-column">Org Name</th>
+              <th class="id-column">JSON</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr class="detail-row">
+              <td class="id-column">{{client?.name}}</td>
+              <td class="id-column">{{client?.client_name }}</td>
+              <td class="id-column">{{client?.org_name}}</td>
+              <td class="id-column">{{client?.json_class}}</td>
+            </tr>
+          </tbody>
+        </table>
+        <chef-tab-selector [value]="tabValue" (change)="onSelectedTab($event)">
+          <chef-option value='details' data-cy="details-tab">Details</chef-option>
+        </chef-tab-selector>
+      </chef-page-header>
+
+      <app-reset-client-key
+        [openEvent]="openNotificationModal"
+        [serverId]="serverId"
+        [orgId]="orgId"
+        [name]="name"></app-reset-client-key>
+
+      <section class="page-body" *ngIf="tabValue === 'details'">
+        <chef-loading-spinner *ngIf="clientDetailsLoading" size="50"></chef-loading-spinner>
+        <div *ngIf="!clientDetailsLoading" class="key-tab">
+          <div class="empty-section" *ngIf="!client?.client_key.public_key">
+            <img alt="No preview" src="/assets/img/no_preview.gif" />
+            <p>No public key available</p>
+          </div>
+          <div *ngIf="client?.client_key.public_key">
+            <div class="key-tab-head">
+              <p>Public key</p>
+            </div>
+            <div class="key-tab-details">
+              <div class="key-tab-body-top">
+                <chef-button tertiary class="reset-key" (click)="openResetKeyClientModal()">
+                  <chef-icon>vpn_key</chef-icon>
+                  <span>Reset Key</span>
+                </chef-button>
+              </div>
+              <div class="key-tab-body">
+                <chef-snippet [code]="client?.client_key.public_key" lang="json"></chef-snippet>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+    </main>
+  </div>
+</div>

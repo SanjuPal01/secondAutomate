@@ -1,0 +1,125 @@
+<chef-modal label="license-lockout-label" [locked]="modalLocked" [visible]="modalVisible" (closeModal)="closeModal()">
+  <div class="license-wrapper">
+
+    <ng-container *ngIf="!fetchStatusInternalError">
+      <ng-container *ngIf="!trialLicenseApplied">
+        <h2 id="license-lockout-label" class="title">Welcome to Chef Automate!</h2>
+        <div class="subtitle">Register to get started with a 60-day trial or <a href="https://www.chef.io/contact-us/" target="_blank" rel="noopener">contact Chef</a>.</div>
+        <div class="error-container">
+          <chef-alert type="error" *ngIf="fetchStatusInternalError">
+            <span>
+            Sorry but something went wrong. We are unable to verify license status.
+            Contact an administrator or <a href="https://www.chef.io/support/" target="_blank" class="error-msg">Chef support</a>.
+            </span>
+          </chef-alert>
+          <chef-alert type="error" *ngIf="permissionDenied">
+          We're sorry, but you currently do not have permission to apply a license.
+          Contact an administrator for permission.
+          </chef-alert>
+          <chef-alert type="error" *ngIf="trialRequestInternalError">
+            <span>
+            Sorry, but something went wrong. We are unable to get your trial license.
+            Contact an administrator or <a href="https://www.chef.io/support/" target="_blank" class="error-msg">Chef support</a>.
+            </span>
+          </chef-alert>
+          <chef-alert type="error" *ngIf="trialRequestConnectivityError">
+            <span>
+            Sorry, but Chef Automate was unable to contact the Chef trial license service.
+            Contact an administrator or <a href="https://www.chef.io/support/" target="_blank" class="error-msg">Chef support</a>.
+            </span>
+          </chef-alert>
+        </div>
+
+        <form class="trial" [formGroup]="trialForm" (ngSubmit)="onTrialLicenseFormSubmit()" novalidate>
+          <div class="name-container">
+            <chef-form-field>
+              <label for="firstName">First Name <span aria-hidden="true">*</span></label>
+              <div class="suggester-input-wrapper">
+                <input chefInput name="firstName" id="firstName" formControlName="firstName" type="text" autofocus>
+              </div>
+              <chef-error *ngIf="trialForm.get('firstName').hasError('required') && trialForm.get('firstName').dirty">First name required.</chef-error>
+            </chef-form-field>
+            <chef-form-field>
+              <label for="lastName">Last Name <span aria-hidden="true">*</span></label>
+              <div class="suggester-input-wrapper">
+                <input chefInput name="lastName" id="lastName" formControlName="lastName" type="text">
+              </div>
+                <chef-error *ngIf="trialForm.get('lastName').hasError('required') && trialForm.get('lastName').dirty">Last name required.</chef-error>
+            </chef-form-field>
+          </div>
+          <div class="email-container">
+            <chef-form-field>
+              <label for="email">Email <span aria-hidden="true">*</span></label>
+              <div class="suggester-input-wrapper">
+                <input chefInput name="email" id="email" formControlName="email" type="text">
+              </div>
+              <chef-error *ngIf="trialForm.get('email').hasError('email') && trialForm.get('email').dirty">Valid email required.</chef-error>
+            </chef-form-field>
+          </div>
+          <chef-checkbox (change)="updateGDPR($event.detail)" [checked]="gdprAgree">I would like to receive email communications from Chef</chef-checkbox>
+          <chef-checkbox (change)="updateMLSA($event.detail)" [checked]="mlsaAgree">
+            * I agree to the
+            <a href="https://www.chef.io/terms-of-service" target="_blank">Terms of Service</a>
+            and the
+            <a href="https://www.chef.io/online-master-agreement" target="_blank">Master License and Services Agreement</a>
+          </chef-checkbox>
+          <div class="button">
+            <chef-button primary type="submit" [disabled]="!(trialForm.valid && mlsaAgree) || requestingLicense">Register</chef-button>
+          </div>
+        </form>
+        <div class="spinner-container">
+          <chef-loading-spinner *ngIf="requestingLicense" size="30"></chef-loading-spinner>
+        </div>
+        <div class="footer">
+          <chef-button tertiary (click)="backToLicenseApply(); false">Already have a license?</chef-button>
+          <chef-button tertiary (click)="logout()">Sign Out</chef-button>
+        </div>
+      </ng-container>
+
+      <!-- display confirmation once license applied -->
+      <ng-container *ngIf="trialLicenseApplied">
+        <div class="title">
+          <chef-icon>check_circle</chef-icon> Trial license has been applied!
+        </div>
+        <div class="info">
+          <div class="subtitle">Your trial license will expire on
+            <strong class="date">{{ expirationDate }}</strong>.
+          </div>
+        </div>
+
+        <h2>How can we help get you started?</h2>
+        <ul>
+          <li>
+            <a href="https://docs.chef.io/automate" target="_blank">
+              Chef Documentation
+              <chef-icon>launch</chef-icon>
+            </a>
+          </li>
+          <li>
+            <a href="https://learn.chef.io/" target="_blank">
+              Learn Chef Rally
+              <chef-icon>launch</chef-icon>
+            </a>
+          </li>
+        </ul>
+        <chef-button primary (click)="closeModal()" class="confirmation" id="dismiss-help">Close</chef-button>
+        <app-telemetry-checkbox></app-telemetry-checkbox>
+      </ng-container>
+    </ng-container>
+
+    <ng-container *ngIf="fetchStatusInternalError">
+        <div class="title">Unable to Verify License</div>
+        <div>
+          Something went wrong. Verify your connectivity to the Chef Automate server.
+          <br/>
+          If this problem persists contact an administrator
+          or <a href="https://www.chef.io/support/" target="_blank" class="error-msg">Chef support</a>.
+        </div>
+    <div class="button-container">
+          <chef-button primary (click)="retryLicenseStatus()">Retry Connection</chef-button>
+          <chef-button secondary (click)="logout()">Sign out</chef-button>
+    </div>
+    </ng-container>
+
+  </div>
+</chef-modal>

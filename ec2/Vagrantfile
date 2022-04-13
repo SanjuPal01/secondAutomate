@@ -1,0 +1,367 @@
+require 'json'
+require 'open-uri'
+require 'vagrant-aws'
+require 'resolv'
+require 'mkmf'
+
+#Undefined HashMap method except with Vagrant 2.2.7
+# work around was found here: https://github.com/mitchellh/vagrant-aws/issues/566#issuecomment-580812210
+class Hash
+  def slice(*keep_keys)
+    h = {}
+    keep_keys.each { |key| h[key] = fetch(key) if has_key?(key) }
+    h
+  end unless Hash.method_defined?(:slice)
+  def except(*less_keys)
+    slice(*keys - less_keys)
+  end unless Hash.method_defined?(:except)
+end
+
+home_dir="/home/ubuntu"
+current_branch=`git rev-parse --abbrev-ref HEAD`
+latest_head_commit=`git rev-parse HEAD`
+latest_origin_commit=`git rev-parse origin/#{current_branch}`
+clean_tree=system('git status | grep "nothing to commit"')
+stop_hours = 48  # if STOP_HOURS ENV is not specified, stop the instance after 2 days of running
+automate_license = ENV['AUTOMATE_LICENSE']
+automate_license_path = '../dev/license.jwt'
+automate_channel = 'dev'
+automate_build = 'latest'
+manifest_url = "https://packages.chef.io/manifests/#{automate_channel}/automate/#{automate_build}.json"
+es_ebs_snapshot = ''
+
+def extract_from_manifest(manifest, build)
+  manifest_json = JSON.parse(open(manifest).read)
+  hab_version = manifest_json["hab"].find {|x| x.start_with?("core/hab/") }.split("/")[2]
+  git_sha = 'HEAD'
+  git_sha = manifest_json["git_sha"] if build != 'latest'
+  return hab_version, git_sha
+end
+
+# Extract the AWS credentials from a file without additional dependencies, like toml parsing gem
+def extract_aws_creds(file, profile)
+  key = nil
+  secret = nil
+  token = nil
+  found_profile = false
+  File.open(file).read.each_line do |line|
+    if line =~ /^\s*\[\s*#{Regexp.escape(profile)}s*\]/
+      found_profile = true
+      next
+    end
+    if found_profile
+      if line =~ /^\s*aws_access_key_id\s*=\s*"?(.+)"?/
+        key = $1
+        next
+      end
+      if line =~ /^\s*aws_secret_access_key\s*=\s*"?(.+)"?/
+        secret = $1
+        next
+      end
+      if line =~ /^\s*aws_session_token\s*=\s*"?(.+)"?/
+        token = $1
+        next
+      end
+      if ((key && secret && token) || line =~ /^\s*\[/)
+        # return if we found all properties or we reached another [profile]
+        return key, secret, token
+      end
+    end
+  end
+  return key, secret, token
+end
+
+def latest_build_from_versions(channel)
+  raise "Invalid channel #{channel}, can only be 'dev', 'current' or 'acceptance'" unless ['dev', 'current', 'acceptance'].include?(channel)
+  versions_url = "https://packages.chef.io/manifests/#{channel}/automate/versions.json"
+  puts " * Getting latest build from #{versions_url}"
+  versions_json = JSON.parse(open(versions_url).read)
+  build = versions_json.last
+  raise "Invalid build '#{build}' found for channel '#{channel}'" unless build =~ /^\d+$/
+  return build
+end
+
+aws_session_token = ''
+aws_access_key_id = ENV['AWS_ACCESS_KEY_ID']
+aws_secret_access_key = ENV['AWS_SECRET_ACCESS_KEY']
+
+# Only run these checks on `vagrant up/ssh/destroy`
+if ['up', 'ssh', 'destroy', 'halt'].include?(ARGV[0])
+  if (aws_access_key_id && aws_secret_access_key)
+    puts " * Using the provided ENV variables AWS_ACCESS_KEY_ID and AWS_SECRET_ACCESS_KEY to continue..."
+  else
+    aws_profile = ENV['AWS_PROFILE']
+    aws_profile ||= 'chef-engineering'
+    aws_creds_file = "#{ENV['HOME']}/.aws/credentials"
+
+    if find_executable('okta_aws')
+      puts " * okta_aws command detected, using it to refresh the temporary AWS credentials..."
+      unless File.exist?("#{ENV['HOME']}/.okta_aws.toml")
+        raise "#{ENV['HOME']}/.okta_aws.toml is not defined, cannot continue. Please read README.md for an example and usage details."
+      end
+      puts " * You might be prompted for your Okta password now..."
+      `saml2aws login --profile chef-engineering`
+    end
+
+    unless File.exist?(aws_creds_file)
+      raise "Without ENV variables AWS_ACCESS_KEY_ID, AWS_SECRET_ACCESS_KEY or #{aws_creds_file} the ec2 instances can't be created, aborting..."
+    end
+    puts " * Looking for '#{aws_profile}' AWS credentials in #{aws_creds_file}"
+    aws_access_key_id, aws_secret_access_key, aws_session_token = extract_aws_creds(aws_creds_file, aws_profile)
+    if aws_access_key_id && aws_secret_access_key && aws_session_token
+      puts " * Found AWS credentials in #{aws_creds_file}, moving on..."
+    else
+      raise "Unable to locate '#{aws_profile}' AWS credentials in #{aws_creds_file}, aborting..."
+    end
+  end
+end
+
+# Only run these checks on `vagrant up`
+if ARGV[0] == "up"
+  if !ENV['STOP_HOURS'].nil?
+    stop_hours = ENV['STOP_HOURS']
+  end
+
+  if ENV['ES_HEAP_SIZE'].nil?
+    ENV['ES_HEAP_SIZE'] = "3"
+  end
+
+  if !ENV['EBS_SNAPSHOT'].nil? && ENV['EBS_SNAPSHOT'] =~ /^snap-\w+$/
+    es_ebs_snapshot = ENV['EBS_SNAPSHOT']
+    puts " * Using specified EBS snapshot #{es_ebs_snapshot} for the ElasticSearch data directory"
+  end
+
+  if !ENV['VERSION'].nil?
+    version = ENV['VERSION'].strip.split('/')
+    automate_channel = version[0]
+    if version[1].to_s =~ /^\d+$/
+      automate_build = version[1]
+    else
+      automate_build = latest_build_from_versions(automate_channel)
+    end
+  end
+  manifest_url = "https://packages.chef.io/manifests/#{automate_channel}/automate/#{automate_build}.json"
+  hab_version_from_manifest, git_sha_from_manifest = extract_from_manifest(manifest_url, automate_build)
+
+  puts '==> Checking for ssh identities needed to clone the automate repo...'
+
+  unless system('ssh-add -l')
+    raise "No ssh identities are loaded, run `ssh-add` to load the private key that is allowed to clone the automate repo!"
+  end
+  if !clean_tree
+    puts %q(
+      !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+      ! You have uncommitted changes that won't exist when we do the git clone on the remote EC2 instance !
+      !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+    )
+  end
+  if latest_head_commit != latest_origin_commit
+    puts %q(
+      !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+      ! You have unpushed commits that won't exist when we do the git clone on the remote EC2 instance !
+      !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+    )
+  end
+
+  if ENV['GITHUB_TOKEN'].nil?
+    raise "ENV variable GITHUB_TOKEN must be defined for this, aborting..."
+  end
+
+  if automate_license.nil?
+    if(File.file?(automate_license_path))
+      automate_license = File.read(automate_license_path)
+      puts "==> Using Automate license file from #{automate_license_path}"
+    else
+      raise "A valid Automate JWT license is required. Provide the content in ENV variable AUTOMATE_LICENSE or save it in this file: #{automate_license_path}"
+    end
+  else
+    puts '==> Using Automate license from ENV variable AUTOMATE_LICENSE'
+  end
+
+  if ENV['AWS_SSH_KEY_NAME'].nil?
+    raise "ENV variable AWS_SSH_KEY_NAME must be defined for this. See README.md for more details. Aborting..."
+  end
+  puts "==> Installing Automate services from #{manifest_url}"
+end
+
+$install_hab = <<SCRIPT
+# Install the hab version specifid in the automate manifest
+curl --silent https://raw.githubusercontent.com/habitat-sh/habitat/master/components/hab/install.sh | sudo bash -s -- -v #{hab_version_from_manifest}
+SCRIPT
+
+$install_victorias_bits = <<SCRIPT
+apt-get install git make -y
+snap install jq
+echo "* soft nofile 100000" >> /etc/security/limits.conf
+echo "* hard nofile 256000" >> /etc/security/limits.conf
+echo "root soft nofile 100000" >> /etc/security/limits.conf
+echo "root hard nofile 256000" >> /etc/security/limits.conf
+sysctl fs.inotify.max_user_watches=524288
+sysctl -p
+echo 'Defaults    env_keep += "SSH_AUTH_SOCK"' > /etc/sudoers.d/root_ssh_agent
+SSHD_CONFIG="/etc/ssh/sshd_config"
+if ! grep -q "^ClientAliveInterval" $SSHD_CONFIG; then
+  echo "ClientAliveInterval 120" >> $SSHD_CONFIG
+fi
+if ! grep -q "^ClientAliveCountMax" $SSHD_CONFIG; then
+  echo "ClientAliveCountMax 10000" >> $SSHD_CONFIG
+fi
+systemctl reload sshd.service
+# permit root auth to bypass the hab studio if we wish so
+sed -r -i 's/^.+" ssh-/ssh-/' /root/.ssh/authorized_keys
+CRON_FILE="/etc/cron.hourly/auto-stop"
+if [ ! -f $CRON_FILE ]; then
+cat<<'EOF' > $CRON_FILE
+#!/bin/bash -e
+uptime_hours=$(($(awk '{print int($1)}' /proc/uptime) / 3600))
+# stop the instance if up for more than
+if [ $uptime_hours -gt #{stop_hours} ] ; then
+  wall "Automatically stopping instance after STOP_HOURS(#{stop_hours}) of uptime..."
+  halt -p
+fi
+EOF
+chmod +x $CRON_FILE
+fi
+SCRIPT
+
+$github_clone_automate = <<SCRIPT
+ssh-keyscan -H github.com >> ~/.ssh/known_hosts
+cd #{home_dir}
+git clone git@github.com:chef/automate.git
+cd automate
+echo "export GITHUB_TOKEN=\"#{ENV['GITHUB_TOKEN']}\"" > .secrets
+git checkout #{latest_head_commit}
+
+if test "#{git_sha_from_manifest}" = "HEAD" ; then
+  echo " * Not overwriting dev/config.toml as latest deb build is being installed"
+else
+  echo " * Overwriting dev/config.toml with one compatible with this build from sha #{git_sha_from_manifest}"
+  # This will fail if the old commits have been squashed or truncated. For example, after we make the repository public.
+  git checkout #{git_sha_from_manifest} dev/config.toml
+  git reset dev/config.toml
+fi
+
+cat<<EOF >>dev/config.toml
+
+[compliance.v1.sys.logger]
+  level = "debug"
+
+[elasticsearch.v1.sys.path]
+data = "es_data"
+EOF
+
+EC2HOSTNAME=`curl -Ss http://169.254.169.254/latest/meta-data/public-hostname`
+sed -i "s/fqdn = .*/fqdn = '$EC2HOSTNAME'/" dev/config.toml
+sed -i "s/heapsize = .*/heapsize = '#{ENV['ES_HEAP_SIZE']}g'/" dev/config.toml
+echo "#{automate_license}" > dev/license.jwt
+SCRIPT
+
+$enter_hab_studio = <<SCRIPT
+export HAB_LICENSE=accept-no-persist
+cat<<EOS >> /home/ubuntu/.screenrc
+caption always "%{-b ck}SCREEN SESSION%{= kc} on %{+b}$(curl -sS http://169.254.169.254/latest/meta-data/public-hostname)%{-} ($(curl -Ss http://169.254.169.254/latest/meta-data/local-ipv4)) %{+b kR}[system load: %l] %{-b kY}%f %t%{= kc}"
+EOS
+chown ubuntu:ubuntu /home/ubuntu/.screenrc
+cat<<EOF >/etc/profile.d/hab_studio_setup.sh
+export HAB_LICENSE=accept-no-persist
+if [ "\\$USER" == "ubuntu" ]; then
+  export HAB_STUDIO_SECRET_GITHUB_TOKEN=#{ENV['GITHUB_TOKEN']}
+  export AWS_ACCESS_KEY_ID=#{aws_access_key_id}
+  export AWS_SECRET_ACCESS_KEY=#{aws_secret_access_key}
+  export AWS_SESSION_TOKEN="#{aws_session_token}"
+  export AZURE_CLIENT_ID=#{ENV['AZURE_CLIENT_ID']}
+  export AZURE_CLIENT_SECRET=#{ENV['AZURE_CLIENT_SECRET']}
+  export AZURE_TENANT_ID=#{ENV['AZURE_TENANT_ID']}
+  cd #{home_dir}/automate
+  source .envrc
+  if [ ! -f ~/.hab/etc/cli.toml ]; then
+    echo "Setting up HAB_ORIGIN=ubuntu"
+    mkdir -p ~/.hab/etc
+    cat<<'EOT' > ~/.hab/etc/cli.toml
+origin = "ubuntu"
+ctl_secret = "dev333ZZZ111"
+EOT
+    echo " * Running: hab origin..."
+    hab origin key generate ubuntu
+  fi
+  echo " * Running: hab studio run to wget the build.json"
+  hab studio run 'wget -O results/build.json "#{manifest_url}"'
+  hab studio run 'echo "https://$(curl -Ss http://169.254.169.254/latest/meta-data/public-hostname)" > url.txt'
+  # captures an Amazon EBS volume that is not mounted and has a UUID(avoids matching the root EBS volume)
+  device_to_mount=\\$(lsblk -o NAME,MODEL,MOUNTPOINT,UUID | grep -P "Amazon Elastic Block Store[^/]+\\w" | cut -f1 -d" ")
+  if [ -n "\\$device_to_mount" ]; then
+    echo " * Running: hab studio runs for es data"
+    hab studio run 'mkdir -p /hab/svc/automate-elasticsearch/data'
+    hab studio run "mount -o discard /dev/\\$device_to_mount /hab/svc/automate-elasticsearch/data"
+    hab studio run 'mkdir -p /hab/svc/automate-elasticsearch/data/es_data && chown -R hab:hab /hab/svc/automate-elasticsearch/data/es_data'
+  fi
+  if screen -ls hab_studio; then
+    screen -ls
+    echo " * Attaching to existing screen 'hab_studio'"
+    screen -x hab_studio
+  else
+    echo " * Running: 'hab studio enter' in 'screen'!!!"
+    screen -S hab_studio hab studio enter
+  fi
+fi
+EOF
+hab pkg install -b core/git
+STUDIORC="#{home_dir}/automate/.studiorc"
+echo 'printf "\033[0;31m>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>\n>>> TWO MORE STEPS NEEDED TO RUN A2 <<<\n<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<\033[0m\n"' >> $STUDIORC
+echo 'printf "1. Run this here:\033[1;32m start_all_services \033[0m\n"' >> $STUDIORC
+echo 'printf "2. Run the A2 UI:\033[1;34m $(cat /src/url.txt) \033[0m\n"' >> $STUDIORC
+echo 'Done, run `vagrant ssh` now to complete the setup.'
+SCRIPT
+
+if ENV['AWS_SSH_KEY_PATH'].nil?
+  ssh_key_path = '~/.ssh/id_rsa'
+else
+  ssh_key_path = ENV['AWS_SSH_KEY_PATH']
+end
+
+Vagrant.configure('2') do |config|
+  config.vm.box = 'aws'
+  config.vm.synced_folder ".", "/vagrant", disabled: true
+
+  config.vm.provider 'aws' do |aws, override|
+    aws.access_key_id = "#{aws_access_key_id}"
+    aws.secret_access_key = "#{aws_secret_access_key}"
+    aws.session_token = "#{aws_session_token}" if aws_session_token
+    aws.keypair_name = ENV['AWS_SSH_KEY_NAME']
+    #aws.instance_type = 'm5.large'      # 2CPU, 8GB RAM
+    #aws.instance_type = 'm5.xlarge'    # 4CPU, 16GB RAM
+    aws.instance_type = 'm5.2xlarge'   # 8CPU, 32GB RAM
+    aws.region = 'us-east-2'            # US East (Ohio)
+    aws.ami = 'ami-026f49896b1af2759'   # Ubuntu 18.04 LTS in region 'us-east-2'
+    aws.tags = {
+      'Name' => "#{ENV['USER']}-automate-dev"
+    }
+    aws.block_device_mapping = [{ 'DeviceName' => '/dev/sda1',
+                                  'Ebs.VolumeSize' => 100,
+                                  'Ebs.DeleteOnTermination' => true,
+                                  'VirtualName' => 'rdm'
+                                }]
+
+    if es_ebs_snapshot != ''
+      aws.block_device_mapping << { 'DeviceName' => '/dev/sdf',
+        'Ebs.SnapshotId' => es_ebs_snapshot,
+        'Ebs.DeleteOnTermination' => true,
+        'Ebs.VolumeType' => 'standard'
+      }
+    end
+
+    if (ENV['AWS_EC2_IP'] =~ Resolv::IPv4::Regex)
+      aws.elastic_ip = ENV['AWS_EC2_IP']
+    end
+
+    aws.security_groups = ['ssh-http-go-debug']
+    override.ssh.username = 'ubuntu'
+    override.ssh.private_key_path = ssh_key_path
+  end
+
+  config.ssh.forward_agent = true
+  config.vm.provision 'Install hab', type: 'shell', inline: $install_hab
+  config.vm.provision 'Install Victoria\'s bits', type: 'shell', inline: $install_victorias_bits, :privileged => true
+  config.vm.provision 'Github clone automate', type: 'shell', inline: $github_clone_automate
+  config.vm.provision 'Enter hab studio', type: 'shell', inline: $enter_hab_studio
+end

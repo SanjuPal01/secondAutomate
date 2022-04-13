@@ -1,0 +1,89 @@
+<div class="content-container">
+  <div class="container token-container">
+    <main>
+      <chef-page-header>
+        <chef-heading>API Tokens</chef-heading>
+        <chef-subheading>API Tokens are used to access the Chef Automate API.</chef-subheading>
+      </chef-page-header>
+
+    <app-create-object-modal
+      [visible]="createModalVisible"
+      [creating]="creatingToken"
+      [conflictErrorEvent]="conflictErrorEvent"
+      objectNoun="token"
+      [createForm]="createTokenForm"
+      (close)="closeCreateModal()"
+      (createClicked)="createToken()">
+    </app-create-object-modal>
+
+      <app-delete-object-modal
+        [visible]="deleteModalVisible"
+        objectNoun="token"
+        [objectName]="tokenToDelete?.name"
+        (close)="closeDeleteModal()"
+        (deleteClicked)="deleteToken()"
+        objectAction="Delete">
+      </app-delete-object-modal>
+
+    <div class="page-body">
+      <chef-toolbar>
+        <app-authorized [anyOf]="['/apis/iam/v2/tokens', 'post']">
+          <div *ngIf="(apiTokenCount$ | async) === 0" class="empty-state">
+            <p>Create the first token to get started!</p>
+          </div>
+          <div [ngClass]="(apiTokenCount$ | async) === 0 ? 'empty-state' : ''">
+            <chef-button id="create-button" primary (click)="openCreateModal()">Create Token</chef-button>
+          </div>
+        </app-authorized>
+      </chef-toolbar>
+      <app-authorized [allOf]="['/apis/iam/v2/tokens', 'get']">
+        <chef-table *ngIf="(apiTokenCount$ | async) > 0">
+          <chef-thead>
+            <chef-tr>
+              <chef-th>Name</chef-th>
+              <chef-th>ID</chef-th>
+              <chef-th>Projects</chef-th>
+              <chef-th class="created-date">Created Date</chef-th>
+              <chef-th>Status</chef-th>
+              <chef-th class="three-dot-column"></chef-th>
+            </chef-tr>
+          </chef-thead>
+          <chef-tbody>
+            <chef-tr *ngFor="let token of sortedApiTokens$ | async">
+              <chef-td>
+                <a [routerLink]="['/settings/tokens', token.id]">{{ token.name }}</a>
+              </chef-td>
+              <chef-td>{{ token.id }}</chef-td>
+              <chef-td class="projects-column">
+                <span *ngIf="token.projects.length === 0">{{ unassigned }}</span>
+                <span *ngIf="token.projects.length === 1">{{ token.projects[0] }}</span>
+                <span *ngIf="token.projects.length > 1">{{ token.projects.length }} projects</span>
+              </chef-td>
+              <chef-td class="created-date">
+                <app-time [time]='token.created_at'></app-time>
+              </chef-td>
+              <chef-td>
+                <ng-container *ngIf="token.active">Active</ng-container>
+                <ng-container *ngIf="!token.active">Inactive</ng-container>
+              </chef-td>
+              <chef-td class="three-dot-column">
+                <mat-select panelClass="chef-control-menu" id="menu-{{token.id}}" data-cy="token-control">
+                  <mat-option (onSelectionChange)="notifyCopy($event)" data-cy="copy-token">
+                    <chef-clipboard plain value="{{token.value}}" label="Copy Token" icon=""></chef-clipboard>
+                  </mat-option>
+                  <!-- <app-authorized [allOf]="[`/apis/iam/v2/tokens/{id}`, 'put', token.id]"> -->
+                  <mat-option (onSelectionChange)="toggleActive($event, token)">Toggle Status</mat-option>
+                  <!-- </app-authorized> -->
+                  <!-- <app-authorized [allOf]="[`/apis/iam/v2/tokens/{id}`, 'delete', token.id]"> -->
+                  <mat-option (onSelectionChange)="startTokenDelete($event, token)" data-cy="delete">Delete Token</mat-option>
+                  <!-- </app-authorized> -->
+                </mat-select>
+             </chef-td>
+            </chef-tr>
+          </chef-tbody>
+        </chef-table>
+      </app-authorized>
+    </div>
+  </main>
+</div>
+</div>

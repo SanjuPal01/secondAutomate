@@ -1,0 +1,2 @@
+[auth_z.v1.sys.storage]
+max_idle_connections = 10

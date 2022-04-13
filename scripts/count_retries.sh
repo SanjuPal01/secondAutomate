@@ -1,0 +1,16 @@
+#!/usr/bin/env bash
+
+set -xe
+
+# if this is not a retry, don't bother
+[[ "$BUILDKITE_RETRY_COUNT" -eq 0 ]] && exit 0
+
+url="${BUILDKITE_BUILD_URL}#${BUILDKITE_JOB_ID}"
+# if jobname is, say, :inspec:, don't wrap it in backticks
+message="$(awk -v l="$BUILDKITE_LABEL" -v n="$BUILDKITE_RETRY_COUNT"\
+  'BEGIN{ printf "%s retried %s\n", (l ~ /^:.*:$/) ? l : "`" l "`", (n == 1) ? "once" :  n " times" }' /dev/null )"
+
+if command -v buildkite-agent
+then
+    buildkite-agent annotate --style "warning" --context "job-retries-$BUILDKITE_LABEL" "[$message]($url)"
+fi

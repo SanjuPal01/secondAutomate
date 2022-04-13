@@ -1,0 +1,34 @@
+#!{{pkgPathFor "core/bash"}}/bin/bash
+#
+{{#if cfg.disable ~}}
+exit 0
+{{~else}}
+
+# pg_isready returns 0 to the shell if the server is accepting connections
+# normally, 1 if the server is rejecting connections (for example during
+# startup), 2 if there was no response to the connection attempt, and 3 if no
+# attempt was made (for example due to invalid parameters).
+#
+# The options --dbname and --username are used to avoid gratuitous
+# error messages in the logs, but are not necessary for proper
+# functionality.
+#
+# We return CRITICAL if we can't connect as well as if the server is
+# rejecting connections (not yet ready).
+export PGPORT="5432"
+export PGHOST="0.0.0.0"
+export PGUSER="automate"
+export PGDATABASE="postgres"
+export PGSSLMODE="verify-ca"
+export PGSSLCERT="/hab/svc/automate-postgresql/config/server.crt"
+export PGSSLKEY="/hab/svc/automate-postgresql/config/server.key"
+export PGSSLROOTCERT="/hab/svc/automate-postgresql/config/root.crt"
+
+{ pg_isready --port {{cfg.service.port}} --dbname postgres --username {{cfg.superuser.name}} --quiet; err="$?"; } || true
+case "$err" in
+    "0") exit 0;;               # OK (200)
+    "3") exit 3;;               # UNKNOWN (500)
+    *)   exit 2;;               # CRITICAL (503)
+esac
+
+{{~/if}}

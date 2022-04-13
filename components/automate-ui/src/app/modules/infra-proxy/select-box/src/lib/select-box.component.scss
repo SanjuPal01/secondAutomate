@@ -1,0 +1,456 @@
+@import "~styles/variables";
+
+.select-box-list-container {
+  display: flex;
+  flex-direction: row;
+  height: 252px;
+}
+
+.vertical {
+  display: flex;
+  flex-direction: column;
+}
+
+.role-list {
+  display: block;
+  background: $chef-white;
+  height: 235px;
+  left: 398px;
+  right: 762px;
+  top: 389px;
+  width: 280px;
+  border: 1px solid $chef-form-input;
+  box-sizing: border-box;
+  border-radius: 4px;
+}
+
+.role-list-margin {
+  margin: 8px;
+}
+
+.run-list-box {
+  display: flex;
+  padding: 10px 10px;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+  box-sizing: border-box;
+  cursor: move;
+  background: $chef-white;
+  font-size: 14px;
+  margin-top: 6.5px;
+}
+
+// sass-lint:disable no-important
+::ng-deep .cdk-drag-preview {
+  position: relative;
+  z-index: 999999 !important;
+}
+
+.scroll {
+  max-height: 180px;
+  overflow-y: auto;
+  overflow-x: hidden;
+}
+
+.fixed-height {
+  height: 180px;
+  margin-top: 10px;
+  margin-left: 1px;
+}
+
+.empty-scroll {
+  max-height: 235px;
+  overflow-y: auto;
+  overflow-x: hidden;
+}
+
+::ng-deep .empty-scroll::-webkit-scrollbar {
+  width: 3px;
+  background-color: $chef-modal-scrollbar;
+}
+
+::ng-deep .empty-scroll::-webkit-scrollbar-thumb {
+  border-radius: 8px;
+  background-color: $chef-modal;
+}
+
+.no-data {
+  margin: 32px;
+  font-size: 18px;
+  text-align: center;
+}
+
+.select-box-list-item {
+  padding: 10px;
+  cursor: move;
+  margin-top: 6.5px;
+  font-size: 14px;
+}
+
+.run-list-box.selected {
+  margin-top: 6.5px;
+  background: $chef-selected-item;
+  background-blend-mode: multiply;
+  border-radius: 4px;
+}
+
+.run-list-box:hover:not(.selected) {
+  margin-top: 6.5px;
+  background: $chef-light-grey;
+  background-blend-mode: multiply;
+  border-radius: 4px;
+}
+
+.select-box-list-item.selected {
+  margin-top: 6.5px;
+  background: $chef-selected-item;
+  background-blend-mode: multiply;
+  border-radius: 4px;
+}
+
+.select-box-list-item:hover:not(.selected) {
+  margin-top: 6.5px;
+  background: $chef-light-grey;
+  background-blend-mode: multiply;
+  border-radius: 4px;
+}
+
+.select-box-buttons {
+  display: flex;
+  vertical-align: center;
+  padding: 20px;
+  flex-direction: column;
+  width: 50px;
+  height: 250px;
+}
+
+.select-box-preview span {
+  background-color: $chef-primary-bright;
+  padding: 10px;
+}
+
+.select-box-placeholder {
+  background-color: $chef-selected-item;
+  padding: 10px;
+  font-size: 14px;
+}
+
+.selectbox-search {
+  margin-bottom: 21px;
+  margin-top: -8px;
+  width: 100%;
+}
+
+.dropdown-toggle {
+  color: $chef-white;
+}
+
+.margin {
+  margin-top: 8px;
+}
+
+.data-box {
+  border-radius: 10px;
+  float: left;
+  width: 41.5%;
+  margin-right: 10px;
+}
+
+.empty-box {
+  float: left;
+  margin-right: 10px;
+  margin-left: 10px;
+  width: 41.5%;
+  height: 235px;
+  left: 730px;
+  right: 430px;
+  top: 389px;
+  border: 1px solid $chef-form-input;
+  box-sizing: border-box;
+  border-radius: 4px;
+}
+
+.left-right-arrow-box {
+  float: left;
+  padding-top: 157px;
+  text-align: center;
+  width: 8%;
+
+  button[disabled] {
+    img {
+      filter: opacity(0.5);
+    }
+  }
+}
+
+.up-down-arrow-box {
+  float: left;
+  padding-top: 157px;
+  width: 6%;
+
+  button[disabled] {
+    img {
+      filter: opacity(0.5);
+    }
+  }
+}
+
+.primary {
+  display: -ms-inline-flexbox;
+  display: inline-flex;
+  background-color: $chef-white;
+  -ms-flex-align: center;
+  align-items: center;
+  -ms-flex-pack: center;
+  justify-content: center;
+  -ms-flex-wrap: nowrap;
+  flex-wrap: nowrap;
+  font-size: 14px;
+  min-height: 32px;
+  min-width: 32px;
+  text-align: center;
+  white-space: nowrap;
+  vertical-align: top;
+  left: 0px;
+  top: 0px;
+  border: none;
+}
+
+.primary:focus {
+  outline: none;
+}
+
+.primary:hover {
+  img {
+    filter: drop-shadow(2px 4px 6px $chef-black);
+  }
+}
+
+.input-icons {
+  width: 100%;
+  width: 260px;
+  height: 32px;
+  background: $chef-white;
+  border: 1px solid $chef-light-grey;
+  box-sizing: border-box;
+  border-radius: 4px;
+}
+
+.icon {
+  color: $chef-primary-dark;
+  padding-left: 7.91px;
+  padding-top: 8px;
+  padding-bottom: 8px;
+  width: 15.78px;
+  height: 16px;
+  font-size: 16px;
+}
+
+.icon:hover {
+  color: $chef-light-grey;
+}
+
+.input-field {
+  padding: 10px;
+  text-align: start;
+  width: 227px;
+  height: 21px;
+  left: 32px;
+  top: 5px;
+  font-size: 12px;
+  line-height: 21px;
+  letter-spacing: 0.2px;
+  border: none;
+  margin-left: 30px;
+  margin-top: 5px;
+}
+
+.input-icons mat-icon {
+  position: absolute;
+}
+
+.content {
+  height: 180px;
+  overflow: auto;
+}
+
+.spinner-item {
+  display: grid;
+  place-items: center;
+  margin-top: 50px;
+
+  chef-loading-spinner {
+    display: block;
+    position: relative;
+    overflow: hidden;
+    width: auto;
+    z-index: 199;
+    background-color: $chef-white;
+    opacity: 0.7;
+    width: 50px;
+    height: 50px;
+  }
+}
+
+::ng-deep cdk-virtual-scroll-viewport::-webkit-scrollbar {
+  width: 3px;
+  background-color: $chef-modal-scrollbar;
+}
+
+::ng-deep cdk-virtual-scroll-viewport::-webkit-scrollbar-thumb {
+  border-radius: 8px;
+  background-color: $chef-modal;
+}
+
+.run-list-container {
+  display: inline-block;
+  margin: 0 25px 0px 50;
+  max-width: 100%;
+  vertical-align: top;
+  width: 200px;
+}
+
+.run-list-box {
+  display: flex;
+  align-items: center;
+  background: $chef-white;
+  box-sizing: border-box;
+  cursor: move;
+  flex-direction: row;
+  font-size: 14px;
+  justify-content: space-between;
+  padding: 10px 10px;
+}
+
+.cdk-drag-preview {
+  box-sizing: border-box;
+  border-radius: 4px;
+  box-shadow: 0 5px 5px -3px rgba(0, 0, 0, 0.2),
+  0 8px 10px 1px rgba(0, 0, 0, 0.14),
+  0 3px 14px 2px rgba(0, 0, 0, 0.12);
+}
+
+.cdk-drag-placeholder {
+  opacity: 0;
+}
+
+.cdk-drag-animating {
+  transition: transform 250ms cubic-bezier(0, 0, 0.2, 1);
+}
+
+.run-list-box:last-child {
+  border: none;
+}
+
+.select-box {
+  width: 280px;
+}
+
+.box-margin {
+  margin-top: 8px;
+  height: 252px;
+}
+
+.heading-run-list {
+  margin-left: 337px;
+  width: 344px;
+  height: 19px;
+  left: 730px;
+  top: 362px;
+  font-size: 16px;
+  line-height: 20px;
+  letter-spacing: 0.25px;
+  color: $chef-black;
+}
+
+chef-error {
+  background-color: $chef-critical;
+  color: $chef-white;
+  border-radius: 0 0 4px 4px;
+  margin-top: -15px;
+}
+
+::ng-deep mat-select {
+  width: 277px;
+}
+
+::ng-deep .chef-dropdown {
+  margin-top: 27px;
+
+  .mat-option {
+    line-height: 3em;
+    font-size: 12px;
+    height: 3em;
+    border: 1px solid $chef-key-tab;
+    height: 37px;
+  }
+}
+
+::ng-deep  .cdk-overlay-pane .mat-select-panel-wrap  {
+  flex-basis: auto;
+}
+
+::ng-deep .cdk-overlay-pane .mat-select-panel .mat-option.mat-selected:not(.mat-option-multiple) {
+  background: $chef-white;
+  color: $chef-black;
+}
+
+::ng-deep .cdk-overlay-pane .mat-select-panel ng-container .mat-option {
+  line-height: 3em;
+  font-size: 12px;
+  height: 3em;
+  border: 1px solid $chef-key-tab;
+  height: 37px;
+}
+
+::ng-deep [panelClass=chef-dropdown] {
+  height: 36px;
+  padding: 8px 12px 9px 16px;
+  border: 1px solid $chef-form-input;
+  box-sizing: border-box;
+  border-radius: 4px;
+}
+
+::ng-deep [panelClass=chef-dropdown]:focus {
+  border-color: $chef-form-input;
+}
+
+// sass-lint:disable no-important
+::ng-deep .cdk-overlay-container .cdk-overlay-pane {
+  margin-left: -12px !important;
+  transform: none !important;
+}
+
+::ng-deep .cdk-overlay-container {
+  position: fixed;
+  z-index: 999999999;
+}
+
+::ng-deep .mat-select-arrow-wrapper .mat-select-arrow {
+  right: 10px;
+  width: 0;
+  height: 0;
+  border-color: $chef-white transparent transparent transparent;
+  border-left: 5px solid transparent;
+  border-right: 5px solid transparent;
+  border-top: 5px solid;
+  border: 6px solid $chef-primary-bright;
+  border-width: 0 2px 2px 0;
+  padding: 3px;
+  transform: rotate(45deg);
+  -webkit-transform: rotate(45deg);
+}
+
+::ng-deep .mat-select-arrow-wrapper .mat-select-arrow:visited {
+  transform: rotate(-135deg);
+  -webkit-transform: rotate(-135deg);
+}
+
+::ng-deep .mat-select-disabled .mat-select-value {
+  color: $chef-black;
+}
+
+::ng-deep .highlight-text {
+  background: $chef-highlight;
+}

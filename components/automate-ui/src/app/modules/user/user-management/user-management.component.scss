@@ -1,0 +1,30 @@
+@import "~styles/variables";
+
+[disabled] {
+  cursor: pointer;
+}
+
+chef-modal {
+  [slot=title] {
+    text-align: center;
+    font-weight: bold;
+    margin-top: 1em;
+    padding-bottom: 12px;
+  }
+
+  .flex-container {
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+  }
+}
+
+.empty-state {
+  text-align: center;
+
+  p {
+    font-size: 18px;
+    font-weight: 400;
+    margin-top: 42px;
+  }
+}
