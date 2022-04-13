@@ -1,0 +1,41 @@
+chef-ui-docs #sidebar-nav,
+chef-design-docs #sidebar-nav {
+  order: 1;
+  margin-left: -1em;
+  display: flex;
+  flex-direction: column;
+  padding: 1em 1em;
+  flex: 1 0 150px;
+}
+chef-ui-docs nav,
+chef-design-docs nav {
+  display: flex;
+  flex-direction: column;
+}
+chef-ui-docs nav ul,
+chef-design-docs nav ul {
+  padding-left: 0px;
+}
+chef-ui-docs nav ul li,
+chef-design-docs nav ul li {
+  margin: 0;
+  list-style: none;
+}
+chef-ui-docs nav a,
+chef-design-docs nav a {
+  padding: 0.5em;
+  display: block;
+  text-decoration: none;
+  color: inherit;
+}
+chef-ui-docs nav a.link-active,
+chef-design-docs nav a.link-active {
+  background: var(--chef-grey);
+  box-shadow: 0 0 2px rgba(0, 0, 0, 0.2);
+}
+chef-ui-docs nav a:hover, chef-ui-docs nav a:focus,
+chef-design-docs nav a:hover,
+chef-design-docs nav a:focus {
+  color: var(--chef-primary-bright);
+  border-right: 2px solid var(--chef-primary-bright);
+}

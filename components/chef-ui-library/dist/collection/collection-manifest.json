@@ -1,0 +1,93 @@
+{
+  "entries": [
+    "atoms/chef-alert/chef-alert.js",
+    "atoms/chef-badge/chef-badge.js",
+    "atoms/chef-card/chef-card.js",
+    "app.js",
+    "atoms/chef-clipboard/chef-clipboard.js",
+    "atoms/chef-icon/chef-icon.js",
+    "atoms/chef-heading/chef-heading.js",
+    "atoms/chef-checkbox/chef-checkbox.js",
+    "atoms/chef-dropdown/chef-dropdown.js",
+    "atoms/chef-button/chef-button.js",
+    "atoms/chef-click-outside/chef-click-outside.js",
+    "atoms/chef-loading-spinner/chef-loading-spinner.js",
+    "atoms/chef-input/chef-input.js",
+    "atoms/chef-logo/chef-logo.js",
+    "atoms/chef-markdown/chef-markdown.js",
+    "atoms/chef-option/chef-option.js",
+    "atoms/chef-scrollfader/chef-scrollfader.js",
+    "atoms/chef-progress-bar/chef-progress-bar.js",
+    "atoms/chef-sort-toggle/chef-sort-toggle.js",
+    "atoms/chef-snippet/chef-snippet.js",
+    "atoms/chef-step/chef-step.js",
+    "atoms/chef-trap-focus/chef-trap-focus.js",
+    "atoms/chef-tooltip/chef-tooltip.js",
+    "atoms/chef-subheading/chef-subheading.js",
+    "charts/chef-radial-chart/chef-radial-chart.js",
+    "charts/chef-data-point/chef-data-point.js",
+    "design/chef-typography/chef-typography.js",
+    "design/chef-colors/chef-colors.js",
+    "internal/chef-example/chef-example.js",
+    "internal/chef-read-me/chef-read-me.js",
+    "molecules/chef-combobox/chef-combobox.js",
+    "molecules/chef-expander/chef-expander.js",
+    "internal/chef-header-nav/chef-header-nav.js",
+    "molecules/chef-page-header/chef-page-header.js",
+    "atoms/chef-input-key-value/chef-input-key-value.js",
+    "molecules/chef-banner/chef-banner.js",
+    "molecules/chef-radio/chef-radio.js",
+    "molecules/chef-select/chef-select.js",
+    "molecules/chef-separator/chef-separator.js",
+    "molecules/chef-status-filter-group/chef-status-filter-group.js",
+    "molecules/chef-tab-selector/chef-tab-selector.js",
+    "molecules/chef-stepper/chef-stepper.js",
+    "molecules/chef-scroll-top/chef-scroll-top.js",
+    "pages/chef-design-docs/chef-design-docs.js",
+    "pages/chef-ui-doc/chef-ui-doc.js",
+    "molecules/chef-toolbar/chef-toolbar.js",
+    "templates/chef-header/chef-header.js",
+    "pages/chef-ui-docs/chef-ui-docs.js",
+    "templates/chef-aside/chef-aside.js",
+    "molecules/chef-side-panel/chef-side-panel.js",
+    "templates/chef-layout/chef-layout.js",
+    "templates/chef-page/chef-page.js",
+    "templates/chef-main/chef-main.js",
+    "molecules/chef-toggle/chef-toggle.js",
+    "atoms/chef-pill/chef-pill.js",
+    "molecules/chef-paginator/chef-paginator.js",
+    "molecules/chef-modal/chef-modal.js",
+    "molecules/chef-phat-radio/chef-phat-radio.js"
+  ],
+  "compiler": {
+    "name": "@stencil/core",
+    "version": "1.2.3",
+    "typescriptVersion": "3.5.3"
+  },
+  "collections": [
+    {
+      "name": "@stencil/redux",
+      "tags": []
+    },
+    {
+      "name": "@stencil/router",
+      "tags": [
+        "stencil-async-content",
+        "stencil-route",
+        "stencil-route-link",
+        "stencil-route-switch",
+        "stencil-route-title",
+        "stencil-router",
+        "stencil-router-prompt",
+        "stencil-router-redirect"
+      ]
+    },
+    {
+      "name": "@stencil/state-tunnel",
+      "tags": [
+        "context-consumer"
+      ]
+    }
+  ],
+  "bundles": []
+}

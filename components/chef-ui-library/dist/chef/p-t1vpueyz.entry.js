@@ -1,0 +1,1 @@
+import{r,h as e}from"./p-1b10ccda.js";class t{constructor(e){r(this,e)}render(){return e("slot",null)}static get style(){return"chef-header{grid-area:header;-ms-grid-row:1;-ms-grid-column:1;-ms-grid-column-span:6;display:block}"}}export{t as chef_header};

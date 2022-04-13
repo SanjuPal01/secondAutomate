@@ -1,0 +1,1 @@
+import{r as t,d as s,h as r}from"./p-1b10ccda.js";class a{constructor(r){t(this,r),this.value=0,this.secondary=!1,this.updated=s(this,"updated",7)}componentWillUpdate(){this.updated.emit()}render(){return r("slot",null)}}export{a as chef_data_point};

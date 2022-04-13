@@ -1,0 +1,1 @@
+import{r,h as t}from"./p-1b10ccda.js";class o{constructor(t){r(this,t)}render(){return t("div",null,t("slot",null))}static get style(){return"chef-toolbar chef-button{margin-top:0}chef-toolbar chef-button:first-child{margin-top:0;margin-left:0}"}}export{o as chef_toolbar};

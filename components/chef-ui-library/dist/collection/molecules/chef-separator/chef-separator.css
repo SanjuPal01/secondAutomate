@@ -1,0 +1,22 @@
+chef-separator {
+  display: block;
+  position: relative;
+  margin: 1em 0;
+}
+chef-separator::before {
+  content: "";
+  display: block;
+  position: absolute;
+  top: 50%;
+  margin-top: -1px;
+  height: 2px;
+  width: 100%;
+  background-color: var(--chef-light-grey);
+}
+chef-separator .wrap {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: relative;
+  z-index: 10;
+}

@@ -1,0 +1,35 @@
+@charset "UTF-8";
+chef-radio {
+  --active-color: var(--toggle-active-color, var(--chef-primary-bright));
+}
+chef-radio chef-option {
+  display: block;
+  cursor: pointer;
+  padding: 0.5em 0.75em;
+  transition: color 0.5s ease;
+}
+chef-radio chef-option .option-content {
+  padding-left: 0.5em;
+}
+chef-radio chef-option::before {
+  font-family: "Material Icons";
+  content: "";
+  color: var(--chef-grey);
+  vertical-align: -2px;
+}
+chef-radio chef-option:hover {
+  color: var(--active-color);
+  transition: color 1s ease;
+}
+chef-radio chef-option:hover::before {
+  color: var(--active-color);
+  transition: color 1s ease;
+}
+chef-radio chef-option.selected {
+  color: var(--active-color);
+}
+chef-radio chef-option.selected::before {
+  font-family: "Material Icons";
+  content: "";
+  color: var(--active-color);
+}

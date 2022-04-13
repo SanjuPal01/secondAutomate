@@ -1,0 +1,28 @@
+chef-banner {
+  align-items: center;
+  background-color: var(--black);
+  color: var(--white);
+  display: flex;
+  justify-content: center;
+  min-height: 50px;
+}
+chef-banner chef-icon {
+  margin-right: 0.5em;
+}
+chef-banner chef-button {
+  --background-color: transparent;
+  --border-color:var(--white);
+  --color:var(--white);
+  margin-left: 2em;
+}
+chef-banner.info chef-button:hover, chef-banner.info chef-button:active {
+  --background-color:var(--white);
+  --color:var(--black);
+}
+chef-banner.warn {
+  background-color: var(--chef-critical);
+}
+chef-banner.warn chef-button:hover, chef-banner.warn chef-button:active {
+  --background-color:var(--white);
+  --color:var(--chef-critical);
+}

@@ -1,0 +1,92 @@
+chef-colors {
+  display: block;
+  padding: 1rem;
+}
+chef-colors h3,
+chef-colors h4,
+chef-colors p {
+  display: block;
+  max-width: 40rem;
+  width: 100%;
+}
+chef-colors .chef-card-item {
+  margin-bottom: 2rem;
+  background-color: var(--chef-white);
+  border-radius: var(--chef-border-radius);
+  box-shadow: var(--chef-box-shadow);
+}
+chef-colors .chef-color-swatch {
+  display: block;
+  height: 2rem;
+  width: 100%;
+  border-radius: var(--chef-border-radius) var(--chef-border-radius) 0 0;
+}
+chef-colors .chef-card-info {
+  padding: 1rem;
+}
+chef-colors .chef-card-info ul {
+  margin: 1rem 0 0;
+  padding: 0;
+  list-style: none;
+}
+chef-colors .chef-card-info li {
+  font-size: 0.75rem;
+  color: var(--chef-dark-grey);
+}
+chef-colors .chef-card-info span {
+  font-size: 0.875rem;
+}
+chef-colors .chef-primary {
+  background-color: var(--chef-primary);
+}
+chef-colors .chef-primary-dark {
+  background-color: var(--chef-primary-dark);
+}
+chef-colors .chef-primary-bright {
+  background-color: var(--chef-primary-bright);
+}
+chef-colors .chef-primary-light {
+  background-color: var(--chef-primary-light);
+}
+chef-colors .chef-critical {
+  background-color: var(--chef-critical);
+}
+chef-colors .chef-major {
+  background-color: var(--chef-major);
+}
+chef-colors .chef-minor {
+  background-color: var(--chef-minor);
+}
+chef-colors .chef-success {
+  background-color: var(--chef-success);
+}
+chef-colors .chef-dark-grey {
+  background-color: var(--chef-dark-grey);
+}
+chef-colors .chef-grey {
+  background-color: var(--chef-grey);
+}
+chef-colors .chef-light-grey {
+  background-color: var(--chef-light-grey);
+}
+chef-colors .chef-lightest-grey {
+  background-color: var(--chef-lightest-grey);
+}
+chef-colors .chef-white {
+  background-color: var(--chef-white);
+}
+chef-colors .chef-black {
+  background-color: var(--chef-black);
+}
+chef-colors .chef-text-base {
+  color: var(--chef-primary-dark);
+}
+chef-colors .chef-text-dull {
+  color: var(--chef-dark-grey);
+}
+chef-colors .chef-text-active {
+  color: var(--chef-primary-bright);
+}
+chef-colors .chef-text-contrast {
+  color: var(--chef-white);
+}

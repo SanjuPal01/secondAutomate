@@ -1,0 +1,34 @@
+chef-ui-doc {
+  display: block;
+  padding: 1em 1em;
+}
+chef-ui-doc h1,
+chef-ui-doc h2 {
+  font-weight: 300;
+}
+chef-ui-doc .example pre {
+  tab-size: 2;
+  overflow-x: auto;
+  white-space: pre-wrap;
+  font-family: "Liberation Mono", "Nimbus Mono L", Monaco, "Courier New", Courier, monospace;
+}
+chef-ui-doc .summary li {
+  list-style: none;
+}
+chef-ui-doc .properties table {
+  --border-color:var(--chef-grey);
+  width: 100%;
+  padding: 0 13px 13px;
+  background: var(--chef-white);
+  margin: 1em 0;
+  border: 1px solid var(--border-color);
+}
+chef-ui-doc .properties th {
+  text-align: left;
+  border-bottom: 1px solid var(--chef-grey);
+}
+chef-ui-doc .properties th, chef-ui-doc .properties td {
+  padding-top: 10px;
+  padding-left: 30px;
+  vertical-align: top;
+}

@@ -1,0 +1,98 @@
+chef-typography {
+  display: block;
+  padding: 1rem;
+}
+chef-typography h3,
+chef-typography h4,
+chef-typography p {
+  display: block;
+  max-width: 40rem;
+  width: 100%;
+}
+chef-typography .chef-card-item {
+  margin-bottom: 2rem;
+  background-color: var(--chef-white);
+  border-radius: var(--chef-border-radius);
+  box-shadow: var(--chef-box-shadow);
+}
+chef-typography .chef-color-swatch {
+  display: block;
+  height: 2rem;
+  width: 100%;
+  border-radius: var(--chef-border-radius) var(--chef-border-radius) 0 0;
+}
+chef-typography .chef-card-info {
+  padding: 1rem;
+}
+chef-typography .chef-card-info ul {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+chef-typography .chef-card-info li {
+  font-size: 0.75rem;
+  color: var(--chef-dark-grey);
+}
+chef-typography .chef-card-info span {
+  font-size: 0.875rem;
+}
+chef-typography .chef-font-lg {
+  font-size: 1rem;
+}
+chef-typography .chef-font-sm {
+  font-size: 0.75rem;
+}
+chef-typography .chef-primary {
+  background-color: var(--chef-primary);
+}
+chef-typography .chef-primary-dark {
+  background-color: var(--chef-primary-dark);
+}
+chef-typography .chef-primary-bright {
+  background-color: var(--chef-primary-bright);
+}
+chef-typography .chef-primary-light {
+  background-color: var(--chef-primary-light);
+}
+chef-typography .chef-critical {
+  background-color: var(--chef-critical);
+}
+chef-typography .chef-major {
+  background-color: var(--chef-major);
+}
+chef-typography .chef-minor {
+  background-color: var(--chef-minor);
+}
+chef-typography .chef-success {
+  background-color: var(--chef-success);
+}
+chef-typography .chef-dark-grey {
+  background-color: var(--chef-dark-grey);
+}
+chef-typography .chef-grey {
+  background-color: var(--chef-grey);
+}
+chef-typography .chef-light-grey {
+  background-color: var(--chef-light-grey);
+}
+chef-typography .chef-lightest-grey {
+  background-color: var(--chef-lightest-grey);
+}
+chef-typography .chef-white {
+  background-color: var(--chef-white);
+}
+chef-typography .chef-black {
+  background-color: var(--chef-black);
+}
+chef-typography .chef-text-base {
+  color: var(--chef-primary-dark);
+}
+chef-typography .chef-text-dull {
+  color: var(--chef-dark-grey);
+}
+chef-typography .chef-text-active {
+  color: var(--chef-primary-bright);
+}
+chef-typography .chef-text-contrast {
+  color: var(--chef-white);
+}

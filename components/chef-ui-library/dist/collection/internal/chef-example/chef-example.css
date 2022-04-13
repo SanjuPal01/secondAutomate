@@ -1,0 +1,12 @@
+chef-example {
+  --border-color:var(--chef-grey);
+  display: block;
+  margin: 1em 0;
+  border: 1px solid var(--border-color);
+}
+chef-example .example-code {
+  border-bottom: 1px solid var(--chef-grey);
+}
+chef-example .example-display {
+  padding: 1em;
+}

@@ -1,0 +1,139 @@
+chef-status-filter-group {
+  --active-color: var(--toggle-active-color, var(--chef-primary-bright));
+  display: flex;
+  flex-wrap: wrap;
+}
+chef-status-filter-group .filter {
+  padding: 8px 12px;
+  cursor: pointer;
+  background-color: var(--chef-white);
+  box-shadow: 0 0 0 1px #DAE1E6 inset;
+  border-radius: 4px;
+  font-size: 14px;
+  display: inline-flex;
+  margin-bottom: 10px;
+}
+chef-status-filter-group .filter:not(:last-child) {
+  margin-right: 10px;
+}
+chef-status-filter-group .filter .option-content {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  width: 100px;
+}
+chef-status-filter-group .filter .filter-icon {
+  display: inline-flex;
+  align-items: center;
+  height: 16px;
+  width: 16px;
+  margin-right: 4px;
+}
+chef-status-filter-group .filter .filter-total {
+  font-weight: 600;
+}
+chef-status-filter-group .filter .filter-label {
+  order: -1;
+  flex-basis: 100%;
+  margin-bottom: 4px;
+}
+chef-status-filter-group .filter.general chef-icon {
+  color: var(--chef-primary-dark);
+}
+chef-status-filter-group .filter.critical chef-icon {
+  color: var(--chef-critical);
+}
+chef-status-filter-group .filter.warning chef-icon {
+  color: var(--chef-primary);
+}
+chef-status-filter-group .filter.success chef-icon {
+  color: var(--chef-success);
+}
+chef-status-filter-group .filter.unknown chef-icon {
+  color: var(--chef-dark-grey);
+}
+chef-status-filter-group .filter.connected chef-icon {
+  color: var(--chef-success);
+  transform: rotate(-45deg);
+}
+chef-status-filter-group .filter.disconnected chef-icon {
+  color: var(--chef-dark-grey);
+  content: "";
+  display: block;
+  width: 14px;
+  height: 14px;
+  background: url(/assets/icon-disconnected.svg);
+  background-size: contain;
+}
+chef-status-filter-group .filter.selected {
+  background: var(--chef-white);
+}
+chef-status-filter-group .filter.selected .filter-label,
+chef-status-filter-group .filter.selected .lean-filter-label,
+chef-status-filter-group .filter.selected .filter-total {
+  color: var(--chef-primary-dark);
+}
+chef-status-filter-group .filter.selected.general {
+  background: #F3F6F8;
+  box-shadow: 0px 0px 0px 1px #829BA8 inset;
+}
+chef-status-filter-group .filter.selected.critical {
+  background: #F9DBEA;
+  box-shadow: 0px 0px 0px 1px var(--chef-critical) inset;
+}
+chef-status-filter-group .filter.selected.warning {
+  background: #FFE5D4;
+  box-shadow: 0px 0px 0px 1px var(--chef-primary) inset;
+}
+chef-status-filter-group .filter.selected.success, chef-status-filter-group .filter.selected.connected {
+  background: #CFE8FF;
+  box-shadow: 0px 0px 0px 1px var(--chef-success) inset;
+}
+chef-status-filter-group .filter.selected.unknown {
+  background: #E7E9E9;
+  box-shadow: 0px 0px 0px 1px var(--chef-dark-grey) inset;
+}
+chef-status-filter-group .filter.selected.disconnected {
+  background: var(--chef-info-alert-light);
+  box-shadow: 0px 0px 0px 1px var(--chef-info-alert) inset;
+}
+chef-status-filter-group .filter:hover {
+  box-shadow: 0px 0px 0px 0px;
+}
+chef-status-filter-group .filter:hover.general {
+  background: #F3F6F8;
+}
+chef-status-filter-group .filter:hover.critical {
+  background: #F9DBEA;
+}
+chef-status-filter-group .filter:hover.warning {
+  background: #FFE5D4;
+}
+chef-status-filter-group .filter:hover.success, chef-status-filter-group .filter:hover.connected {
+  background: #CFE8FF;
+}
+chef-status-filter-group .filter:hover.unknown {
+  background: #E7E9E9;
+}
+chef-status-filter-group .filter:hover.disconnected {
+  background: var(--chef-info-alert-light);
+}
+chef-status-filter-group[lean] {
+  flex-wrap: wrap;
+}
+chef-status-filter-group[lean] .filter {
+  margin-bottom: 8px;
+}
+chef-status-filter-group[lean] .filter:not(:last-child) {
+  margin-right: 8px;
+}
+chef-status-filter-group[lean] .filter .option-content {
+  flex-wrap: nowrap;
+  width: initial;
+  min-width: auto;
+}
+chef-status-filter-group[lean] .filter .filter-label {
+  order: 0;
+  flex-basis: auto;
+  margin: 0 8px 0 0;
+}

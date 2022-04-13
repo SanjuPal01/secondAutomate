@@ -1,0 +1,45 @@
+@charset "UTF-8";
+chef-phat-radio {
+  --active-color: var(--toggle-active-color, var(--chef-primary-bright));
+  display: block;
+}
+chef-phat-radio chef-option {
+  display: inline-flex;
+  align-items: center;
+  background-color: var(--chef-white);
+  box-shadow: 0 0 16px 0 #E6EBEE;
+  cursor: pointer;
+  padding: 1em;
+  border-radius: 5px;
+  height: 60px;
+  width: 175px;
+  margin-right: 8px;
+}
+chef-phat-radio chef-option:nth-child(n+2) {
+  margin-left: 8px;
+}
+chef-phat-radio chef-option .option-content {
+  padding-left: 0.5em;
+}
+chef-phat-radio chef-option::before {
+  font-family: "Material Icons";
+  content: "";
+  color: var(--chef-grey);
+  font-size: 20px;
+}
+chef-phat-radio chef-option:hover {
+  color: var(--active-color);
+  transition: color 1s ease;
+}
+chef-phat-radio chef-option:hover::before {
+  color: var(--active-color);
+  transition: color 1s ease;
+}
+chef-phat-radio chef-option.selected {
+  color: var(--active-color);
+}
+chef-phat-radio chef-option.selected::before {
+  font-family: "Material Icons";
+  content: "";
+  color: var(--active-color);
+}

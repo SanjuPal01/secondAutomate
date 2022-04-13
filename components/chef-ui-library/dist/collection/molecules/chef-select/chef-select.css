@@ -1,0 +1,73 @@
+chef-select {
+  outline: none;
+  border-radius: var(--chef-border-radius);
+  border-color: var(--chef-grey);
+  display: inline-block;
+  background-color: var(--chef-white);
+  cursor: pointer;
+}
+chef-select .selected-value {
+  display: block;
+  padding: 1em 3.5em 1em 1em;
+  position: relative;
+  border-radius: inherit;
+  border: 1px solid;
+  border-color: inherit;
+  position: relative;
+  transition: border-color 0.5s ease;
+}
+chef-select .selected-value chef-icon {
+  position: absolute;
+  right: 0.75em;
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: 1.25em;
+}
+chef-select .selected-value:not(.disabled) .selected-value {
+  cursor: pointer;
+}
+chef-select.focused .selected-value {
+  border-color: var(--chef-primary-bright);
+}
+chef-select.active .selected-value {
+  border-bottom-left-radius: 0px;
+  border-bottom-right-radius: 0px;
+  z-index: 102;
+}
+chef-select .options {
+  width: 100%;
+  position: relative;
+}
+chef-select chef-dropdown {
+  width: 100%;
+  border: 1px solid;
+  border-color: var(--chef-primary-bright);
+  border-top: none;
+  border-top-left-radius: 0px;
+  border-top-right-radius: 0px;
+  outline: none;
+  z-index: 101;
+}
+chef-select chef-option {
+  display: block;
+  padding: 1em 3em 1em 1.5em;
+  border-bottom: 1px solid var(--chef-grey);
+  cursor: pointer;
+  color: inherit;
+  position: relative;
+  white-space: nowrap;
+}
+chef-select chef-option:last-child {
+  border-bottom: 0px;
+}
+chef-select chef-option:hover {
+  background-color: var(--chef-lightest-grey);
+  color: var(--chef-primary-bright);
+  outline: none;
+}
+chef-select chef-option .option-content {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: inline-block;
+  width: 100%;
+}

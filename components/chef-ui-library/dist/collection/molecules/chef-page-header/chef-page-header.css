@@ -1,0 +1,32 @@
+chef-page-header {
+  display: block;
+  padding: 25px 35px 16px;
+  position: relative;
+  font-style: normal;
+  font-size: 13px;
+  color: var(--chef-dark-grey);
+}
+chef-page-header chef-heading {
+  font-weight: 700;
+}
+chef-page-header chef-subheading {
+  display: block;
+  color: var(--chef-primary-dark);
+}
+chef-page-header.contrasting {
+  background-color: var(--chef-white);
+}
+chef-page-header .header-buttons chef-button:first-child {
+  margin-left: 0;
+}
+chef-page-header .header-buttons chef-button:last-child {
+  margin-right: 0;
+}
+@media (min-width: 1024px) {
+  chef-page-header .header-buttons {
+    margin: 0;
+    position: absolute;
+    top: 35px;
+    right: 35px;
+  }
+}
